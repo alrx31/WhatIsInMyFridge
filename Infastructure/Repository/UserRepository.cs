@@ -18,6 +18,7 @@ namespace Infastructure.Repository
         Task<RefreshTokenModel> getTokenModel(string email);
         Task UpdateRefreshTokenAsync(RefreshTokenModel identityUserTokenModel);
         Task AddRefreshTokenField(RegisterDTO model);
+        Task CanselRefreshToken(int userId);
     }
 
     public class UserRepository : IUserRepository
@@ -45,6 +46,13 @@ namespace Infastructure.Repository
             
             await _context.refreshTokens.AddAsync(newToken);
 
+        }
+
+        public async Task CanselRefreshToken(int userId)
+        {
+            var user = await _context.refreshTokens
+                .FirstOrDefaultAsync(u => u.userId == userId);
+            user!.refreshTokenExpiryTime = DateTime.UtcNow;
         }
 
         public Task<bool> CheckPasswordAsync(User identifyUser, string password)

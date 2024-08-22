@@ -39,5 +39,11 @@ namespace Identity.Controllers
             return Unauthorized();
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] LogoutModel model)
+        {
+            await _authService.Logout(model);
+            return Ok();
+        }
     }
 }

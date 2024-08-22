@@ -4,6 +4,7 @@ using Identity.Infrastructure;
 using Infastructure.Repository;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace BuisnesLogic.Services
     public interface IAuthService
     {
         Task<LoginResponse> LoginUser(LoginDTO model);
+        Task Logout(LogoutModel model);
         Task<LoginResponse> RefreshToken(RefreshTokenDTO model);
         Task RegisterUser(RegisterDTO model);
     }
@@ -53,6 +55,14 @@ namespace BuisnesLogic.Services
             await _unitOfWork.CompleteAsync();
             return response;
             
+        }
+
+        public async Task Logout(LogoutModel model)
+        {
+            if (model.Token == null || model.UserId <= 0)
+                throw new ValidationException("Invalid token or user id");
+            await _repository.CanselRefreshToken(model.UserId);
+            await _unitOfWork.CompleteAsync();
         }
 
         public async Task<LoginResponse> RefreshToken(RefreshTokenDTO model)
