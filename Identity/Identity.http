@@ -1,0 +1,6 @@
+@Identity_HostAddress = http://localhost:5207
+
+GET {{Identity_HostAddress}}
+Accept: application/json
+
+###
