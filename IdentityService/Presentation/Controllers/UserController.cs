@@ -1,5 +1,10 @@
-﻿using Application.Services;
+﻿using Application.DTO;
+using Application.Services;
+using Domain.Entities;
+using Infastructure.Middlewares.Exceptions;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 namespace Presentation.Controllers
 {
     [ApiController]
@@ -29,6 +34,15 @@ namespace Presentation.Controllers
             await _userService.DeleteUser(id,InitiatorId);
             
             return Ok();
+        }
+        [HttpPost("update/{id}")]
+        public async Task<IActionResult> UpdateUser([FromBody] RegisterDTO model, int id)
+        {
+            //do not use validation cuz need to allow null fields
+
+            var user = await _userService.UpdateUser(model, id);
+
+            return Ok(user);
         }
 
     }

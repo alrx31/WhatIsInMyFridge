@@ -58,7 +58,7 @@ namespace Application.Services
             };
             
             response.IsLoggedIn = true;
-            response.UserId = identifyUser.id;
+            response.User = identifyUser;
             response.JwtToken = _jwtService.GenerateJwtToken(identifyUser.email);
             var RefreshToken = _jwtService.GenerateRefreshToken();
             
@@ -123,7 +123,10 @@ namespace Application.Services
                 return response;
             }
 
-            response.UserId = identityUser.id;
+
+            response.User = await _repository.getUserById(identityUser.id) ?? throw new Exception("user not found");
+
+
             response.IsLoggedIn = true;
             response.JwtToken = _jwtService.GenerateJwtToken(identityUser.email);
             refreshToken = _jwtService.GenerateRefreshToken();

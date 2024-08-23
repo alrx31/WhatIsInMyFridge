@@ -18,5 +18,7 @@ namespace Domain.Repository
         Task<User?> getUserById(int id);
         
         Task DeleteUser(int id);
+
+        Task<User> UpdateUser(User model, int id);
     }
 }

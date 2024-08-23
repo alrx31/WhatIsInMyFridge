@@ -21,7 +21,9 @@ namespace Infastructure.Repository
 
         public async Task AddRefreshTokenField(RefreshTokenModel model)
         {   
+
             await _context.refreshTokens.AddAsync(model);
+        
         }
 
         public async Task CanselRefreshToken(int userId)
@@ -45,22 +47,30 @@ namespace Infastructure.Repository
 
         public async Task<RefreshTokenModel?> getTokenModel(string email)
         {
+
             return await _context.refreshTokens.FirstOrDefaultAsync(x => x.email == email);    
+        
         }
 
         public Task<User?> getUserById(int id)
         {
+            
             return _context.users.FirstOrDefaultAsync(x => x.id == id);
+        
         }
 
         public async Task<User?> GetUserByLogin(string login)
         {
+            
             return await _context.users.FirstOrDefaultAsync(x => x.login == login);
+        
         }
 
         public async Task RegisterUser(User model)
         {
+            
             await _context.AddAsync(model);
+        
         }
 
         public async Task UpdateRefreshTokenAsync(RefreshTokenModel identityUserTokenModel)
@@ -73,5 +83,15 @@ namespace Infastructure.Repository
             }
         }
 
+        public async Task<User> UpdateUser(User model, int id)
+        {
+
+            var user = await _context.users.FindAsync(id);
+            
+            _context.users.Update(model);
+            
+            return model;
+            
+        }
     }
 }
