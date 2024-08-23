@@ -1,4 +1,5 @@
-﻿using Infastructure.Persistanse;
+﻿using Domain.Repository;
+using Infastructure.Persistanse;
 using System;
 using System.Threading.Tasks;
 

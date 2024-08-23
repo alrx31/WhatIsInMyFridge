@@ -1,25 +1,14 @@
-﻿using DataAcess.DTO;
-using DataAcess.Entities;
+﻿
+using Application.DTO;
+using Domain.Entities;
+using Domain.Repository;
 using Infastructure.Persistanse;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Infastructure.Repository
 {
-    public interface IUserRepository
-    {
-        Task RegisterUser(RegisterDTO model);
-        Task<User> GetUserByLogin(string email);
-        Task<bool> CheckPasswordAsync(User identifyUser, string password);
-        Task<RefreshTokenModel> getTokenModel(string email);
-        Task UpdateRefreshTokenAsync(RefreshTokenModel identityUserTokenModel);
-        Task AddRefreshTokenField(RegisterDTO model);
-        Task CanselRefreshToken(int userId);
-    }
+
 
     public class UserRepository : IUserRepository
     {
@@ -30,69 +19,58 @@ namespace Infastructure.Repository
             _context = context;
         }
 
-        public async Task AddRefreshTokenField(RegisterDTO model)
-        {
-            var newToken = new RefreshTokenModel
-            {
-                email = model.email,
-                refreshToken = "",
-                refreshTokenExpiryTime = DateTime.UtcNow,
-                userId = _context.users
-                    .Where(p => p.email == model.email)
-                    .Select(p => p.id)
-                    .FirstOrDefault(),
-                user = null
-            };
-            
-            await _context.refreshTokens.AddAsync(newToken);
-
+        public async Task AddRefreshTokenField(RefreshTokenModel model)
+        {   
+            await _context.refreshTokens.AddAsync(model);
         }
 
         public async Task CanselRefreshToken(int userId)
         {
             var user = await _context.refreshTokens
                 .FirstOrDefaultAsync(u => u.userId == userId);
+            
             user!.refreshTokenExpiryTime = DateTime.UtcNow;
         }
 
-        public Task<bool> CheckPasswordAsync(User identifyUser, string password)
+
+        public async Task DeleteUser(int id)
         {
-            return Task.FromResult(identifyUser.password == getHash(password));
+            var user = await _context.users.FirstOrDefaultAsync(x => x.id == id);
+            
+            if(user != null)
+            {
+                _context.users.Remove(user);
+            }
         }
 
-        public async Task<RefreshTokenModel> getTokenModel(string email)
+        public async Task<RefreshTokenModel?> getTokenModel(string email)
         {
             return await _context.refreshTokens.FirstOrDefaultAsync(x => x.email == email);    
         }
 
-        public async Task<User> GetUserByLogin(string login)
+        public Task<User?> getUserById(int id)
+        {
+            return _context.users.FirstOrDefaultAsync(x => x.id == id);
+        }
+
+        public async Task<User?> GetUserByLogin(string login)
         {
             return await _context.users.FirstOrDefaultAsync(x => x.login == login);
         }
 
-        public async Task RegisterUser(RegisterDTO model)
+        public async Task RegisterUser(User model)
         {
-            await _context.AddAsync(new User
-            {
-                name = model.name,
-                login = model.login,
-                email = model.email,
-                password = getHash(model.password),
-                isAdmin = model.name == "admin"
-            });
+            await _context.AddAsync(model);
         }
 
         public async Task UpdateRefreshTokenAsync(RefreshTokenModel identityUserTokenModel)
         {
             var user = await _context.refreshTokens.FirstOrDefaultAsync(u => u.email == identityUserTokenModel.email);
-            _context.refreshTokens.Update(user);
-        }
-
-        private string getHash(string pass)
-        {
-            var data = System.Text.Encoding.ASCII.GetBytes(pass);
-            data = System.Security.Cryptography.SHA256.HashData(data);
-            return Encoding.ASCII.GetString(data);
+            
+            if(user != null)
+            {
+                _context.refreshTokens.Update(user);
+            }
         }
 
     }

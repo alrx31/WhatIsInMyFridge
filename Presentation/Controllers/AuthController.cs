@@ -1,12 +1,13 @@
-﻿using BuisnesLogic.Services;
+﻿using Application.DTO;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
-using DataAcess.DTO;
 
 
-namespace Identity.Controllers
+namespace Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+
     public class AuthController:ControllerBase
     {
         private readonly IAuthService _authService;
@@ -20,6 +21,7 @@ namespace Identity.Controllers
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDTO model)
         {
             await _authService.RegisterUser(model);
+            
             return Ok();
         }
 
@@ -27,22 +29,24 @@ namespace Identity.Controllers
         public async Task<IActionResult> LoginUser([FromBody] LoginDTO model)
         {
             var loginRes = await _authService.LoginUser(model);
-            if (loginRes.IsLoggedIn) return Ok(loginRes);
-            return Unauthorized();
+
+            return loginRes.IsLoggedIn ? Ok(loginRes) : Unauthorized();
         }
 
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDTO model)
         {
             var loginRes = await _authService.RefreshToken(model);
-            if (loginRes.IsLoggedIn) return Ok(loginRes);
-            return Unauthorized();
+
+            return loginRes.IsLoggedIn ? Ok(loginRes) : Unauthorized();
         }
 
+        //TODO
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout([FromBody] LogoutModel model)
+        public async Task<IActionResult> Logout([FromBody] LogoutDTO model)
         {
             await _authService.Logout(model);
+            
             return Ok();
         }
     }

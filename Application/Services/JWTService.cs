@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -10,7 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuisnesLogic.Services
+namespace Application.Services
 {
     public interface IJWTService
     {
@@ -40,6 +41,7 @@ namespace BuisnesLogic.Services
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            
             return tokenHandler.WriteToken(token);
         }
 
@@ -50,6 +52,7 @@ namespace BuisnesLogic.Services
             {
                 numberGenerator.GetBytes(randomNumber);
             }
+            
             return Convert.ToBase64String(randomNumber);
         }
 
@@ -69,6 +72,7 @@ namespace BuisnesLogic.Services
             try
             {
                 var principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out _);
+                
                 return principal;
             }
             catch (SecurityTokenExpiredException)
@@ -78,6 +82,7 @@ namespace BuisnesLogic.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Token validation failed: {ex.Message}");
+                
                 return null;
             }
         }

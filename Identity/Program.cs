@@ -1,4 +1,6 @@
-using BuisnesLogic.Services;
+
+using Application.Services;
+using Domain.Repository;
 using Identity.Infrastructure;
 using Infastructure.Persistanse;
 using Infastructure.Repository;
@@ -18,11 +20,12 @@ builder.Services.AddSwaggerGen();
 
 
 // Add services to the container.
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJWTService, JWTService>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 var app = builder.Build();

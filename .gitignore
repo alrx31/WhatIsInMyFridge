@@ -12,3 +12,10 @@
 /Identity/obj
 /Infastructure/bin/Debug/net8.0
 /Infastructure/obj
+/Application/obj
+/Application/bin/Debug/net8.0
+/Domain/bin/Debug/net8.0
+/Domain/obj
+/Identity/.vs/ProjectEvaluation
+/Presentation/bin/Debug/net8.0
+/Presentation/obj
