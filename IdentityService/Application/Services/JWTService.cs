@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Infastructure.Middlewares.Exceptions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -77,7 +78,7 @@ namespace Application.Services
             }
             catch (SecurityTokenExpiredException)
             {
-                throw new ValidationException("Security token has expired.");
+                throw new ValidationDataException("Security token has expired.");
             }
             catch (Exception ex)
             {

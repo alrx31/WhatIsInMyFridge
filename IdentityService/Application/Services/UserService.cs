@@ -2,6 +2,7 @@
 using Application.DTO;
 using Domain.Entities;
 using Domain.Repository;
+using Infastructure.Middlewares.Exceptions;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Text;
 
@@ -32,7 +33,7 @@ namespace Application.Services
             
             if(user is null)
             {
-                throw new Exception("User not found");
+                throw new NotFoundException("User not found");
             }
 
             if (user.isAdmin)
@@ -43,14 +44,14 @@ namespace Application.Services
             }
             else
             {
-                throw new Exception("You are not an admin");
+                throw new ForbiddenException("You do not have acess");
             }
         }
 
         public async Task<User> getUserById(int id)
         {
 
-            return await _repository.getUserById(id) ?? throw new Exception("User not found");
+            return await _repository.getUserById(id) ?? throw new NotFoundException("User not found");
         
         }
 
@@ -61,7 +62,7 @@ namespace Application.Services
 
             if (user is null)
             {
-                throw new Exception("User not Found");
+                throw new NotFoundException("User not Found");
             }
 
             if(!string.IsNullOrEmpty(user.login))
@@ -83,7 +84,7 @@ namespace Application.Services
             
             if(user1 is null)
             {
-                throw new Exception("Invalid User");
+                throw new NotFoundException("Invalid User");
             }
 
             await _unitOfWork.CompleteAsync();

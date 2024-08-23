@@ -2,13 +2,11 @@
 using Application.DTO;
 using Domain.Entities;
 using Domain.Repository;
+using Infastructure.Middlewares.Exceptions;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Application.Services
 {
@@ -93,7 +91,7 @@ namespace Application.Services
 
             if ( model.UserId <= 0)
             {
-                throw new ValidationException("Invalid user id");
+                throw new ValidationDataException("Invalid user id");
             }
 
             ClearRefreshTokenCookie();
@@ -124,7 +122,7 @@ namespace Application.Services
             }
 
 
-            response.User = await _repository.getUserById(identityUser.id) ?? throw new Exception("user not found");
+            response.User = await _repository.getUserById(identityUser.id) ?? throw new NotFoundException("User not found");
 
 
             response.IsLoggedIn = true;
@@ -159,6 +157,12 @@ namespace Application.Services
 
         public async Task RegisterUser(RegisterDTO model)
         {
+            var userCheck = await _repository.GetUserByLogin(model.login);
+
+            if (userCheck!= null)
+            {
+                throw new AlreadyExistsException("This Login is not avaible");
+            }
 
             await _repository.RegisterUser(new User
             {
@@ -174,7 +178,7 @@ namespace Application.Services
             var user = await _repository.GetUserByLogin(model.login);
 
             if (user == null) { 
-                throw new ValidationException("User not found");
+                throw new ValidationDataException("User not found");
             }
 
             var newToken = new RefreshTokenModel
@@ -205,11 +209,10 @@ namespace Application.Services
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true, // Рекомендуется включить в продуктивной среде
+                Secure = true, 
                 Expires = DateTime.UtcNow.AddDays(7)
             };
 
-            // Добавляем куки с токеном
             _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
         private void ClearRefreshTokenCookie()

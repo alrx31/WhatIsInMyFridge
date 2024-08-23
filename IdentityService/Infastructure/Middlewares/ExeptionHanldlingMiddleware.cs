@@ -33,7 +33,7 @@ namespace EventManagement.Middlewares
             {
                 await HandleExceptionAsync(context, HttpStatusCode.Conflict, ex.Message);
             }
-            catch (ValidationException ex)
+            catch (ValidationDataException ex)
             {
                 await HandleExceptionAsync(context, HttpStatusCode.BadRequest, ex.Message);
             }
