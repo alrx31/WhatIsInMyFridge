@@ -11,6 +11,6 @@ namespace Application.DTO
         public bool IsLoggedIn { get; set; } = false;
         public int UserId { get; set; }
         public string JwtToken { get; set; }
-        public string RefreshToken { get; set; }
+        //public string RefreshToken { get; set; }
     }
 }

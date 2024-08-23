@@ -2,6 +2,7 @@
 using Application.DTO;
 using Domain.Entities;
 using Domain.Repository;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -26,13 +27,20 @@ namespace Application.Services
         private readonly IUserRepository _repository;
         private readonly IJWTService _jwtService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public AuthService(IUserRepository repository,IJWTService jwtService,IUnitOfWork unitOfWork)
+        public AuthService(
+            IUserRepository repository,
+            IJWTService jwtService,
+            IUnitOfWork unitOfWork,
+            IHttpContextAccessor httpContextAccessor
+            )
         {
             _jwtService = jwtService;
             _repository = repository;
             _unitOfWork = unitOfWork;
+            _httpContextAccessor = httpContextAccessor;
 
         }
 
@@ -52,7 +60,7 @@ namespace Application.Services
             response.IsLoggedIn = true;
             response.UserId = identifyUser.id;
             response.JwtToken = _jwtService.GenerateJwtToken(identifyUser.email);
-            response.RefreshToken = _jwtService.GenerateRefreshToken();
+            var RefreshToken = _jwtService.GenerateRefreshToken();
             
             var identityUserTokenModel = await _repository.getTokenModel(identifyUser.email);
             
@@ -61,7 +69,6 @@ namespace Application.Services
                 await _repository.AddRefreshTokenField(new RefreshTokenModel
                 {
                     email = identifyUser.email,
-                    refreshToken = response.RefreshToken,
                     refreshTokenExpiryTime = DateTime.UtcNow.AddHours(12),
                     userId = identifyUser.id,
                     user = null
@@ -69,10 +76,10 @@ namespace Application.Services
             }
             else
             {
-                identityUserTokenModel.refreshToken = response.RefreshToken;
+                identityUserTokenModel.refreshToken = RefreshToken;
                 identityUserTokenModel.refreshTokenExpiryTime = DateTime.UtcNow.AddHours(12);
             }
-
+            SetRefreshTokenCookie(RefreshToken);
             await _repository.UpdateRefreshTokenAsync(identityUserTokenModel);
             
             await _unitOfWork.CompleteAsync();
@@ -84,11 +91,13 @@ namespace Application.Services
         public async Task Logout(LogoutDTO model)
         {
 
-            if (model.Token == null || model.UserId <= 0)
+            if ( model.UserId <= 0)
             {
-                throw new ValidationException("Invalid token or user id");
+                throw new ValidationException("Invalid user id");
             }
-            
+
+            ClearRefreshTokenCookie();
+
             await _repository.CanselRefreshToken(model.UserId);
             
             await _unitOfWork.CompleteAsync();
@@ -96,6 +105,9 @@ namespace Application.Services
 
         public async Task<LoginResponse> RefreshToken(RefreshTokenDTO model)
         {
+            var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+            
+
             var principal = _jwtService.GetTokenPrincipal(model.JwtToken);
             var response = new LoginResponse();
             
@@ -114,7 +126,7 @@ namespace Application.Services
             response.UserId = identityUser.id;
             response.IsLoggedIn = true;
             response.JwtToken = _jwtService.GenerateJwtToken(identityUser.email);
-            response.RefreshToken = _jwtService.GenerateRefreshToken();
+            refreshToken = _jwtService.GenerateRefreshToken();
             var identityUserTokenModel =
                 await _repository.getTokenModel(identityUser.email);
             
@@ -123,7 +135,6 @@ namespace Application.Services
                 await _repository.AddRefreshTokenField(new RefreshTokenModel
                 {
                     email = identityUser.email,
-                    refreshToken = response.RefreshToken,
                     refreshTokenExpiryTime = DateTime.UtcNow.AddHours(12),
                     userId = identityUser.id,
                     user = null
@@ -131,9 +142,10 @@ namespace Application.Services
             }
             else
             {
-                identityUserTokenModel.refreshToken = response.RefreshToken;
+                identityUserTokenModel.refreshToken = refreshToken;
                 identityUserTokenModel.refreshTokenExpiryTime = DateTime.UtcNow.AddHours(12);
             }
+            SetRefreshTokenCookie(refreshToken);
 
             await _repository.UpdateRefreshTokenAsync(identityUserTokenModel);
             
@@ -183,6 +195,23 @@ namespace Application.Services
             data = System.Security.Cryptography.SHA256.HashData(data);
             
             return Encoding.ASCII.GetString(data);
+        }
+
+        private void SetRefreshTokenCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Рекомендуется включить в продуктивной среде
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+
+            // Добавляем куки с токеном
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
+        private void ClearRefreshTokenCookie()
+        {
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
         }
     }
 }

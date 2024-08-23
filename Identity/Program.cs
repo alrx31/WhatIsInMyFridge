@@ -1,4 +1,5 @@
 
+using Application.DTO;
 using Application.Services;
 using Domain.Repository;
 using EventManagement.Middlewares;
@@ -8,11 +9,16 @@ using Infastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Presentation.Controllers;
 using System.Text;
+using Application.Validators;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<ApplicationDbContext>(op =>
     op.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Identity")));
@@ -37,10 +43,10 @@ builder.Services.AddAuthentication(op =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:issuer"],
+        ValidAudience = builder.Configuration["Jwt:audience"],
         ClockSkew = TimeSpan.Zero,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:key"]))
     };
 });
 
@@ -52,6 +58,18 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJWTService, JWTService>();
+
+
+// validators
+
+builder.Services.AddControllers();
+builder.Services.AddFluentValidation(fv=>{
+    fv.RegisterValidatorsFromAssemblyContaining<LoginDTOValidator>();
+    fv.RegisterValidatorsFromAssemblyContaining<RegisterDTOValidator>();
+    fv.RegisterValidatorsFromAssemblyContaining<LogoutDTOValidator>();
+    fv.RegisterValidatorsFromAssemblyContaining<RefreshTokenDTOValidator>();
+});
+
 
 
 var app = builder.Build();
