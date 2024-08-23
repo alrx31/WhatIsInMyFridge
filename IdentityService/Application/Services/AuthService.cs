@@ -221,3 +221,14 @@ namespace Application.Services
         }
     }
 }
+
+
+
+
+/*
+ Domain
+Infastructure
+Application
+Presentation
+ 
+ */
