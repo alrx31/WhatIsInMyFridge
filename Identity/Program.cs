@@ -1,6 +1,7 @@
 
 using Application.Services;
 using Domain.Repository;
+using EventManagement.Middlewares;
 using Identity.Infrastructure;
 using Infastructure.Persistanse;
 using Infastructure.Repository;
@@ -38,6 +39,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 
