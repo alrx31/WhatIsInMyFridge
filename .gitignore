@@ -2,20 +2,14 @@
 # Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs
-/BuisnesLogic/bin/Debug/net8.0
-/BuisnesLogic/obj
-/DataAcess/bin/Debug/net8.0
-/DataAcess/obj
-/Identity/.vs/Identity
-/Identity/bin/Debug/net8.0
-/Identity/obj
-/Infastructure/bin/Debug/net8.0
-/Infastructure/obj
-/Application/obj
-/Application/bin/Debug/net8.0
-/Domain/bin/Debug/net8.0
-/Domain/obj
-/Identity/.vs/ProjectEvaluation
-/Presentation/bin/Debug/net8.0
-/Presentation/obj
+/IdentityService/Application/bin/Debug/net8.0
+/IdentityService/Application/obj
+/IdentityService/Domain/bin/Debug/net8.0
+/IdentityService/Domain/obj
+/IdentityService/Identity/.vs
+/IdentityService/Identity/bin/Debug/net8.0
+/IdentityService/Identity/obj
+/IdentityService/Infastructure/bin/Debug/net8.0
+/IdentityService/Infastructure/obj
+/IdentityService/Presentation/bin/Debug/net8.0
+/IdentityService/Presentation/obj
