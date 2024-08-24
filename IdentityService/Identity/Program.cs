@@ -14,12 +14,17 @@ using System.Text;
 using Application.Validators;
 using FluentValidation.AspNetCore;
 using StackExchange.Redis;
+using Application.MappingProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddHttpContextAccessor();
+
+// autoMapper
+
+builder.Services.AddAutoMapper(typeof(UserProfile));
 
 //Redis
 

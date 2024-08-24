@@ -1,5 +1,6 @@
 ﻿
 using Application.DTO;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Repository;
 using Infastructure.Middlewares.Exceptions;
@@ -29,6 +30,7 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICacheRepository _cacheRepository;
+        private readonly IMapper _mapper;
 
 
         public AuthService(
@@ -36,7 +38,8 @@ namespace Application.Services
             IJWTService jwtService,
             IUnitOfWork unitOfWork,
             IHttpContextAccessor httpContextAccessor,
-            ICacheRepository cacheRepository
+            ICacheRepository cacheRepository,
+            IMapper mapper
             )
         {
             _jwtService = jwtService;
@@ -44,6 +47,7 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
             _cacheRepository = cacheRepository;
+            _mapper = mapper;
         }
 
         public async Task<LoginResponse> LoginUser(LoginDTO user)
@@ -60,7 +64,7 @@ namespace Application.Services
             };
             
             response.IsLoggedIn = true;
-            response.User = identifyUser;
+            response.User = _mapper.Map<UserDTO>(identifyUser);
             response.JwtToken = _jwtService.GenerateJwtToken(identifyUser.email);
             var RefreshToken = _jwtService.GenerateRefreshToken();
             
@@ -133,12 +137,12 @@ namespace Application.Services
 
             if (user == null)
             {
-                response.User = await _repository.getUserById(identityUser.id) ?? throw new NotFoundException("User not found");
+                response.User = _mapper.Map<UserDTO>(await _repository.getUserById(identityUser.id) ?? throw new NotFoundException("User not found"));
                 await _cacheRepository.SetCatcheData($"user-{identityUser.id}", response.User, new TimeSpan(24, 0, 0));   
             }
             else
             {
-                response.User = user;
+                response.User = _mapper.Map<UserDTO>(user);
             }
 
             response.IsLoggedIn = true;

@@ -24,7 +24,12 @@ namespace Infastructure.Repository
 
         public async Task<T?> GetCacheData<T>(string key)
         {
-            return JsonSerializer.Deserialize<T>(await _redis.StringGetAsync(key));
+            var data = await _redis.StringGetAsync(key);
+            if(data.IsNull)
+            {
+                return default;
+            }
+            return JsonSerializer.Deserialize<T>(data);
         }
 
         public async Task RemoveCacheData(string key)
