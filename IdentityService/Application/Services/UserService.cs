@@ -4,7 +4,9 @@ using Domain.Entities;
 using Domain.Repository;
 using Infastructure.Middlewares.Exceptions;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Text;
+using System.Text.Json;
 
 namespace Application.Services
 {
@@ -19,19 +21,26 @@ namespace Application.Services
     {
         private readonly IUserRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICacheRepository _cacheRepository;
 
-        public UserService(IUserRepository repository,IUnitOfWork unitOfWork )
+        public UserService(IUserRepository repository,IUnitOfWork unitOfWork, ICacheRepository cacheRepository)
         {
 
             _repository = repository;
             _unitOfWork = unitOfWork;
+            _cacheRepository = cacheRepository;
         }
 
         public async Task DeleteUser(int id, int initiatorId)
         {
-            var user = await _repository.getUserById(initiatorId);
+            var user = await _cacheRepository.GetCacheData<User>($"user-{initiatorId}");
             
-            if(user is null)
+            if (user == null)
+            {
+                user = await _repository.getUserById(id);
+            }
+
+            if (user is null)
             {
                 throw new NotFoundException("User not found");
             }
@@ -51,14 +60,26 @@ namespace Application.Services
         public async Task<User> getUserById(int id)
         {
 
-            return await _repository.getUserById(id) ?? throw new NotFoundException("User not found");
-        
+            var user1 = await _cacheRepository.GetCacheData<User>($"user-{id}");
+            
+            if(user1 != null)
+            {
+                return user1;
+            }
+            
+            var user = await _repository.getUserById(id) ?? throw new NotFoundException("User not found");
+            
+            return user;
         }
 
         public async Task<User> UpdateUser(RegisterDTO model, int id)
         {
-
-            var user = await _repository.getUserById(id);
+            var user = await _cacheRepository.GetCacheData<User>($"user-{id}");
+            
+            if (user == null)
+            {
+                user = await _repository.getUserById(id);
+            }
 
             if (user is null)
             {
@@ -88,6 +109,8 @@ namespace Application.Services
             }
 
             await _unitOfWork.CompleteAsync();
+
+            await _cacheRepository.SetCatcheData($"user-{id}", user1);
 
             return user1;
         }

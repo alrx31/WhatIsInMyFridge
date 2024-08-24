@@ -13,12 +13,23 @@ using Presentation.Controllers;
 using System.Text;
 using Application.Validators;
 using FluentValidation.AspNetCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddHttpContextAccessor();
+
+//Redis
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(s =>
+{
+
+    return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"));
+
+});
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(op =>
     op.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Identity")));
@@ -53,9 +64,9 @@ builder.Services.AddAuthentication(op =>
 
 // Add services to the container.
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICacheRepository, CacheRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJWTService, JWTService>();
 

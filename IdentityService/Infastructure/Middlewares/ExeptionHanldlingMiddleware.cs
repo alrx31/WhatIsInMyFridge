@@ -18,7 +18,7 @@ namespace EventManagement.Middlewares
         }
 
 
-        // вместо console.writeline можно использовать логгер, но его здесь пока нет
+        
         public async Task InvokeAsync(HttpContext context)
         {
             try
@@ -29,10 +29,6 @@ namespace EventManagement.Middlewares
             {
                 await HandleExceptionAsync(context, HttpStatusCode.NotFound, ex.Message);
             }
-            catch (AlreadyExistsException ex)
-            {
-                await HandleExceptionAsync(context, HttpStatusCode.Conflict, ex.Message);
-            }
             catch (ValidationDataException ex)
             {
                 await HandleExceptionAsync(context, HttpStatusCode.BadRequest, ex.Message);
@@ -41,13 +37,17 @@ namespace EventManagement.Middlewares
             {
                 await HandleExceptionAsync(context, HttpStatusCode.Unauthorized, ex.Message);
             }
-            catch (ForbiddenException ex)
-            {
-                await HandleExceptionAsync(context, HttpStatusCode.Forbidden, ex.Message);
-            }
             catch (BadRequestException ex)
             {
                 await HandleExceptionAsync(context, HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (AlreadyExistsException ex)
+            {
+                await HandleExceptionAsync(context, HttpStatusCode.Conflict, ex.Message);
+            }
+            catch (ForbiddenException ex)
+            {
+                await HandleExceptionAsync(context, HttpStatusCode.Forbidden, ex.Message);
             }
             catch (InternalServerErrorException ex)
             {

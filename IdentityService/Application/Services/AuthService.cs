@@ -4,8 +4,10 @@ using Domain.Entities;
 using Domain.Repository;
 using Infastructure.Middlewares.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Npgsql.Replication;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Text.Json;
 
 
 namespace Application.Services
@@ -26,20 +28,22 @@ namespace Application.Services
         private readonly IJWTService _jwtService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ICacheRepository _cacheRepository;
 
 
         public AuthService(
             IUserRepository repository,
             IJWTService jwtService,
             IUnitOfWork unitOfWork,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            ICacheRepository cacheRepository
             )
         {
             _jwtService = jwtService;
             _repository = repository;
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
-
+            _cacheRepository = cacheRepository;
         }
 
         public async Task<LoginResponse> LoginUser(LoginDTO user)
@@ -78,10 +82,14 @@ namespace Application.Services
                 identityUserTokenModel.refreshTokenExpiryTime = DateTime.UtcNow.AddHours(12);
             }
             SetRefreshTokenCookie(RefreshToken);
+
             await _repository.UpdateRefreshTokenAsync(identityUserTokenModel);
             
             await _unitOfWork.CompleteAsync();
             
+            //await _cacheRepository.SetCatcheData($"user-{response.User.id}", JsonSerializer.Serialize(response.User), new TimeSpan(24));
+            await _cacheRepository.SetCatcheData($"user-{response.User.id}", response.User,new TimeSpan(24,0,0));
+
             return response;
             
         }
@@ -121,9 +129,17 @@ namespace Application.Services
                 return response;
             }
 
+            var user = await _cacheRepository.GetCacheData<User>($"user-{identityUser.id}");
 
-            response.User = await _repository.getUserById(identityUser.id) ?? throw new NotFoundException("User not found");
-
+            if (user == null)
+            {
+                response.User = await _repository.getUserById(identityUser.id) ?? throw new NotFoundException("User not found");
+                await _cacheRepository.SetCatcheData($"user-{identityUser.id}", response.User, new TimeSpan(24, 0, 0));   
+            }
+            else
+            {
+                response.User = user;
+            }
 
             response.IsLoggedIn = true;
             response.JwtToken = _jwtService.GenerateJwtToken(identityUser.email);
