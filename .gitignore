@@ -13,3 +13,5 @@
 /IdentityService/Infastructure/obj
 /IdentityService/Presentation/bin/Debug/net8.0
 /IdentityService/Presentation/obj
+/.vs
+/IdentityService/.vs
