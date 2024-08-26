@@ -1,20 +1,18 @@
-
 using Application.DTO;
+using Application.MappingProfiles;
 using Application.Services;
+using Application.Validators;
 using Domain.Repository;
 using EventManagement.Middlewares;
+using FluentValidation.AspNetCore;
 using Identity.Infrastructure;
 using Infastructure.Persistanse;
 using Infastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Presentation.Controllers;
-using System.Text;
-using Application.Validators;
-using FluentValidation.AspNetCore;
 using StackExchange.Redis;
-using Application.MappingProfiles;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,36 +20,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
 
-// autoMapper
-
+// AutoMapper
 builder.Services.AddAutoMapper(typeof(UserProfile));
 
-//Redis
-
+// Redis
 builder.Services.AddSingleton<IConnectionMultiplexer>(s =>
 {
-
     return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"));
-
 });
 
-
+// Database context and migrations
 builder.Services.AddDbContext<ApplicationDbContext>(op =>
     op.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Identity")));
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
+// Authentication and Authorization
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(op =>
 {
     op.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     op.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddJwtBearer(op =>
+.AddJwtBearer(op =>
 {
     op.TokenValidationParameters = new TokenValidationParameters
     {
@@ -66,8 +55,7 @@ builder.Services.AddAuthentication(op =>
     };
 });
 
-
-// Add services to the container.
+// Register services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -75,34 +63,40 @@ builder.Services.AddScoped<ICacheRepository, CacheRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJWTService, JWTService>();
 
-
-// validators
-
-builder.Services.AddControllers();
-builder.Services.AddFluentValidation(fv=>{
+// Register FluentValidation validators
+builder.Services.AddControllers().AddFluentValidation(fv =>
+{
     fv.RegisterValidatorsFromAssemblyContaining<LoginDTOValidator>();
     fv.RegisterValidatorsFromAssemblyContaining<RegisterDTOValidator>();
     fv.RegisterValidatorsFromAssemblyContaining<LogoutDTOValidator>();
     fv.RegisterValidatorsFromAssemblyContaining<RefreshTokenDTOValidator>();
 });
 
-
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Apply migrations at application startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || true)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

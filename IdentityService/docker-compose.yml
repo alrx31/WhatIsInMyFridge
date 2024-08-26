@@ -1,0 +1,38 @@
+version: '3.8'
+networks:
+  entityservicenetwork:
+    driver: bridge
+services:
+  service:
+    image: identityservice         
+    build:
+      context: .         
+    ports:
+      - "8080:8080"   
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Database=UsersDb;Username=alex;Password=postgres123"
+    depends_on:
+      - postgres 
+      - redis
+    networks:
+      - entityservicenetwork
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: alex
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: UsersDb
+    ports:
+      - "5432:5432"
+    volumes:
+         - postgres-data:/var/lib/postgresql/data
+    networks:
+      - entityservicenetwork
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - entityservicenetwork
+volumes:
+  postgres-data:
