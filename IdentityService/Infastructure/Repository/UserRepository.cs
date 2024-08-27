@@ -42,6 +42,11 @@ namespace Infastructure.Repository
             if(user!= null)
             {
                 _context.users.Remove(user);
+                var token = await _context.refreshTokens.FirstOrDefaultAsync(u => u.userId == id);
+                if(token != null)
+                {
+                    _context.refreshTokens.Remove(token);
+                }
             }
             else
             {
