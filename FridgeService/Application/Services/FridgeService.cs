@@ -2,6 +2,8 @@
 using AutoMapper;
 using Domain.Entities;
 using Domain.Repositories;
+using Infastructure.Middlewares.Exceptions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,11 @@ namespace Application.Services
     {
         Task AddFridge(FridgeAddDTO fridge);
         Task<Fridge> GetFridge(int fridgeId);
+        Task RemoveFridgeById(int fridgeId);
+        Task AddUserToFridge(int fridgeId, int userId);
+        Task RemoveUserFromFridge(int fridgeId, int userId);
+        Task<List<User>> GetUsersFromFridge(int fridgeId);
+        Task<Fridge> UpdateFridge(Fridge fridge,int fridgeId);
     }
 
     public class FridgeService: IFridgeService
@@ -53,5 +60,62 @@ namespace Application.Services
 
             return fridge;
         }
+
+        public async Task RemoveFridgeById(int fridgeId)
+        {
+        
+            await _fridgeRepository.RemoveFridge(fridgeId);
+        
+            await _unitOfWork.CompleteAsync();
+        
+        }
+
+        public async Task AddUserToFridge(int fridgeId, int userId)
+        {
+        
+            await _fridgeRepository.AddUserToFridge(fridgeId, userId);
+        
+            await _unitOfWork.CompleteAsync();
+        
+        }
+
+        public async Task RemoveUserFromFridge(int fridgeId, int userId)
+        {
+
+            if(fridgeId < 1 || userId < 1)
+            {
+                throw new BadRequestException("Invalid fridge or user id");
+            }
+
+        
+            await _fridgeRepository.RemoveUserFromFridge(fridgeId, userId);
+        
+            await _unitOfWork.CompleteAsync();
+        
+        }
+
+        public async Task<List<User>> GetUsersFromFridge(int fridgeId)
+        {
+            if (await _fridgeRepository.GetFridge(fridgeId) == null)
+            {
+                throw new NotFoundException("Fridge not found");
+            }
+            
+            return await _fridgeRepository.GetUsersFromFridge(fridgeId);
+        }
+
+        public async Task<Fridge> UpdateFridge(FridgeAddDTO fridge,int fridgeId)
+        {
+            var fridgeModel = await _fridgeRepository.GetFridge(fridgeId);
+            
+            if(fridgeModel == null)
+            {
+                throw new NotFoundException("Fridge not found");
+            }
+
+            return await _fridgeRepository
+                .UpdateFridge(_mapper.Map<Fridge>(fridge),fridgeId);
+        }
+
     }
 }
