@@ -1,6 +1,7 @@
 ﻿
 using Domain.Entities;
 using Domain.Repository;
+using Infastructure.Middlewares.Exceptions;
 using Infastructure.Persistanse;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -36,12 +37,18 @@ namespace Infastructure.Repository
 
         public async Task DeleteUser(int id)
         {
-            var user = await _context.users.FirstOrDefaultAsync(x => x.id == id);
-            
-            if(user != null)
+            // remove user with id equal id
+            var user = await _context.users.FirstOrDefaultAsync(u => u.id == id);
+            if(user!= null)
             {
                 _context.users.Remove(user);
+
             }
+            else
+            {
+                throw new NotFoundException("user not found");
+            }
+
         }
 
         public async Task<RefreshTokenModel?> getTokenModel(string email)
@@ -59,7 +66,7 @@ namespace Infastructure.Repository
         }
 
         public async Task<User?> GetUserByLogin(string login)
-        {
+        {   
             
             return await _context.users.FirstOrDefaultAsync(x => x.login == login);
         
@@ -85,11 +92,18 @@ namespace Infastructure.Repository
         public async Task<User> UpdateUser(User model, int id)
         {
 
-            var user = await _context.users.FindAsync(id);
+            var user = await _context.users.FirstOrDefaultAsync(x=>x.id == id);
+            if(user == null)
+            {
+                throw new NotFoundException("User not found");
+            }
+
+            user.email = model.email;
+            user.login = model.login;
+            user.password = model.password;
+            user.name = model.name;
             
-            _context.users.Update(model);
-            
-            return model;
+            return user;
             
         }
     }

@@ -216,7 +216,7 @@ namespace Application.Services
         }
 
 
-        private string getHash(string pass)
+        public string getHash(string pass)
         {
             var data = System.Text.Encoding.ASCII.GetBytes(pass);
             data = System.Security.Cryptography.SHA256.HashData(data);

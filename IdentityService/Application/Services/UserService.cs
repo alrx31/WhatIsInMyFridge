@@ -40,7 +40,7 @@ namespace Application.Services
                 user = await _repository.getUserById(id);
             }
 
-            if (user is null)
+            if (user == null)
             {
                 throw new NotFoundException("User not found");
             }
@@ -69,6 +69,10 @@ namespace Application.Services
             
             var user = await _repository.getUserById(id) ?? throw new NotFoundException("User not found");
             
+            if (user is null)
+            {
+                throw new NotFoundException("User not found");
+            }
             return user;
         }
 
@@ -81,7 +85,7 @@ namespace Application.Services
                 user = await _repository.getUserById(id);
             }
 
-            if (user is null)
+            if (user == null)
             {
                 throw new NotFoundException("User not Found");
             }
