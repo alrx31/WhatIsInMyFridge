@@ -109,5 +109,22 @@ namespace Infrastructure.Repository
         {
             await _context.productFridgeModels.AddRangeAsync(products);
         }
+
+        public async Task AddProductsToFridge(List<ProductFridgeModel> products)
+        {
+            await _context.productFridgeModels.AddRangeAsync(products);
+        }
+
+        public async Task RemoveProductFromFridge(int fridgeId, int productId)
+        {
+            var model = await _context.productFridgeModels.FirstOrDefaultAsync(f=>f.fridgeId == fridgeId && f.productId == productId);
+            
+            if(model == null)
+            {
+                throw new NotFoundException("product not found in fridge");
+            }
+
+            _context.productFridgeModels.Remove(model);
+        }
     }
 }
