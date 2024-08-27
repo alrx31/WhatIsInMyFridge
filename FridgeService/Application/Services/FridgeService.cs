@@ -21,6 +21,7 @@ namespace Application.Services
         Task RemoveUserFromFridge(int fridgeId, int userId);
         Task<List<User>> GetUsersFromFridge(int fridgeId);
         Task<Fridge> UpdateFridge(FridgeAddDTO fridge,int fridgeId);
+        Task AddProductsToList(int fridgeId, List<ProductInfoModel> products);
     }
 
     public class FridgeService: IFridgeService
@@ -117,5 +118,28 @@ namespace Application.Services
                 .UpdateFridge(_mapper.Map<Fridge>(fridge),fridgeId);
         }
 
+        public async Task AddProductsToList(int fridgeId, List<ProductInfoModel> products)
+        {
+            var fridge = await _fridgeRepository.GetFridge(fridgeId);
+            
+            if(fridge == null)
+            {
+                throw new NotFoundException("Fridge not found");
+            }
+            List<ProductFridgeModel> productFridgeModels = new List<ProductFridgeModel>();
+
+            foreach (var product in products)
+            {
+                productFridgeModels.Add(new ProductFridgeModel
+                {
+                    fridgeId = fridgeId,
+                    productId = product.ProductId,
+                    count = product.count,
+                    addTime = DateTime.UtcNow
+                });
+            }
+            await _fridgeRepository.AddProductsToFridge(productFridgeModels);
+            await _unitOfWork.CompleteAsync();
+        }
     }
 }

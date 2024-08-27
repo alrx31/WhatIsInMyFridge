@@ -94,6 +94,7 @@ namespace Infrastructure.Repository
 
         public async Task<Fridge> UpdateFridge(Fridge fridge,int fridgeId)
         {
+         
             var model = await _context.fridges.FindAsync(fridgeId);
             
             model.model = fridge.model;
@@ -102,6 +103,11 @@ namespace Infrastructure.Repository
             model.products = fridge.products;
 
             return model;
+        }
+
+        public async Task AddProductToFridge(List<ProductFridgeModel> products)
+        {
+            await _context.productFridgeModels.AddRangeAsync(products);
         }
     }
 }

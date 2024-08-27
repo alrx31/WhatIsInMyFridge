@@ -23,6 +23,10 @@ namespace Domain.Repositories
 
         Task<List<User>> GetUsersFromFridge(int fridgeId);
 
+        Task AddProductsToFridge(List<ProductFridgeModel> products);
 
+        Task RemoveProductFromFridge(int fridgeId, int productId);  
+
+        //Task<List<smth>> getProductsFromFridge(int fridgeId);
     }
 }
