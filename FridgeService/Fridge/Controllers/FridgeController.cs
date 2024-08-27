@@ -73,5 +73,18 @@ namespace FridgeAPI.Controllers
             return Ok(await _fridgeService.GetUsersFromFridge(fridgeId));
         }
 
+        [HttpPatch("{fridgeId}")]
+        public async Task<IActionResult> UpdateFridge([FromBody] FridgeAddDTO fridge, int fridgeId)
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new BadRequestException("Invalid fridge model");
+            }
+
+            var res = await _fridgeService.UpdateFridge(fridge, fridgeId);
+            
+            return Ok(res);
+        }
+
     }
 }

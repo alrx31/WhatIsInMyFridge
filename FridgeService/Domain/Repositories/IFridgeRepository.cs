@@ -22,5 +22,7 @@ namespace Domain.Repositories
         Task RemoveUserFromFridge(int fridgeId, int userId);
 
         Task<List<User>> GetUsersFromFridge(int fridgeId);
+
+
     }
 }

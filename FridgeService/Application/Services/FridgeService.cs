@@ -20,7 +20,7 @@ namespace Application.Services
         Task AddUserToFridge(int fridgeId, int userId);
         Task RemoveUserFromFridge(int fridgeId, int userId);
         Task<List<User>> GetUsersFromFridge(int fridgeId);
-        Task<Fridge> UpdateFridge(Fridge fridge,int fridgeId);
+        Task<Fridge> UpdateFridge(FridgeAddDTO fridge,int fridgeId);
     }
 
     public class FridgeService: IFridgeService
