@@ -12,13 +12,12 @@ namespace Infastructure.Persistanse
     public class ApplicationDbContext:DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
-        {
-        }
+        {}
 
         public DbSet<User> users { get; set; }
         public DbSet<RefreshTokenModel> refreshTokens { get; set; }
 
 
-
+        // configuration after get where will be the UserFridge entity
     }
 }

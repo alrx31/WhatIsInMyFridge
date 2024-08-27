@@ -23,7 +23,11 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICacheRepository _cacheRepository;
 
-        public UserService(IUserRepository repository,IUnitOfWork unitOfWork, ICacheRepository cacheRepository)
+        public UserService(
+            IUserRepository repository,
+            IUnitOfWork unitOfWork,
+            ICacheRepository cacheRepository
+        )
         {
 
             _repository = repository;
@@ -47,6 +51,7 @@ namespace Application.Services
 
             if (user.isAdmin)
             {
+
                 await _repository.DeleteUser(id);
                 
                 await _unitOfWork.CompleteAsync();
@@ -73,11 +78,13 @@ namespace Application.Services
             {
                 throw new NotFoundException("User not found");
             }
+
             return user;
         }
 
         public async Task<User> UpdateUser(RegisterDTO model, int id)
         {
+
             var user = await _cacheRepository.GetCacheData<User>($"user-{id}");
             
             if (user == null)
@@ -121,6 +128,7 @@ namespace Application.Services
 
         private string getHash(string pass)
         {
+
             var data = System.Text.Encoding.ASCII.GetBytes(pass);
             data = System.Security.Cryptography.SHA256.HashData(data);
 

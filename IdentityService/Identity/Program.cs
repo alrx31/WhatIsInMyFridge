@@ -26,7 +26,9 @@ builder.Services.AddAutoMapper(typeof(UserProfile));
 // Redis
 builder.Services.AddSingleton<IConnectionMultiplexer>(s =>
 {
+
     return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"));
+
 });
 
 // Database context and migrations
@@ -35,6 +37,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(op =>
 
 // Authentication and Authorization
 builder.Services.AddAuthorization();
+
 builder.Services.AddAuthentication(op =>
 {
     op.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -86,6 +89,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
+// TODO: delete true for production
 if (app.Environment.IsDevelopment() || true)
 {
     app.UseSwagger();

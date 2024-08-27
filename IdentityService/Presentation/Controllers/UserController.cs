@@ -23,6 +23,7 @@ namespace Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
+
             var user = await _userService.getUserById(id);
             
             return Ok(user);
@@ -31,6 +32,7 @@ namespace Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id, [FromBody] int InitiatorId)
         {
+
             await _userService.DeleteUser(id,InitiatorId);
             
             return Ok();

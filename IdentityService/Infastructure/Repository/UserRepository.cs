@@ -8,10 +8,9 @@ using System.Text;
 
 namespace Infastructure.Repository
 {
-
-
     public class UserRepository : IUserRepository
     {
+
         private readonly ApplicationDbContext _context;
 
         public UserRepository(ApplicationDbContext context)
@@ -28,6 +27,7 @@ namespace Infastructure.Repository
 
         public async Task CanselRefreshToken(int userId)
         {
+
             var user = await _context.refreshTokens
                 .FirstOrDefaultAsync(u => u.userId == userId);
             
@@ -37,12 +37,11 @@ namespace Infastructure.Repository
 
         public async Task DeleteUser(int id)
         {
-            // remove user with id equal id
             var user = await _context.users.FirstOrDefaultAsync(u => u.id == id);
+            
             if(user!= null)
             {
                 _context.users.Remove(user);
-
             }
             else
             {
@@ -87,12 +86,18 @@ namespace Infastructure.Repository
             {
                 _context.refreshTokens.Update(user);
             }
+            else
+            {
+                throw new NotFoundException("User not found");
+            }
+
         }
 
         public async Task<User> UpdateUser(User model, int id)
         {
 
             var user = await _context.users.FirstOrDefaultAsync(x=>x.id == id);
+            
             if(user == null)
             {
                 throw new NotFoundException("User not found");

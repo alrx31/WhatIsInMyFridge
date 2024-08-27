@@ -35,12 +35,14 @@ namespace Application.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_key);
+            
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, email) }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+            
             var token = tokenHandler.CreateToken(tokenDescriptor);
             
             return tokenHandler.WriteToken(token);
@@ -49,6 +51,7 @@ namespace Application.Services
         public string GenerateRefreshToken()
         {
             var randomNumber = new byte[64];
+            
             using (var numberGenerator = RandomNumberGenerator.Create())
             {
                 numberGenerator.GetBytes(randomNumber);
@@ -60,6 +63,7 @@ namespace Application.Services
         public ClaimsPrincipal? GetTokenPrincipal(string jwtToken)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
+            
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = false,

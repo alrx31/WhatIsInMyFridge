@@ -34,6 +34,7 @@ namespace Presentation.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser([FromBody] LoginDTO model)
         {
+
             if (!ModelState.IsValid)
             {
                 throw new BadRequestException("Invalid login data");
@@ -47,6 +48,7 @@ namespace Presentation.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDTO model)
         {
+
             if(!ModelState.IsValid)
             {
                 throw new BadRequestException("Invalid token model");
@@ -61,6 +63,7 @@ namespace Presentation.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout([FromBody] LogoutDTO model)
         {
+
             if (!ModelState.IsValid)
             {
                 throw new BadRequestException("Invalid logout model");
