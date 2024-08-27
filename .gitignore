@@ -6,3 +6,12 @@
 /IdentityService
 /FridgeService/.vs/FridgeService
 /FridgeService/Fridge/obj
+/FridgeService/.idea/.idea.FridgeService/.idea
+/FridgeService/.vs/ProjectEvaluation
+/FridgeService/Application/bin/Debug/net8.0
+/FridgeService/Application/obj
+/FridgeService/Domain/bin/Debug/net8.0
+/FridgeService/Domain/obj
+/FridgeService/Fridge/bin/Debug/net8.0
+/FridgeService/Infrastructure/bin/Debug/net8.0
+/FridgeService/Infrastructure/obj
