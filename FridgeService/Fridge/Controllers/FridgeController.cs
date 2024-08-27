@@ -96,19 +96,6 @@ namespace FridgeAPI.Controllers
                 throw new BadRequestException("Invalid products model");
             }
 
-        [HttpPut("{fridgeId}/addProducts")]
-        public async Task<IActionResult> AddProductsToFridge([FromBody] List<ProductInfoModel> products, int fridgeId)
-        {
-            if (!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid products model");
-            }
-
-            await _fridgeService.AddProductsToList(fridgeId, products);
-            
-            return Ok();
-        }
-
             await _fridgeService.AddProductsToList(fridgeId, products);
             
             return Ok();
