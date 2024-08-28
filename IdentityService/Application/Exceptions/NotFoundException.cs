@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infastructure.Middlewares.Exceptions
+namespace Application.Exceptions
 {
     public class NotFoundException : Exception
     {

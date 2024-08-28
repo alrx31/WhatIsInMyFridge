@@ -3,8 +3,7 @@ using System;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using EventManagement.Middlewares;
-using Infastructure.Middlewares.Exceptions;
+using Application.Exceptions;
 
 namespace Presentation.ExceptionsHandlingMiddleware
 {

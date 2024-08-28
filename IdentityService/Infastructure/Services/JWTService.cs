@@ -1,5 +1,4 @@
-﻿using Infastructure.Middlewares.Exceptions;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Services
+namespace Infastructure.Services
 {
     public interface IJWTService
     {
@@ -81,7 +80,7 @@ namespace Application.Services
             }
             catch (SecurityTokenExpiredException)
             {
-                throw new ValidationDataException("Security token has expired.");
+                throw new ValidationException("Security token has expired.");
             }
             catch (Exception ex)
             {

@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System.Text;
 using Presentation.ExceptionsHandlingMiddleware;
+using Infastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

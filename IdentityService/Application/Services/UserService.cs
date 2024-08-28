@@ -1,8 +1,8 @@
 ﻿
 using Application.DTO;
+using Application.Exceptions;
 using Domain.Entities;
 using Domain.Repository;
-using Infastructure.Middlewares.Exceptions;
 using Npgsql.TypeMapping;
 using System.Text;
 

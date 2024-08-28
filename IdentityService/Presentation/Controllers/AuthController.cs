@@ -1,6 +1,5 @@
 ﻿using Application.DTO;
 using Application.Services;
-using Infastructure.Middlewares.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

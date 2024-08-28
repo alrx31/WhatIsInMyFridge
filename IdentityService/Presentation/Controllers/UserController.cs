@@ -1,7 +1,6 @@
 ﻿using Application.DTO;
 using Application.Services;
 using Domain.Entities;
-using Infastructure.Middlewares.Exceptions;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;

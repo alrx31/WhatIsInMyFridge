@@ -1,9 +1,10 @@
 ﻿
 using Application.DTO;
+using Application.Exceptions;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Repository;
-using Infastructure.Middlewares.Exceptions;
+using Infastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Npgsql.Replication;
 using System.ComponentModel.DataAnnotations;
