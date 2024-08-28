@@ -16,8 +16,5 @@ namespace Infastructure.Persistanse
 
         public DbSet<User> users { get; set; }
         public DbSet<RefreshTokenModel> refreshTokens { get; set; }
-
-
-        // configuration after get where will be the UserFridge entity
     }
 }

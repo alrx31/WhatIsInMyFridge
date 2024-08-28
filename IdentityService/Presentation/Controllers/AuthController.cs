@@ -1,6 +1,7 @@
 ﻿using Application.DTO;
 using Application.Services;
 using Infastructure.Middlewares.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -12,20 +13,17 @@ namespace Presentation.Controllers
     public class AuthController:ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IHttpContextAccessor httpContextAccessor)
         {
             _authService = authService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPut("register")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDTO model)
         {
-            if(!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid registration data");
-            }
-
             await _authService.RegisterUser(model);
             
             return Ok();
@@ -34,44 +32,49 @@ namespace Presentation.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser([FromBody] LoginDTO model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid login data");
-            }
-
             var loginRes = await _authService.LoginUser(model);
 
-            return loginRes.IsLoggedIn ? Ok(loginRes) : Unauthorized();
+            SetRefreshTokenCookie(loginRes.RefreshToken);
+
+            return Ok(loginRes);
         }
 
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDTO model)
         {
-
-            if(!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid token model");
-            }
-
             var loginRes = await _authService.RefreshToken(model);
 
-            return loginRes.IsLoggedIn ? Ok(loginRes) : Unauthorized();
+            SetRefreshTokenCookie(loginRes.RefreshToken);
+
+            return Ok(loginRes);
         }
 
-        //TODO
         [HttpPost("logout")]
         public async Task<IActionResult> Logout([FromBody] LogoutDTO model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid logout model");
-            }
-
             await _authService.Logout(model);
-            
+
+            ClearRefreshTokenCookie();
+
             return Ok();
         }
+
+        private void SetRefreshTokenCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
+
+        private void ClearRefreshTokenCookie()
+        {
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
+        }
+
     }
 }

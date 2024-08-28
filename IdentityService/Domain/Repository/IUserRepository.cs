@@ -19,6 +19,8 @@ namespace Domain.Repository
         
         Task DeleteUser(int id);
 
+        Task DeleteRefreshTokenByUserId(int userId);
+
         Task<User> UpdateUser(User model, int id);
     }
 }

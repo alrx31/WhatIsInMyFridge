@@ -15,12 +15,10 @@ namespace Application.Services
 {
     public interface IAuthService
     {
-
         Task<LoginResponse> LoginUser(LoginDTO model);
         Task Logout(LogoutDTO model);
         Task<LoginResponse> RefreshToken(RefreshTokenDTO model);
         Task RegisterUser(RegisterDTO model);
-    
     }
 
     public class AuthService : IAuthService
@@ -31,7 +29,6 @@ namespace Application.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICacheRepository _cacheRepository;
         private readonly IMapper _mapper;
-
 
         public AuthService(
             IUserRepository repository,
@@ -52,7 +49,6 @@ namespace Application.Services
 
         public async Task<LoginResponse> LoginUser(LoginDTO user)
         {
-
             var response = new LoginResponse();
 
             var identifyUser = await _repository.GetUserByLogin(user.login);
@@ -61,8 +57,8 @@ namespace Application.Services
                 (identifyUser.password == getHash(user.password)) == false)
             {
 
-                return response;
-            
+                //return response;
+                throw new BadRequestException("Invalid login or password");
             };
             
             response.IsLoggedIn = true;
@@ -89,7 +85,7 @@ namespace Application.Services
                 identityUserTokenModel.refreshTokenExpiryTime = DateTime.UtcNow.AddHours(12);
             }
 
-            SetRefreshTokenCookie(RefreshToken);
+            response.RefreshToken = RefreshToken;
 
             await _repository.UpdateRefreshTokenAsync(identityUserTokenModel);
             
@@ -98,21 +94,10 @@ namespace Application.Services
             await _cacheRepository.SetCatcheData($"user-{response.User.id}", response.User,new TimeSpan(24,0,0));
 
             return response;
-            
         }
 
         public async Task Logout(LogoutDTO model)
         {
-
-            if ( model.UserId <= 0)
-            {
-                
-                throw new ValidationDataException("Invalid user id");
-            
-            }
-
-            ClearRefreshTokenCookie();
-
             await _repository.CanselRefreshToken(model.UserId);
             
             await _unitOfWork.CompleteAsync();
@@ -120,7 +105,6 @@ namespace Application.Services
 
         public async Task<LoginResponse> RefreshToken(RefreshTokenDTO model)
         {
-
             var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
             
 
@@ -129,24 +113,25 @@ namespace Application.Services
             
             if (principal?.Identity?.Name is null)
             {
-                return response;
+                throw new BadRequestException("Invalid token");
+                //return response;
             }
 
             var identityUser = await _repository.getTokenModel(principal.Identity.Name);
             
             if (identityUser is null || string.IsNullOrEmpty(identityUser.refreshToken) || identityUser.refreshTokenExpiryTime < DateTime.UtcNow)
             {
-                return response;
+                throw new BadRequestException("Invalid token");
+                //return response;
             }
 
             var user = await _cacheRepository.GetCacheData<User>($"user-{identityUser.id}");
 
-            if (user == null)
+            if (user is null)
             {
                 response.User = _mapper.Map<UserDTO>(await _repository.getUserById(identityUser.id) ?? throw new NotFoundException("User not found"));
                 
                 await _cacheRepository.SetCatcheData($"user-{identityUser.id}", response.User, new TimeSpan(24, 0, 0));   
-            
             }
             else
             {
@@ -177,7 +162,7 @@ namespace Application.Services
                 identityUserTokenModel.refreshTokenExpiryTime = DateTime.UtcNow.AddHours(12);
             }
 
-            SetRefreshTokenCookie(refreshToken);
+            response.RefreshToken = refreshToken;
 
             await _repository.UpdateRefreshTokenAsync(identityUserTokenModel);
             
@@ -188,7 +173,6 @@ namespace Application.Services
 
         public async Task RegisterUser(RegisterDTO model)
         {
-
             var userCheck = await _repository.GetUserByLogin(model.login);
 
             if (userCheck!= null)
@@ -209,7 +193,7 @@ namespace Application.Services
 
             var user = await _repository.GetUserByLogin(model.login);
 
-            if (user == null) { 
+            if (user is null) { 
                 throw new ValidationDataException("User not found");
             }
 
@@ -234,23 +218,6 @@ namespace Application.Services
             data = System.Security.Cryptography.SHA256.HashData(data);
             
             return Encoding.ASCII.GetString(data);
-        }
-
-        private void SetRefreshTokenCookie(string refreshToken)
-        {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true, 
-                Expires = DateTime.UtcNow.AddDays(7)
-            };
-
-            _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
-        }
-
-        private void ClearRefreshTokenCookie()
-        {
-            _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
         }
     }
 }

@@ -21,7 +21,6 @@ namespace Application.Services
         ClaimsPrincipal? GetTokenPrincipal(string jwtToken);
     }
 
-
     public class JWTService : IJWTService
     {
         private readonly string _key;

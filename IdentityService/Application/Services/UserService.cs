@@ -3,10 +3,8 @@ using Application.DTO;
 using Domain.Entities;
 using Domain.Repository;
 using Infastructure.Middlewares.Exceptions;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.EntityFrameworkCore.Storage;
+using Npgsql.TypeMapping;
 using System.Text;
-using System.Text.Json;
 
 namespace Application.Services
 {
@@ -29,7 +27,6 @@ namespace Application.Services
             ICacheRepository cacheRepository
         )
         {
-
             _repository = repository;
             _unitOfWork = unitOfWork;
             _cacheRepository = cacheRepository;
@@ -38,42 +35,48 @@ namespace Application.Services
         public async Task DeleteUser(int id, int initiatorId)
         {
             var user = await _cacheRepository.GetCacheData<User>($"user-{initiatorId}");
-            
-            if (user == null)
+
+            if (user is null)
             {
                 user = await _repository.getUserById(id);
             }
 
-            if (user == null)
+            if (user is null)
             {
                 throw new NotFoundException("User not found");
             }
 
-            if (user.isAdmin)
+            var token = await _repository.getTokenModel(user.email);
+
+            if (user.isAdmin || user.id == id)
             {
 
                 await _repository.DeleteUser(id);
                 
+                if (token != null)
+                {
+                    await _repository.DeleteRefreshTokenByUserId(id);
+                }
+
                 await _unitOfWork.CompleteAsync();
             }
             else
             {
-                throw new ForbiddenException("You do not have acess");
+                throw new BadRequestException("You do not have acess");
             }
         }
 
         public async Task<User> getUserById(int id)
         {
-
             var user1 = await _cacheRepository.GetCacheData<User>($"user-{id}");
-            
-            if(user1 != null)
+
+            if (user1 != null)
             {
                 return user1;
             }
-            
+
             var user = await _repository.getUserById(id) ?? throw new NotFoundException("User not found");
-            
+
             if (user is null)
             {
                 throw new NotFoundException("User not found");
@@ -84,37 +87,26 @@ namespace Application.Services
 
         public async Task<User> UpdateUser(RegisterDTO model, int id)
         {
-
             var user = await _cacheRepository.GetCacheData<User>($"user-{id}");
-            
-            if (user == null)
+
+            if (user is null)
             {
                 user = await _repository.getUserById(id);
             }
 
-            if (user == null)
+            if (user is null)
             {
                 throw new NotFoundException("User not Found");
             }
 
-            if(!string.IsNullOrEmpty(user.login))
-            {
-                user.login = model.login;
-            }
-
-            if(!string.IsNullOrEmpty(user.password))
-            {
-                user.password = getHash(model.password);
-            }
-
-            if(!string.IsNullOrEmpty(user.email))
-            {
-                user.email = model.email;
-            }
+            user.login = model.login;
+            user.password = getHash(model.password);
+            user.email = model.email;
+            user.name = model.name;
 
             User user1 = await _repository.UpdateUser(user, id);
-            
-            if(user1 is null)
+
+            if (user1 is null)
             {
                 throw new NotFoundException("Invalid User");
             }
@@ -127,8 +119,7 @@ namespace Application.Services
         }
 
         private string getHash(string pass)
-        {
-
+        { 
             var data = System.Text.Encoding.ASCII.GetBytes(pass);
             data = System.Security.Cryptography.SHA256.HashData(data);
 

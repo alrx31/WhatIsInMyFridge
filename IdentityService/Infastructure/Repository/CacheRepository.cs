@@ -25,7 +25,6 @@ namespace Infastructure.Repository
 
         public async Task<T?> GetCacheData<T>(string key)
         {
-
             var data = await _redis.StringGetAsync(key);
 
             if(data.IsNull)
@@ -38,16 +37,12 @@ namespace Infastructure.Repository
 
         public async Task RemoveCacheData(string key)
         {
-
             await _redis.KeyDeleteAsync(key);
-        
         }
 
         public async Task SetCatcheData<T>(string key, T data, TimeSpan? expiry = null)
         {
-
             await _redis.StringSetAsync(key, JsonSerializer.Serialize(data), expiry);
-        
         }
     }
 }

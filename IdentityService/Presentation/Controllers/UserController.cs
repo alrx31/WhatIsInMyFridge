@@ -14,7 +14,6 @@ namespace Presentation.Controllers
     {
         private readonly IUserService _userService;
 
-
         public UserController(IUserService userService)
         {
             _userService = userService;
@@ -23,7 +22,6 @@ namespace Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-
             var user = await _userService.getUserById(id);
             
             return Ok(user);
@@ -32,7 +30,6 @@ namespace Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id, [FromBody] int InitiatorId)
         {
-
             await _userService.DeleteUser(id,InitiatorId);
             
             return Ok();
@@ -40,8 +37,6 @@ namespace Presentation.Controllers
         [HttpPost("update/{id}")]
         public async Task<IActionResult> UpdateUser([FromBody] RegisterDTO model, int id)
         {
-            //do not use validation cuz need to allow null fields
-
             var user = await _userService.UpdateUser(model, id);
 
             return Ok(user);

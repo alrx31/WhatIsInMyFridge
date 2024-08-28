@@ -16,10 +16,7 @@ namespace Identity.Infrastructure
 
         public async Task CompleteAsync()
         {
-
             await _contex.SaveChangesAsync();
-        
         }
-        
     }
 }

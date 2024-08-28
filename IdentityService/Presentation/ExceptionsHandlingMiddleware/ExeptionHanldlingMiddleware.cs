@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using EventManagement.Middlewares;
 using Infastructure.Middlewares.Exceptions;
 
-namespace EventManagement.Middlewares
+namespace Presentation.ExceptionsHandlingMiddleware
 {
     public class ExceptionHandlingMiddleware
     {

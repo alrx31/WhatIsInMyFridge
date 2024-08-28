@@ -3,7 +3,6 @@ using Application.MappingProfiles;
 using Application.Services;
 using Application.Validators;
 using Domain.Repository;
-using EventManagement.Middlewares;
 using FluentValidation.AspNetCore;
 using Identity.Infrastructure;
 using Infastructure.Persistanse;
@@ -13,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System.Text;
+using Presentation.ExceptionsHandlingMiddleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
