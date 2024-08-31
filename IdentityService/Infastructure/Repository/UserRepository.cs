@@ -75,6 +75,7 @@ namespace Infastructure.Repository
         public async Task<User> UpdateUser(User model, int id)
         {
             var user = await _context.users.FirstOrDefaultAsync(x => x.id == id);
+            // update method _context.users.Update(model)
 
             user.email = model.email;
             user.login = model.login;

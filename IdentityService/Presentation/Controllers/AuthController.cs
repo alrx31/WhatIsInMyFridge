@@ -1,5 +1,8 @@
 ﻿using Application.DTO;
 using Application.Services;
+using Application.UseCases.Comands;
+using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,17 +16,26 @@ namespace Presentation.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public AuthController(IAuthService authService, IHttpContextAccessor httpContextAccessor)
+        public AuthController(
+            IAuthService authService, 
+            IHttpContextAccessor httpContextAccessor,
+            IMediator mediator,
+            IMapper mapper
+            )
         {
             _authService = authService;
             _httpContextAccessor = httpContextAccessor;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpPut("register")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDTO model)
         {
-            await _authService.RegisterUser(model);
+            await _mediator.Send(_mapper.Map<UserRegisterCommand>(model));
             
             return Ok();
         }
@@ -31,7 +43,8 @@ namespace Presentation.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> LoginUser([FromBody] LoginDTO model)
         {
-            var loginRes = await _authService.LoginUser(model);
+            //var loginRes = await _authService.LoginUser(model);
+            var loginRes = await _mediator.Send(_mapper.Map<UserLoginCommand>(model));
 
             SetRefreshTokenCookie(loginRes.RefreshToken);
 
@@ -41,17 +54,17 @@ namespace Presentation.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDTO model)
         {
-            var loginRes = await _authService.RefreshToken(model);
+            var loginRes = await _mediator.Send(_mapper.Map<RefreshTokenCommand>(model));
 
             SetRefreshTokenCookie(loginRes.RefreshToken);
 
             return Ok(loginRes);
         }
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout([FromBody] LogoutDTO model)
+        [HttpPost("logout/{UserId}")]
+        public async Task<IActionResult> Logout(int UserId)
         {
-            await _authService.Logout(model);
+            await _mediator.Send(_mapper.Map<UserLogoutCommand>(UserId));
 
             ClearRefreshTokenCookie();
 

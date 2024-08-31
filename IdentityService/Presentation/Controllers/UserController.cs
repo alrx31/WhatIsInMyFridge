@@ -1,6 +1,10 @@
 ﻿using Application.DTO;
 using Application.Services;
+using Application.UseCases.Comands;
+using Application.UseCases.Queries;
+using AutoMapper;
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -12,16 +16,20 @@ namespace Presentation.Controllers
     public class UserController:ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService,IMediator mediator, IMapper mapper)
         {
             _userService = userService;
+            _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await _userService.getUserById(id);
+            var user = await _mediator.Send(_mapper.Map<GetUserQueryByIdQuery>(id));
             
             return Ok(user);
         }
@@ -29,14 +37,15 @@ namespace Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id, [FromBody] int InitiatorId)
         {
-            await _userService.DeleteUser(id,InitiatorId);
+            await _mediator.Send(_mapper.Map<DeleteUserCommand>((id, InitiatorId)));
             
             return Ok();
         }
+
         [HttpPost("update/{id}")]
         public async Task<IActionResult> UpdateUser([FromBody] RegisterDTO model, int id)
         {
-            var user = await _userService.UpdateUser(model, id);
+            var user = await _mediator.Send(_mapper.Map<UpdateUserCommand>((model, id)));
 
             return Ok(user);
         }

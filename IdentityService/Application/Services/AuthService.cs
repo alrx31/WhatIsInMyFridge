@@ -1,6 +1,7 @@
 ﻿
 using Application.DTO;
 using Application.Exceptions;
+using Application.UseCases.Comands;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Repository;
@@ -16,10 +17,10 @@ namespace Application.Services
 {
     public interface IAuthService
     {
-        Task<LoginResponse> LoginUser(LoginDTO model);
-        Task Logout(LogoutDTO model);
-        Task<LoginResponse> RefreshToken(RefreshTokenDTO model);
-        Task RegisterUser(RegisterDTO model);
+        Task<LoginResponse> LoginUser(string login, string password);
+        Task Logout(int UserId);
+        Task<LoginResponse> RefreshToken(string token);
+        Task RegisterUser(UserRegisterCommand model);
     }
 
     public class AuthService : IAuthService
@@ -48,14 +49,14 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<LoginResponse> LoginUser(LoginDTO user)
+        public async Task<LoginResponse> LoginUser(string login, string password)
         {
             var response = new LoginResponse();
 
-            var identifyUser = await _repository.GetUserByLogin(user.login);
+            var identifyUser = await _repository.GetUserByLogin(login);
             
             if (identifyUser is null ||
-                (identifyUser.password == getHash(user.password)) == false)
+                (identifyUser.password == getHash(password)) == false)
             {
 
                 //return response;
@@ -97,19 +98,19 @@ namespace Application.Services
             return response;
         }
 
-        public async Task Logout(LogoutDTO model)
+        public async Task Logout(int UserId)
         {
-            await _repository.CanselRefreshToken(model.UserId);
+            await _repository.CanselRefreshToken(UserId);
             
             await _unitOfWork.CompleteAsync();
         }
 
-        public async Task<LoginResponse> RefreshToken(RefreshTokenDTO model)
+        public async Task<LoginResponse> RefreshToken(string token)
         {
             var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
             
 
-            var principal = _jwtService.GetTokenPrincipal(model.JwtToken);
+            var principal = _jwtService.GetTokenPrincipal(token);
             var response = new LoginResponse();
             
             if (principal?.Identity?.Name is null)
@@ -172,9 +173,9 @@ namespace Application.Services
             return response;
         }
 
-        public async Task RegisterUser(RegisterDTO model)
+        public async Task RegisterUser(UserRegisterCommand model)
         {
-            var userCheck = await _repository.GetUserByLogin(model.login);
+            var userCheck = await _repository.GetUserByLogin(model.Login);
 
             if (userCheck!= null)
             {
@@ -183,16 +184,16 @@ namespace Application.Services
 
             await _repository.RegisterUser(new User
             {
-                name = model.name,
-                login = model.login,
-                email = model.email,
-                password = getHash(model.password),
-                isAdmin = model.name == "admin"
+                name = model.Name,
+                login = model.Login,
+                email = model.Email,
+                password = getHash(model.Password),
+                isAdmin = model.Name == "admin"
             });
             
             await _unitOfWork.CompleteAsync();
 
-            var user = await _repository.GetUserByLogin(model.login);
+            var user = await _repository.GetUserByLogin(model.Login);
 
             if (user is null) { 
                 throw new ValidationDataException("User not found");
@@ -200,7 +201,7 @@ namespace Application.Services
 
             var newToken = new RefreshTokenModel
             {
-                email = model.email,
+                email = model.Email,
                 refreshToken = "",
                 refreshTokenExpiryTime = DateTime.UtcNow,
                 userId = user.id,

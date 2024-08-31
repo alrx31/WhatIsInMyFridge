@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Application.DTO
 {
-    public class LoginResponse
+    /*public class LoginResponse
     {
         public bool IsLoggedIn { get; set; } = false;
         public UserDTO User { get; set; }
         public string JwtToken { get; set; }
         public string? RefreshToken { get; set; }
-    }
+    }*/
 }

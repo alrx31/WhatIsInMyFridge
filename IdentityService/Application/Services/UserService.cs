@@ -1,6 +1,7 @@
 ﻿
 using Application.DTO;
 using Application.Exceptions;
+using Application.UseCases.Comands;
 using Domain.Entities;
 using Domain.Repository;
 using Npgsql.TypeMapping;
@@ -12,7 +13,7 @@ namespace Application.Services
     {
         Task DeleteUser(int id, int initiatorId);
         Task<User> getUserById(int id);
-        Task<User> UpdateUser(RegisterDTO model, int id);
+        Task<User> UpdateUser(UserRegisterCommand model, int id);
     }
 
     public class UserService : IUserService
@@ -85,7 +86,7 @@ namespace Application.Services
             return user;
         }
 
-        public async Task<User> UpdateUser(RegisterDTO model, int id)
+        public async Task<User> UpdateUser(UserRegisterCommand model, int id)
         {
             var user = await _cacheRepository.GetCacheData<User>($"user-{id}");
 
@@ -99,10 +100,10 @@ namespace Application.Services
                 throw new NotFoundException("User not Found");
             }
 
-            user.login = model.login;
-            user.password = getHash(model.password);
-            user.email = model.email;
-            user.name = model.name;
+            user.login = model.Login;
+            user.password = getHash(model.Password);
+            user.email = model.Email;
+            user.name = model.Name;
 
             User user1 = await _repository.UpdateUser(user, id);
 

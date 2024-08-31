@@ -14,6 +14,8 @@ using StackExchange.Redis;
 using System.Text;
 using Presentation.ExceptionsHandlingMiddleware;
 using Infastructure.Services;
+using MediatR;
+using Application.UseCases.Handlers.Comands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,12 +69,13 @@ builder.Services.AddScoped<ICacheRepository, CacheRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJWTService, JWTService>();
 
+builder.Services.AddMediatR(typeof(UserLoginComandHandler).Assembly);
+
 // Register FluentValidation validators
 builder.Services.AddControllers().AddFluentValidation(fv =>
 {
     fv.RegisterValidatorsFromAssemblyContaining<LoginDTOValidator>();
     fv.RegisterValidatorsFromAssemblyContaining<RegisterDTOValidator>();
-    fv.RegisterValidatorsFromAssemblyContaining<LogoutDTOValidator>();
     fv.RegisterValidatorsFromAssemblyContaining<RefreshTokenDTOValidator>();
 });
 
