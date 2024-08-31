@@ -18,3 +18,8 @@
 /IdentityService/Tests/bin/Debug/net8.0
 /IdentityService/Tests/obj
 /FridgeService/.idea/.idea.FridgeService/.idea
+/FridgeService/.vs/FridgeService
+/FridgeService/Application/obj
+/FridgeService/Domain/obj
+/FridgeService/Fridge/obj
+/FridgeService/Infrastructure/obj/Debug/net8.0
