@@ -8,12 +8,19 @@ using System.Threading.Tasks;
 
 namespace Application.UseCases.Comands
 {
-    public class UpdateUserCommand(
-        UserRegisterCommand User,
-        int Id
-        ):IRequest<User>
+    public class UpdateUserCommand:IRequest<User>
     {
-        public UserRegisterCommand user { get; set; } = User;
-        public int id { get; set; } = Id;
+        public UserRegisterCommand user { get; set; } 
+        public int id { get; set; }
+
+        public UpdateUserCommand(UserRegisterCommand user, int id)
+        {
+            this.user = user;
+            this.id = id;
+        }
+
+        public UpdateUserCommand()
+        {
+        }
     }
 }

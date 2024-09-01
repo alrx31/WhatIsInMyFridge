@@ -33,18 +33,17 @@ namespace Presentation.Controllers
         }
 
         [HttpPut("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterDTO model)
+        public async Task<IActionResult> RegisterUser([FromBody] UserRegisterCommand model)
         {
-            await _mediator.Send(_mapper.Map<UserRegisterCommand>(model));
+            await _mediator.Send(model);
             
             return Ok();
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginUser([FromBody] LoginDTO model)
+        public async Task<IActionResult> LoginUser([FromBody] UserLoginCommand model)
         {
-            //var loginRes = await _authService.LoginUser(model);
-            var loginRes = await _mediator.Send(_mapper.Map<UserLoginCommand>(model));
+            var loginRes = await _mediator.Send(model);
 
             SetRefreshTokenCookie(loginRes.RefreshToken);
 
@@ -52,9 +51,9 @@ namespace Presentation.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDTO model)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand model)
         {
-            var loginRes = await _mediator.Send(_mapper.Map<RefreshTokenCommand>(model));
+            var loginRes = await _mediator.Send(model);
 
             SetRefreshTokenCookie(loginRes.RefreshToken);
 

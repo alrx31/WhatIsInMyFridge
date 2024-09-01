@@ -16,6 +16,8 @@ using Presentation.ExceptionsHandlingMiddleware;
 using Infastructure.Services;
 using MediatR;
 using Application.UseCases.Handlers.Comands;
+using Application.UseCases.Comands;
+using Application.UseCases.Handlers.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +71,12 @@ builder.Services.AddScoped<ICacheRepository, CacheRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJWTService, JWTService>();
 
-builder.Services.AddMediatR(typeof(UserLoginComandHandler).Assembly);
+builder.Services.AddTransient<IRequestHandler<UserLogoutCommand, Unit>, UserLogoutComandHandler>();
+
+builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddMediatR(typeof(GetUserByIdQueryHandler).Assembly);
+builder.Services.AddMediatR(typeof(Program).Assembly);
+
 
 // Register FluentValidation validators
 builder.Services.AddControllers().AddFluentValidation(fv =>

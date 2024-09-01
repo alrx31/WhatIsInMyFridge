@@ -104,8 +104,8 @@ namespace Application.Services
             user.password = getHash(model.Password);
             user.email = model.Email;
             user.name = model.Name;
-
-            User user1 = await _repository.UpdateUser(user, id);
+            user.id = id;
+            User user1 = await _repository.UpdateUser(user);
 
             if (user1 is null)
             {

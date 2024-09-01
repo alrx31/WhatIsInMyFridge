@@ -10,11 +10,14 @@ namespace Application.UseCases.Queries
 {
     public class GetUserQueryByIdQuery:IRequest<User>
     {
-        public int id { get; set; }
+        public int Id { get; set; }
 
         public GetUserQueryByIdQuery(int id)
         {
-            this.id = id;
+            this.Id = id;
+        }
+        public GetUserQueryByIdQuery()
+        {
         }
     }
 }

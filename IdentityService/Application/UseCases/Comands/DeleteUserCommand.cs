@@ -8,12 +8,19 @@ using System.Threading.Tasks;
 
 namespace Application.UseCases.Comands
 {
-    public class DeleteUserCommand(
-        int Id,
-        int InitiatorId
-        ):IRequest
+    public class DeleteUserCommand:IRequest
     {
-        public int id { get; set; } = Id;
-        public int initiatorId { get; set; } = InitiatorId;
+        public int Id { get; set; }
+        public int InitiatorId { get; set; }
+
+
+        public DeleteUserCommand(int id, int initiatorId)
+        {
+            Id = id;
+            InitiatorId = initiatorId;
+        }
+        public DeleteUserCommand()
+        {
+        }
     }
 }

@@ -26,7 +26,7 @@ namespace Infastructure.Repository
             var user = await _context.refreshTokens
                 .FirstOrDefaultAsync(u => u.userId == userId);
 
-            user!.refreshTokenExpiryTime = DateTime.UtcNow;
+            user.refreshTokenExpiryTime = DateTime.UtcNow;
         }
 
 
@@ -50,9 +50,9 @@ namespace Infastructure.Repository
             return await _context.refreshTokens.FirstOrDefaultAsync(x => x.email == email);
         }
 
-        public Task<User?> getUserById(int id)
+        public async Task<User?> getUserById(int id)
         {
-            return _context.users.FirstOrDefaultAsync(x => x.id == id);
+            return await _context.users.FirstOrDefaultAsync(x => x.id == id);
         }
 
         public async Task<User?> GetUserByLogin(string login)
@@ -72,17 +72,10 @@ namespace Infastructure.Repository
             _context.refreshTokens.Update(user);
         }
 
-        public async Task<User> UpdateUser(User model, int id)
+        public async Task<User> UpdateUser(User model)
         {
-            var user = await _context.users.FirstOrDefaultAsync(x => x.id == id);
-            // update method _context.users.Update(model)
-
-            user.email = model.email;
-            user.login = model.login;
-            user.password = model.password;
-            user.name = model.name;
-
-            return user;
+            _context.Update(model);
+            return model;
         }
     }
 }

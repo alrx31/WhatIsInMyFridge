@@ -7,10 +7,16 @@ using System.Threading.Tasks;
 
 namespace Application.UseCases.Comands
 {
-    public class UserLogoutCommand(
-        int userId
-        ):IRequest
+    public class UserLogoutCommand:IRequest
     {
-        public int UserId { get; set; } = userId;
+        public int UserId { get; set; }
+
+        public UserLogoutCommand(int userId)
+        {
+            UserId = userId;
+        }
+        public UserLogoutCommand()
+        {
+        }
     }
 }

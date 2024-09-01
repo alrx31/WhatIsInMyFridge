@@ -5,8 +5,8 @@ namespace Application.UseCases.Comands
 {
     public class UserLoginCommand(string login, string password) : IRequest<LoginResponse>
     {
-        public string login { get; } = login;
-        public string password { get; } = password;
+        public string Login { get; } = login;
+        public string Password { get; } = password;
     }
 
     public class LoginResponse
