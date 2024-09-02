@@ -39,7 +39,7 @@ namespace Presentation.Controllers
             return Ok();
         }
 
-        [HttpPost("update/{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateUser([FromBody] RegisterDTO model, int id)
         {
             var user = await _mediator.Send(_mapper.Map<UpdateUserCommand>((model, id)));
