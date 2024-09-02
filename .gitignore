@@ -15,3 +15,10 @@
 /FridgeService/Fridge/bin/Debug/net8.0
 /FridgeService/Infrastructure/bin/Debug/net8.0
 /FridgeService/Infrastructure/obj
+/FridgeService/BLL/bin/Debug/net8.0
+/FridgeService/BLL/obj/Debug/net8.0
+/FridgeService/DAL/bin/Debug/net8.0
+/FridgeService/BLL/obj
+/FridgeService/DAL/obj
+/FridgeService/Presentation/bin/Debug/net8.0
+/FridgeService/Presentation/obj
