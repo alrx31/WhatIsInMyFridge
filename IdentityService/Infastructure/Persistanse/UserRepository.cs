@@ -1,10 +1,9 @@
 ﻿
 using Domain.Entities;
 using Domain.Repository;
-using Infastructure.Persistanse;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infastructure.Repository
+namespace Infastructure.Persistanse
 {
     public class UserRepository : IUserRepository
     {

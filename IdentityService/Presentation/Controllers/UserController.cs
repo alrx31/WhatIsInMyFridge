@@ -1,5 +1,4 @@
 ﻿using Application.DTO;
-using Application.Services;
 using Application.UseCases.Comands;
 using Application.UseCases.Queries;
 using AutoMapper;
@@ -15,13 +14,11 @@ namespace Presentation.Controllers
 
     public class UserController:ControllerBase
     {
-        private readonly IUserService _userService;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public UserController(IUserService userService,IMediator mediator, IMapper mapper)
+        public UserController(IMediator mediator, IMapper mapper)
         {
-            _userService = userService;
             _mediator = mediator;
             _mapper = mapper;
         }

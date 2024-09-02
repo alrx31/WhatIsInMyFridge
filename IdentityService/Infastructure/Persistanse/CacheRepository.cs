@@ -9,7 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using IDatabase = StackExchange.Redis.IDatabase;
 
-namespace Infastructure.Repository
+namespace Infastructure.Persistanse
 {
     public class CacheRepository : ICacheRepository
     {
@@ -27,7 +27,7 @@ namespace Infastructure.Repository
         {
             var data = await _redis.StringGetAsync(key);
 
-            if(data.IsNull)
+            if (data.IsNull)
             {
                 return default;
             }

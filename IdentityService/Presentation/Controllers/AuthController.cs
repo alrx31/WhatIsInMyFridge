@@ -1,5 +1,4 @@
 ﻿using Application.DTO;
-using Application.Services;
 using Application.UseCases.Comands;
 using AutoMapper;
 using MediatR;
@@ -14,19 +13,16 @@ namespace Presentation.Controllers
 
     public class AuthController:ControllerBase
     {
-        private readonly IAuthService _authService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
         public AuthController(
-            IAuthService authService, 
             IHttpContextAccessor httpContextAccessor,
             IMediator mediator,
             IMapper mapper
             )
         {
-            _authService = authService;
             _httpContextAccessor = httpContextAccessor;
             _mediator = mediator;
             _mapper = mapper;
