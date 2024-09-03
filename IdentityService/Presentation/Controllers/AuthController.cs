@@ -28,7 +28,7 @@ namespace Presentation.Controllers
             _mapper = mapper;
         }
 
-        [HttpPut("register")]
+        [HttpPut]
         public async Task<IActionResult> RegisterUser([FromBody] UserRegisterCommand model)
         {
             await _mediator.Send(model);
@@ -36,7 +36,7 @@ namespace Presentation.Controllers
             return Ok();
         }
 
-        [HttpPost("login")]
+        [HttpPost]
         public async Task<IActionResult> LoginUser([FromBody] UserLoginCommand model)
         {
             var loginRes = await _mediator.Send(model);
@@ -46,7 +46,7 @@ namespace Presentation.Controllers
             return Ok(loginRes);
         }
 
-        [HttpPost("refresh")]
+        [HttpPost("token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand model)
         {
             var loginRes = await _mediator.Send(model);
@@ -56,7 +56,7 @@ namespace Presentation.Controllers
             return Ok(loginRes);
         }
 
-        [HttpPost("logout/{UserId}")]
+        [HttpDelete("{UserId}")]
         public async Task<IActionResult> Logout(int UserId)
         {
             await _mediator.Send(_mapper.Map<UserLogoutCommand>(UserId));
