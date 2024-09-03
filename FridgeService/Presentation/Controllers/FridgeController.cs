@@ -1,5 +1,6 @@
 ﻿using BLL.DTO;
 using BLL.Services;
+using DAL.IRepositories;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Middlewares.Exceptions;
 
@@ -10,10 +11,15 @@ namespace Presentation.Controllers
     public class FridgeController:ControllerBase
     {
         private readonly IFridgeService _fridgeService;
+        private readonly IgRPCService _gRPCService;
 
-        public FridgeController(IFridgeService fridgeService)
+        public FridgeController(
+            IFridgeService fridgeService,
+            IgRPCService gRPCService
+            )
         {
             _fridgeService = fridgeService;
+            _gRPCService = gRPCService;
         }
 
         [HttpPut]
@@ -92,6 +98,12 @@ namespace Presentation.Controllers
             await _fridgeService.RemoveProductFromFridge(fridgeId, productId);
             
             return Ok();
+        }
+
+        [HttpPost("/asd")]
+        public async Task<IActionResult> SayHello()
+        {
+            return Ok(await _gRPCService.SayHello("asd"));
         }
     }
 }

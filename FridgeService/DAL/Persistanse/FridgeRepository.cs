@@ -1,9 +1,8 @@
 ﻿using DAL.Entities;
-using DAL.Persistanse;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Repository
+namespace DAL.Persistanse
 {
     public class FridgeRepository : IFridgeRepository
     {
@@ -28,18 +27,18 @@ namespace DAL.Repository
         {
             var fridge = await _context.fridges.FindAsync(fridgeId);
 
-            _context.productFridgeModels.RemoveRange(_context.productFridgeModels.Where(fm=>fm.fridgeId == fridgeId));
-            
-            _context.userFridges.RemoveRange(_context.userFridges.Where(uf=>uf.fridgeId == fridgeId));
-            
+            _context.productFridgeModels.RemoveRange(_context.productFridgeModels.Where(fm => fm.fridgeId == fridgeId));
+
+            _context.userFridges.RemoveRange(_context.userFridges.Where(uf => uf.fridgeId == fridgeId));
+
             _context.fridges.Remove(fridge);
-        
+
         }
 
         public async Task AddUserToFridge(int fridgeId, int userId)
         {
             var fridge = await _context.fridges.FindAsync(fridgeId);
-            
+
             // TODO: use grpc to check if user exists
 
             var model = new UserFridge
@@ -55,7 +54,7 @@ namespace DAL.Repository
 
         public async Task RemoveUserFromFridge(int fridgeId, int userId)
         {
-            var model = await _context.userFridges.FirstOrDefaultAsync(f=>f.fridgeId == fridgeId && f.userId == userId);
+            var model = await _context.userFridges.FirstOrDefaultAsync(f => f.fridgeId == fridgeId && f.userId == userId);
 
             _context.userFridges.Remove(model);
         }
@@ -84,8 +83,8 @@ namespace DAL.Repository
 
         public async Task RemoveProductFromFridge(int fridgeId, int productId)
         {
-            var model = await _context.productFridgeModels.FirstOrDefaultAsync(f=>f.fridgeId == fridgeId && f.productId == productId);
-          
+            var model = await _context.productFridgeModels.FirstOrDefaultAsync(f => f.fridgeId == fridgeId && f.productId == productId);
+
             _context.productFridgeModels.Remove(model);
         }
     }
