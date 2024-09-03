@@ -16,9 +16,11 @@ namespace DAL.Persistanse
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var configuration = new ApplicationDbContextConfiguration();
+
             modelBuilder.ApplyConfiguration<Fridge>(configuration);
             modelBuilder.ApplyConfiguration<UserFridge>(configuration);
             modelBuilder.ApplyConfiguration<ProductFridgeModel>(configuration);
+            
             base.OnModelCreating(modelBuilder);
         }
     }

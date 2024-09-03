@@ -16,15 +16,9 @@ namespace Presentation.Controllers
             _fridgeService = fridgeService;
         }
 
-        [HttpPut("add")]
+        [HttpPut]
         public async Task<IActionResult> AddFridge([FromBody] FridgeAddDTO fridge)
-        {
-            
-            if (!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid fridge register model");
-            }
-            
+        { 
             await _fridgeService.AddFridge(fridge);
             
             return Ok();
@@ -33,32 +27,28 @@ namespace Presentation.Controllers
         [HttpGet("{fridgeId}")]
         public async Task<IActionResult> GetFridgeById(int fridgeId)
         { 
-            
             return Ok(await _fridgeService.GetFridge(fridgeId));
         }
 
         [HttpDelete("{fridgeId}")]
         public async Task<IActionResult> RemoveFridgeById(int fridgeId)
         {
-            
             await _fridgeService.RemoveFridgeById(fridgeId);
          
             return Ok();
         }
 
-        [HttpPut("{fridgeId}/addUser/{userId}")]
+        [HttpPut("{fridgeId}/users/{userId}")]
         public async Task<IActionResult> AddUserToFridge(int fridgeId, int userId)
         {
-            
             await _fridgeService.AddUserToFridge(fridgeId, userId);
             
             return Ok();
         }
 
-        [HttpDelete("{fridgeId}/removeUser/{userId}")]
+        [HttpDelete("{fridgeId}/users/{userId}")]
         public async Task<IActionResult> RemoveUserFromFridge(int fridgeId, int userId)
         {
-            
             await _fridgeService.RemoveUserFromFridge(fridgeId, userId);
             
             return Ok();
@@ -67,14 +57,12 @@ namespace Presentation.Controllers
         [HttpGet("{fridgeId}/users")]
         public async Task<IActionResult> GetUsersFromFridge(int fridgeId)
         {
-
             return Ok(await _fridgeService.GetUsersFromFridge(fridgeId));
         }
 
         [HttpPatch("{fridgeId}")]
         public async Task<IActionResult> UpdateFridge([FromBody] FridgeAddDTO fridge, int fridgeId)
         {
-
             if (!ModelState.IsValid)
             {
                 throw new BadRequestException("Invalid fridge model");
@@ -85,10 +73,9 @@ namespace Presentation.Controllers
             return Ok(res);
         }
 
-        [HttpPut("{fridgeId}/addProducts")]
+        [HttpPut("{fridgeId}/products")]
         public async Task<IActionResult> AddProductsToFridge([FromBody] List<ProductInfoModel> products, int fridgeId)
         {
-
             if (!ModelState.IsValid)
             {
                 throw new BadRequestException("Invalid products model");
@@ -99,10 +86,9 @@ namespace Presentation.Controllers
             return Ok();
         }
 
-        [HttpDelete("{fridgeId}/removeProduct/{productId}")]
+        [HttpDelete("{fridgeId}/products/{productId}")]
         public async Task<IActionResult> RemoveProductFromFridge(int fridgeId, int productId)
         {
-            
             await _fridgeService.RemoveProductFromFridge(fridgeId, productId);
             
             return Ok();

@@ -20,7 +20,6 @@ namespace DAL.Persistanse
                 .WithMany(f=>f.userModelIds)
                 .HasForeignKey(uf=>uf.fridgeId);
             
-            
             builder.HasOne(uf => uf.user)
                 .WithMany(u => u.fridgeModelId)
                 .HasForeignKey(uf => uf.userId);

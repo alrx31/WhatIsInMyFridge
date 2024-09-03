@@ -38,20 +38,18 @@ namespace BLL.Services
 
         public async Task AddFridge(FridgeAddDTO fridge)
         {
-
             await _fridgeRepository.AddFridge(_mapper.Map<Fridge>(fridge));
+         
             await _unitOfWork.CompleteAsync();
-        
         }
 
         public async Task<Fridge> GetFridge(int fridgeId)
         {
-        
             var fridge =  await _fridgeRepository.GetFridge(fridgeId);
             
-            if(fridge == null)
+            if(fridge is null)
             {
-                throw new DirectoryNotFoundException("Fridge not found");
+                throw new NotFoundException("Fridge not found");
             }
 
             return fridge;
@@ -59,35 +57,28 @@ namespace BLL.Services
 
         public async Task RemoveFridgeById(int fridgeId)
         {
-        
             await _fridgeRepository.RemoveFridge(fridgeId);
         
             await _unitOfWork.CompleteAsync();
-        
         }
 
         public async Task AddUserToFridge(int fridgeId, int userId)
         {
-        
             await _fridgeRepository.AddUserToFridge(fridgeId, userId);
         
             await _unitOfWork.CompleteAsync();
-        
         }
 
         public async Task RemoveUserFromFridge(int fridgeId, int userId)
         {
-
             if(fridgeId < 1 || userId < 1)
             {
                 throw new BadRequestException("Invalid fridge or user id");
             }
 
-        
             await _fridgeRepository.RemoveUserFromFridge(fridgeId, userId);
-        
-            await _unitOfWork.CompleteAsync();
-        
+
+            await _unitOfWork.CompleteAsync();        
         }
 
         public async Task<List<User>> GetUsersFromFridge(int fridgeId)
@@ -110,7 +101,7 @@ namespace BLL.Services
             }
 
             return await _fridgeRepository
-                .UpdateFridge(_mapper.Map<Fridge>(fridge),fridgeId);
+                .UpdateFridge(_mapper.Map<Fridge>((fridge,fridgeId)));
         }
 
         public async Task AddProductsToList(int fridgeId, List<ProductInfoModel> products)
@@ -121,6 +112,7 @@ namespace BLL.Services
             {
                 throw new NotFoundException("Fridge not found");
             }
+
             List<ProductFridgeModel> productFridgeModels = new List<ProductFridgeModel>();
 
             foreach (var product in products)
@@ -129,11 +121,13 @@ namespace BLL.Services
                 {
                     fridgeId = fridgeId,
                     productId = product.ProductId,
-                    count = product.count,
+                    count = product.Count,
                     addTime = DateTime.UtcNow
                 });
             }
+
             await _fridgeRepository.AddProductsToFridge(productFridgeModels);
+            
             await _unitOfWork.CompleteAsync();
         }
 
@@ -147,6 +141,7 @@ namespace BLL.Services
             }
 
             await _fridgeRepository.RemoveProductFromFridge(fridgeId, productId);
+            
             await _unitOfWork.CompleteAsync();
         }
     }

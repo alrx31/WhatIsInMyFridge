@@ -16,16 +16,12 @@ namespace DAL.Repository
 
         public async Task AddFridge(Fridge fridge)
         {
-
             await _context.fridges.AddAsync(fridge);
-        
         }
 
         public async Task<Fridge?> GetFridge(int fridgeId)
         {
-        
             return await _context.fridges.FindAsync(fridgeId);
-        
         }
 
         public async Task RemoveFridge(int fridgeId)
@@ -55,7 +51,6 @@ namespace DAL.Repository
             };
 
             await _context.userFridges.AddAsync(model);
-
         }
 
         public async Task RemoveUserFromFridge(int fridgeId, int userId)
@@ -63,7 +58,6 @@ namespace DAL.Repository
             var model = await _context.userFridges.FirstOrDefaultAsync(f=>f.fridgeId == fridgeId && f.userId == userId);
 
             _context.userFridges.Remove(model);
-
         }
 
         public async Task<List<User>> GetUsersFromFridge(int fridgeid)
@@ -72,19 +66,10 @@ namespace DAL.Repository
             throw new NotImplementedException("need to use gRPC");
         }
 
-        public async Task<Fridge> UpdateFridge(Fridge fridge,int fridgeId)
+        public async Task<Fridge> UpdateFridge(Fridge fridge)
         {
-         
-            var model = await _context.fridges.FindAsync(fridgeId);
-            
-            model.model = fridge.model;
-            model.serial = fridge.serial;
-            model.boughtDate = fridge.boughtDate;
-            model.boxNumber = fridge.boxNumber;
-            model.name = fridge.name;
-            model.products = fridge.products;
-
-            return model;
+            _context.Update(fridge);
+            return fridge;
         }
 
         public async Task AddProductToFridge(List<ProductFridgeModel> products)

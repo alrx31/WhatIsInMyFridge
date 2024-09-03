@@ -18,60 +18,41 @@ namespace Presentation.Middlewares
         
         public async Task InvokeAsync(HttpContext context)
         {
-
             try
             {
-
                 await _next(context);
-            
             }
             catch (NotFoundException ex)
             {
-
                 await HandleExceptionAsync(context, HttpStatusCode.NotFound, ex.Message);
-            
             }
             catch (ValidationDataException ex)
             {
-            
                 await HandleExceptionAsync(context, HttpStatusCode.BadRequest, ex.Message);
-            
             }
             catch (UnauthorizedException ex)
             {
-            
                 await HandleExceptionAsync(context, HttpStatusCode.Unauthorized, ex.Message);
-            
             }
             catch (BadRequestException ex)
             {
-
                 await HandleExceptionAsync(context, HttpStatusCode.BadRequest, ex.Message);
-            
             }
             catch (AlreadyExistsException ex)
             {
-            
                 await HandleExceptionAsync(context, HttpStatusCode.Conflict, ex.Message);
-            
             }
             catch (ForbiddenException ex)
             {
-            
                 await HandleExceptionAsync(context, HttpStatusCode.Forbidden, ex.Message);
-            
             }
             catch (InternalServerErrorException ex)
             {
-            
                 await HandleExceptionAsync(context, HttpStatusCode.InternalServerError, ex.Message);
-            
             }
             catch (Exception ex)
             {
-            
                 await HandleExceptionAsync(context, HttpStatusCode.InternalServerError, ex.Message);
-            
             }
         }
 

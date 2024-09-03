@@ -10,9 +10,7 @@ namespace DAL.Entities
     public class ProductFridgeModel
     {
         public int id { get; set; }
-        
 
-        // TODO: may be Guid
         public int productId { get; set; }
 
         public int count { get; set; }

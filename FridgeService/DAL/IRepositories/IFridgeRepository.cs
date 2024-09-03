@@ -15,7 +15,7 @@ namespace DAL.Repositories
 
         Task RemoveFridge(int fridgeId);
 
-        Task<Fridge> UpdateFridge(Fridge fridge,int fridgeId);
+        Task<Fridge> UpdateFridge(Fridge fridge);
 
         Task AddUserToFridge(int fridgeId, int userId);
 
@@ -27,6 +27,6 @@ namespace DAL.Repositories
 
         Task RemoveProductFromFridge(int fridgeId, int productId);  
 
-        //Task<List<smth>> getProductsFromFridge(int fridgeId);
+        //TODO: Task<List<smth>> getProductsFromFridge(int fridgeId);
     }
 }

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace BLL.DTO
 {
-    public class ProductInfoModel
+    public class ProductsInfoList
     {
-        public int ProductId { get; set; }
-        public int Count { get; set; }
+        public List<ProductInfoModel> ProductsInfos { get; set; }
     }
 }
