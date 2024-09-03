@@ -4,12 +4,25 @@ using Presentation.ExceptionsHandlingMiddleware;
 using Application.DI;
 using Infastructure.DI;
 using Presentation.DI;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8080, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2; // Ensure HTTP/2 is enabled for gRPC
+    });
+});
+
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder);
 builder.Services.AddPresentationServices();
+
+
+
 
 // Authentication and Authorization
 builder.Services.AddAuthorization();
@@ -43,5 +56,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers(); // This should be in UseEndpoints to map HTTP controllers
+    endpoints.MapGrpcService<GreeterService>(); // Map your gRPC services
+});
 
 app.Run();

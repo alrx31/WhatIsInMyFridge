@@ -31,6 +31,7 @@ namespace Infastructure.DI
                 return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"));
             });
 
+            services.AddGrpc();
 
             services.AddAuthentication(op =>
             {
