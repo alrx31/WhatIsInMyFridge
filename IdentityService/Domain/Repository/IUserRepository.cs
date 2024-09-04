@@ -22,5 +22,7 @@ namespace Domain.Repository
         Task DeleteRefreshTokenByUserId(int userId);
 
         Task<User> UpdateUser(User model);
+
+        Task<List<User>> GetUsers(List<int> ids);
     }
 }

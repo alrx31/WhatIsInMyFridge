@@ -37,7 +37,7 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 	<ItemGroup>
-		<Protobuf Include="Persistanse\Protos\greet.proto" GrpcServices="Server" />
+		<Protobuf Include="Persistanse\Protos\Users.proto" GrpcServices="Server" />
 	</ItemGroup>
 
 

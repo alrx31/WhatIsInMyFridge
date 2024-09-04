@@ -76,5 +76,11 @@ namespace Infastructure.Persistanse
             _context.Update(model);
             return model;
         }
+
+        public Task<List<User>> GetUsers(List<int> ids)
+        {
+            // select all users where user id be in ids
+            return Task.FromResult(_context.users.Where(u => ids.Contains(u.id)).ToList<User>());
+        }
     }
 }
