@@ -21,7 +21,7 @@ namespace DAL.Repositories
 
         Task RemoveUserFromFridge(int fridgeId, int userId);
 
-        Task<List<User>> GetUsersFromFridge(int fridgeId);
+        Task<List<int>> GetUsersFromFridge(int fridgeId);
 
         Task AddProductsToFridge(List<ProductFridgeModel> products);
 

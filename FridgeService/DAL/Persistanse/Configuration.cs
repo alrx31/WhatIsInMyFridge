@@ -18,11 +18,7 @@ namespace DAL.Persistanse
         {
             builder.HasOne(uf=>uf.fridge)
                 .WithMany(f=>f.userModelIds)
-                .HasForeignKey(uf=>uf.fridgeId);
-            
-            builder.HasOne(uf => uf.user)
-                .WithMany(u => u.fridgeModelId)
-                .HasForeignKey(uf => uf.userId);
+                .HasForeignKey(uf=>uf.fridgeId);   
         }
 
         public void Configure(EntityTypeBuilder<ProductFridgeModel> builder)

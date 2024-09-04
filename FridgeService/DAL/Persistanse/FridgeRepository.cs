@@ -59,11 +59,11 @@ namespace DAL.Persistanse
             _context.userFridges.Remove(model);
         }
 
-        public async Task<List<User>> GetUsersFromFridge(int fridgeid)
+        public async Task<List<int>> GetUsersFromFridge(int fridgeid)
         {
-            // TODO: use grpc to get users
-            throw new NotImplementedException("need to use gRPC");
+            return _context.userFridges.Where(m => m.fridgeId == fridgeid).Select(u => u.userId).ToList();
         }
+
 
         public async Task<Fridge> UpdateFridge(Fridge fridge)
         {
@@ -71,9 +71,9 @@ namespace DAL.Persistanse
             return fridge;
         }
 
-        public async Task AddProductToFridge(List<ProductFridgeModel> products)
+        public async Task AddProductToFridge(ProductFridgeModel products)
         {
-            await _context.productFridgeModels.AddRangeAsync(products);
+            await _context.productFridgeModels.AddAsync(products);
         }
 
         public async Task AddProductsToFridge(List<ProductFridgeModel> products)

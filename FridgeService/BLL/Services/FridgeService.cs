@@ -3,6 +3,9 @@ using DAL.Entities;
 using DAL.Repositories;
 using BLL.DTO;
 using Presentation.Middlewares.Exceptions;
+using System.Net;
+using DAL.IRepositories;
+using AutoMapper.Configuration.Annotations;
 
 namespace BLL.Services
 {
@@ -13,10 +16,10 @@ namespace BLL.Services
         Task RemoveFridgeById(int fridgeId);
         Task AddUserToFridge(int fridgeId, int userId);
         Task RemoveUserFromFridge(int fridgeId, int userId);
-        Task<List<User>> GetUsersFromFridge(int fridgeId);
         Task<Fridge> UpdateFridge(FridgeAddDTO fridge,int fridgeId);
         Task AddProductsToList(int fridgeId, List<ProductInfoModel> products);
         Task RemoveProductFromFridge(int fridgeId, int productId);
+        Task<List<User>> GetFridgeUsers(int fridgeId);
     }
 
     public class FridgeService: IFridgeService
@@ -24,16 +27,19 @@ namespace BLL.Services
         private readonly IFridgeRepository _fridgeRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IgRPCService _grpcService;
 
         public FridgeService(
             IFridgeRepository fridgeRepository,
             IMapper mapper,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            IgRPCService igRPCService
             )
         {
             _fridgeRepository = fridgeRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _grpcService = igRPCService;
         }
 
         public async Task AddFridge(FridgeAddDTO fridge)
@@ -64,6 +70,11 @@ namespace BLL.Services
 
         public async Task AddUserToFridge(int fridgeId, int userId)
         {
+            if(! await _grpcService.CheckUserExist(userId))
+            {
+                throw new NotFoundException("User not found");
+            }
+
             await _fridgeRepository.AddUserToFridge(fridgeId, userId);
         
             await _unitOfWork.CompleteAsync();
@@ -81,16 +92,6 @@ namespace BLL.Services
             await _unitOfWork.CompleteAsync();        
         }
 
-        public async Task<List<User>> GetUsersFromFridge(int fridgeId)
-        {
-            if (await _fridgeRepository.GetFridge(fridgeId) == null)
-            {
-                throw new NotFoundException("Fridge not found");
-            }
-            
-            return await _fridgeRepository.GetUsersFromFridge(fridgeId);
-        }
-
         public async Task<Fridge> UpdateFridge(FridgeAddDTO fridge,int fridgeId)
         {
             var fridgeModel = await _fridgeRepository.GetFridge(fridgeId);
@@ -100,8 +101,12 @@ namespace BLL.Services
                 throw new NotFoundException("Fridge not found");
             }
 
-            return await _fridgeRepository
-                .UpdateFridge(_mapper.Map<Fridge>((fridge,fridgeId)));
+            var updatedFridge = await _fridgeRepository
+                .UpdateFridge(_mapper.Map<Fridge>((fridge, fridgeId)));
+
+            await _unitOfWork.CompleteAsync();
+
+            return updatedFridge;
         }
 
         public async Task AddProductsToList(int fridgeId, List<ProductInfoModel> products)
@@ -143,6 +148,20 @@ namespace BLL.Services
             await _fridgeRepository.RemoveProductFromFridge(fridgeId, productId);
             
             await _unitOfWork.CompleteAsync();
+        }
+
+        public async Task<List<User>> GetFridgeUsers(int fridgeId)
+        {
+            var fridge = await _fridgeRepository.GetFridge(fridgeId);
+            
+            if(fridge is null)
+            {
+                throw new NotFoundException("Fridge not found");
+            }
+
+            var ids = await _fridgeRepository.GetUsersFromFridge(fridgeId);
+
+            return await _grpcService.GetUsers(ids);
         }
     }
 }

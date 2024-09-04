@@ -60,12 +60,6 @@ namespace Presentation.Controllers
             return Ok();
         }
 
-        [HttpGet("{fridgeId}/users")]
-        public async Task<IActionResult> GetUsersFromFridge(int fridgeId)
-        {
-            return Ok(await _fridgeService.GetUsersFromFridge(fridgeId));
-        }
-
         [HttpPatch("{fridgeId}")]
         public async Task<IActionResult> UpdateFridge([FromBody] FridgeAddDTO fridge, int fridgeId)
         {
@@ -100,10 +94,12 @@ namespace Presentation.Controllers
             return Ok();
         }
 
-        [HttpPost("/asd")]
-        public async Task<IActionResult> SayHello()
+        [HttpGet("{fridgeId}/users")]
+        public async Task<IActionResult> GetUsers(int fridgeId)
         {
-            return Ok(await _gRPCService.SayHello("asd"));
+            return Ok(await _fridgeService.GetFridgeUsers(fridgeId));
         }
+
+        
     }
 }

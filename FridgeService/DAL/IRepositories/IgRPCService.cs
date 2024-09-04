@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace DAL.IRepositories
 {
     public interface IgRPCService
     {
-        Task<string> SayHello(string mess);
+        Task<List<User>> GetUsers(List<int> ids);
+        Task<bool> CheckUserExist(int userId);
     }
 }

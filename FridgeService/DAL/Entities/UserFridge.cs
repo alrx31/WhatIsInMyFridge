@@ -11,7 +11,6 @@ namespace DAL.Entities
         public int id { get; set; }
         
         public int userId { get; set; }
-        public User user { get; set; }
 
         public int fridgeId { get; set; }
         public Fridge fridge { get; set; }

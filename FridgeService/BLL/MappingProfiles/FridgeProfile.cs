@@ -8,6 +8,7 @@ namespace BLL.MappingProfiles
     {
         public FridgeProfile()
         {
+            CreateMap<FridgeAddDTO, Fridge>();
             CreateMap<(FridgeAddDTO, int), Fridge>()
                 .ForMember(f => f.id, opt => opt.MapFrom(src => src.Item2))
                 .ForMember(f => f.serial, opt => opt.MapFrom(src => src.Item1.Serial))
