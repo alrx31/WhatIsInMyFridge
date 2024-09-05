@@ -1,3 +1,4 @@
+using API.ExceptionsHandlingMiddleware;
 using Infrastructure.DI;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,5 +25,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.Run();
