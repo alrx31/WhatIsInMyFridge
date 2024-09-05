@@ -1,0 +1,14 @@
+﻿################################################################################
+# Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/ProdutsService/.vs/ProdutsService
+/ProdutsService/API/bin/Debug/net8.0
+/ProdutsService/API/obj
+/ProdutsService/Application/bin/Debug/net8.0
+/ProdutsService/Application/obj
+/ProdutsService/Domain/bin/Debug/net8.0
+/ProdutsService/Domain/obj
+/ProdutsService/Infrastructure/bin/Debug/net8.0
+/ProdutsService/Infrastructure/obj
