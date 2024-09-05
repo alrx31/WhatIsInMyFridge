@@ -11,8 +11,15 @@
     <Folder Include="DTO\" />
     <Folder Include="Exceptions\" />
     <Folder Include="MappingProfiles\" />
-    <Folder Include="UseCases\" />
+    <Folder Include="UseCases\ComandsHandlers\" />
+    <Folder Include="UseCases\Comands\" />
+    <Folder Include="UseCases\QueriesHandlers\" />
+    <Folder Include="UseCases\Queries\" />
     <Folder Include="Validators\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
   </ItemGroup>
 
 </Project>
