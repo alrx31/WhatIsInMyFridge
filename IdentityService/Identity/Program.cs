@@ -10,9 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
+    options.ListenAnyIP(8081, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+    });
     options.ListenAnyIP(8080, listenOptions =>
     {
-        listenOptions.Protocols = HttpProtocols.Http2; // Ensure HTTP/2 is enabled for gRPC
+        listenOptions.Protocols = HttpProtocols.Http1;
     });
 });
 

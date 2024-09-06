@@ -29,6 +29,7 @@ namespace Application.MappingProfiles
                 .ForMember(c=>c.id, opt=>opt.MapFrom(src=>src.Item2));
             CreateMap<UserRegisterCommand, User>();
             CreateMap<UpdateUserCommand, User>();
+            CreateMap<Infastructure.Persistanse.Protos.User, User>();
         }
     }
 }

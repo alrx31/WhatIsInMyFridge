@@ -3,10 +3,10 @@ using Grpc.Core;
 using Infastructure.Persistanse.Protos;
 
 public class GreeterService (
-        IUserRepository repository
+        IUnitOfWork unitOfWork
     ): Greeter.GreeterBase
 {
-    private readonly IUserRepository _repository = repository;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public override Task<UsersResponse> GetUsers(UsersIds request, ServerCallContext context)
     {
@@ -15,7 +15,7 @@ public class GreeterService (
         
         foreach (var id in request.Ids)
         {
-            var user = _repository.getUserById(id);
+            var user = _unitOfWork.GetUserById(id);
             response.Users.Add(new User
             {
                 Id = user.Result.id,
@@ -34,7 +34,7 @@ public class GreeterService (
     {
         var response = new isUserExist();
         
-        response.IsExist = await _repository.getUserById(request.UserId) != null;
+        response.IsExist = await _unitOfWork.GetUserById(request.UserId) != null;
         
         return response;
     }

@@ -7,7 +7,7 @@ namespace Domain.Repository
         
         Task<User?> GetUserByLogin(string email);
         
-        Task<RefreshTokenModel?> getTokenModel(string email);
+        Task<RefreshTokenModel?> GetTokenModel(string email);
         
         Task UpdateRefreshTokenAsync(RefreshTokenModel identityUserTokenModel);
         
@@ -15,7 +15,7 @@ namespace Domain.Repository
         
         Task CanselRefreshToken(int userId);
         
-        Task<User?> getUserById(int id);
+        Task<User?> GetUserById(int id);
         
         Task DeleteUser(int id);
 

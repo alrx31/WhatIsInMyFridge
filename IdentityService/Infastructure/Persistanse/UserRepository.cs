@@ -44,12 +44,12 @@ namespace Infastructure.Persistanse
         }
 
 
-        public async Task<RefreshTokenModel?> getTokenModel(string email)
+        public async Task<RefreshTokenModel?> GetTokenModel(string email)
         {
             return await _context.refreshTokens.FirstOrDefaultAsync(x => x.email == email);
         }
 
-        public async Task<User?> getUserById(int id)
+        public async Task<User?> GetUserById(int id)
         {
             return await _context.users.FirstOrDefaultAsync(x => x.id == id);
         }
