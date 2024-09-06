@@ -22,7 +22,7 @@ namespace DAL.DI
 
             services.AddGrpcClient<Greeter.GreeterClient>(o =>
             {
-                o.Address = new Uri("http://localhost:8080"); // Укажите адрес вашего gRPC сервера
+                o.Address = new Uri("http://localhost:8081"); // Укажите адрес вашего gRPC сервера
             });
 
             return services;
