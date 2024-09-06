@@ -22,3 +22,6 @@
 /FridgeService/DAL/obj
 /FridgeService/Presentation/bin/Debug/net8.0
 /FridgeService/Presentation/obj
+/ProdutsService/.vs
+/ProdutsService/API/obj
+/ProdutsService
