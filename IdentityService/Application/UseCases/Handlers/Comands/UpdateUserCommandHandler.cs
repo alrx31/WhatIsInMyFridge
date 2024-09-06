@@ -22,7 +22,7 @@ namespace Application.UseCases.Handlers.Comands
         IUnitOfWork unitOfWork,
         IMapper mapper
 
-        ) : IRequestHandler<UpdateUserCommand,User>
+        ) : IRequestHandler<UpdateUserCommand,User> 
     {
 
         private readonly IUserRepository _repository = userRepository;
@@ -46,12 +46,9 @@ namespace Application.UseCases.Handlers.Comands
                 throw new NotFoundException("User not Found");
             }
 
-            user.login = model.Login;
-            user.password = Scripts.GetHash(model.Password);
-            user.email = model.Email;
-            user.name = model.Name;
-            user.id = request.id;
-            User user1 = await _repository.UpdateUser(user);
+            model.Password = Scripts.GetHash(model.Password);
+
+            User user1 = await _repository.UpdateUser(_mapper.Map<User>(model));
 
             if (user1 is null)
             {

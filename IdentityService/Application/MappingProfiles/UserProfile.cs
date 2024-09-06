@@ -27,6 +27,8 @@ namespace Application.MappingProfiles
             CreateMap<(RegisterDTO,int),UpdateUserCommand>()
                 .ForMember(c=>c.user, opt=>opt.MapFrom(src=>src.Item1))
                 .ForMember(c=>c.id, opt=>opt.MapFrom(src=>src.Item2));
+            CreateMap<UserRegisterCommand, User>();
+            CreateMap<UpdateUserCommand, User>();
         }
     }
 }

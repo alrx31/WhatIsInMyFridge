@@ -59,7 +59,15 @@ namespace Application.UseCases.Handlers.Comands
 
             if (user is null)
             {
-                response.User = _mapper.Map<UserDTO>(await _repository.getUserById(identityUser.id) ?? throw new NotFoundException("User not found"));
+                var tempUser = _mapper.Map<UserDTO>(await _repository.getUserById(identityUser.id));
+                
+                if(tempUser is null)
+                {
+                    throw new NotFoundException("User not found");
+                }
+
+                response.User = tempUser;
+                
 
                 await _cacheRepository.SetCatcheData($"user-{identityUser.id}", response.User, new TimeSpan(24, 0, 0));
             }

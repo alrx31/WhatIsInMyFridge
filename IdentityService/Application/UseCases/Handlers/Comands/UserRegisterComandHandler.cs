@@ -34,19 +34,13 @@ namespace Application.UseCases.Handlers.Comands
         {
             var userCheck = await _repository.GetUserByLogin(model.Login);
 
-            if (userCheck != null)
+            if (!(userCheck is null))
             {
                 throw new AlreadyExistsException("This Login is not avaible");
             }
+            model.Password = Scripts.GetHash(model.Password);   
 
-            await _repository.RegisterUser(new User
-            {
-                name = model.Name,
-                login = model.Login,
-                email = model.Email,
-                password = Scripts.GetHash(model.Password),
-                isAdmin = model.Name == "admin"
-            });
+            await _repository.RegisterUser(_mapper.Map<User>(model));
 
             await _unitOfWork.CompleteAsync();
 
