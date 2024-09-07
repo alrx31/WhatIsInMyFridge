@@ -15,6 +15,6 @@ namespace Domain.Entities
         public decimal Price { get; set; }
         public DateTime CreateData { get; set; }
 
-        public List<ProductInList> Products { get; set; }
+        //public List<ProductInList>? Products { get; set; }
     }
 }
