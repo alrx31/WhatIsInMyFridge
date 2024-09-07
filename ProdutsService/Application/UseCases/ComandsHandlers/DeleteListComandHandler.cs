@@ -1,9 +1,10 @@
 ﻿using Application.UseCases.Comands;
 using Domain.Repository;
+using MediatR;
 
 namespace Application.UseCases.ComandsHandlers
 {
-    public class DeleteListComandHandler
+    public class DeleteListComandHandler:IRequestHandler<DeleteListComand>
     {
         private readonly IListRepository _listRepository;
         
