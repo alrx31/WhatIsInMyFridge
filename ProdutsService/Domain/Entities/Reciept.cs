@@ -14,6 +14,6 @@ namespace Domain.Entities
         public int Portions { get; set; }
         public int Kkal { get; set; }
 
-        public List<ProductInReciept> Products { get; set; }
+        //public List<ProductInReciept>? Products { get; set; }
     }
 }

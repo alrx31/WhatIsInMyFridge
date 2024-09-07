@@ -13,6 +13,7 @@ namespace Infrastructure.DI
             services.AddSingleton<ApplicationDbContext>();
 
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IListRepository, ListRepository>();
 
             return services;
         }

@@ -4,11 +4,11 @@ using MediatR;
 
 namespace Application.UseCases.ComandsHandlers
 {
-    public class DeleteComandHandler:IRequestHandler<DeleteProductComand>
+    public class DeleteProductComandHandler:IRequestHandler<DeleteProductComand>
     {
         private readonly IProductRepository _productRepository;
 
-        public DeleteComandHandler(IProductRepository productRepository)
+        public DeleteProductComandHandler(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }
