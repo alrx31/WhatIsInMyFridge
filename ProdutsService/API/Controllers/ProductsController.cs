@@ -43,7 +43,7 @@ namespace API.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateProduct(string id, [FromBody] AddProductDTO product)
         {
-            await _mediator.Send(_mapper.Map<UpdateProductComand>(product));
+            await _mediator.Send(_mapper.Map<UpdateProductComand>((product,id)));
             return Ok();
         }
 

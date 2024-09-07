@@ -39,6 +39,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetListByName(string name)
         {
             await _mediator.Send(_mapper.Map<GetListByNameQuery>(name));
+            
             return Ok();
         }
 
@@ -46,12 +47,15 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteListById(string id)
         {
             await _mediator.Send(_mapper.Map<DeleteListComand>(id));
+         
             return Ok();
         }
+
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateList(int id, [FromBody] UpdateListComand model)
+        public async Task<IActionResult> UpdateList(string id, [FromBody] AddListDTO model)
         {
-            await _mediator.Send((_mapper.Map<UpdateListComand>(model), id));
+            await _mediator.Send((_mapper.Map<UpdateListComand>((model,id))));
+        
             return Ok();
         }
     }

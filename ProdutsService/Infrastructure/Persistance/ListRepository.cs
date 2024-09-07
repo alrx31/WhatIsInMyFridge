@@ -1,38 +1,48 @@
 ﻿using Domain.Entities;
 using Domain.Repository;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZstdSharp.Unsafe;
 
 namespace Infrastructure.Persistance
 {
     public class ListRepository : IListRepository
     {
-        public Task AddList(ProductsList list)
+        private readonly IMongoCollection<ProductsList> _lists;
+
+        public ListRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _lists = context.GetCollection<ProductsList>("Lists");
         }
 
-        public Task DeleteListById(string id)
+
+        public async Task AddList(ProductsList list)
         {
-            throw new NotImplementedException();
+            await _lists.InsertOneAsync(list);
         }
 
-        public Task<ProductsList> GetListById(string id)
+        public async Task DeleteListById(string id)
         {
-            throw new NotImplementedException();
+            await _lists.DeleteOneAsync(l => l.Id == id);
         }
 
-        public Task<ProductsList> GetListByName(string name)
+        public async Task<ProductsList> GetListById(string id)
         {
-            throw new NotImplementedException();
+            return await _lists.Find(l => l.Id == id).FirstOrDefaultAsync();
         }
 
-        public Task UpdateList(ProductsList ls)
+        public async Task<ProductsList> GetListByName(string name)
         {
-            throw new NotImplementedException();
+            return await _lists.Find(l => l.Name == name).FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateList(ProductsList ls)
+        {
+            await _lists.ReplaceOneAsync(l => l.Id == ls.Id, ls);
         }
     }
 }

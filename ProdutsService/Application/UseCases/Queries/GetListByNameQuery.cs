@@ -3,11 +3,15 @@ using MediatR;
 
 namespace Application.UseCases.Queries
 {
-    public class GetListByNameQuery
-        (
-            string name
-        ):IRequest<ProductsList>
+    public class GetListByNameQuery:IRequest<ProductsList>
     {
-        public string Name = name;
+        public string Name { get; set; }
+
+        public GetListByNameQuery(string name)
+        {
+            Name = name;
+        }
+
+        public GetListByNameQuery() { }
     }
 }

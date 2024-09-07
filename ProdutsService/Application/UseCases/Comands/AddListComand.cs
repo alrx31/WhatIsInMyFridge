@@ -7,14 +7,11 @@ namespace Application.UseCases.Comands
         (
             string name,
             int weight,
-            decimal price,
-            List<Product> products
+            decimal price
         ): IRequest
     {
         public string Name = name;
         public int Weight = weight;
         public decimal Price = price;
-
-        public List<Product> Products = products;
     }
 }

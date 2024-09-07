@@ -18,7 +18,7 @@ namespace Application.UseCases.ComandsHandlers
 
         public async Task Handle(UpdateProductComand request, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetProductByName(request.Name);
+            var product = await _productRepository.GetProduct(request.Id);
 
             if(product == null)
             {
