@@ -12,6 +12,8 @@ namespace Application.DI
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(ProductProfile));
+            services.AddAutoMapper(typeof(ListProfile));
+            services.AddAutoMapper(typeof(ListManageProfile));
 
             services.AddScoped<AddProductComandHandler>();
 

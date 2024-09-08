@@ -20,5 +20,7 @@ namespace Domain.Repository
         Task<Product> GetProductByName(string name);
 
         Task<List<Product>> GetAllProducts(int page, int count);
+        
+        Task<List<Product>> GetProductRange(List<string> listProductsModels);
     }
 }
