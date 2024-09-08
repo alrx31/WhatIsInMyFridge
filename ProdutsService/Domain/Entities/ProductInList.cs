@@ -12,10 +12,11 @@ namespace Domain.Entities
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public int Id { get; set; }
-        public int ProductId { get; set; }
-        public int ProductsListId { get; set; }
+        public string Id { get; set; }
+        public string ProductId { get; set; }
+        public string ListId { get; set; }
+
         public int Weight { get; set; }
-        public int Cost { get; set; }
+        public decimal Cost { get; set; }
     }
 }

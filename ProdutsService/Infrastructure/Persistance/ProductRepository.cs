@@ -48,5 +48,18 @@ namespace Infrastructure.Persistance
             return await _products.Find(p => true).Skip((page - 1)* count).Limit(count).ToListAsync();
         }
 
+        public async Task<List<Product>> GetProductRange(List<string> listProductsModels)
+        {
+            var listProducts = listProductsModels;
+            var products = new List<Product>();
+
+            foreach (var productId in listProducts)
+            {
+                var product = await GetProduct(productId);
+                products.Add(product);
+            }
+            
+            return products;
+        }
     }
 }
