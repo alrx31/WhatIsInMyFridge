@@ -52,6 +52,5 @@ namespace API.Controllers
         {
             return Ok(await _mediator.Send(_mapper.Map<GetAllProductsQuery>((page, count))));
         }
-
     }
 }
