@@ -1,14 +1,16 @@
-﻿using Domain.Repository;
+﻿using AutoMapper;
+using Domain.Repository;
 using Grpc.Core;
 using Infastructure.Persistanse.Protos;
 
 public class GreeterService (
-        IUnitOfWork unitOfWork
+        IUnitOfWork unitOfWork,
+        IMapper mapper
     ): Greeter.GreeterBase
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-
-    public override Task<UsersResponse> GetUsers(UsersIds request, ServerCallContext context)
+    private readonly IMapper _mapper = mapper;
+    public override async Task<UsersResponse> GetUsers(UsersIds request, ServerCallContext context)
     {
         var response = new UsersResponse();
 
@@ -16,10 +18,10 @@ public class GreeterService (
         foreach (var id in request.Ids)
         {
             var user = await _unitOfWork.GetUserById(id);
-            response.Users.Add(user)
+            response.Users.Add(_mapper.Map<Infastructure.Persistanse.Protos.User>(user));
         }
 
-        return Task.FromResult(response);
+        return response;
     }
 
     public override async Task<isUserExist> CheckUserExist(UserExistRequest request, ServerCallContext context)

@@ -30,6 +30,7 @@ namespace Application.MappingProfiles
             CreateMap<UserRegisterCommand, User>();
             CreateMap<UpdateUserCommand, User>();
             CreateMap<Infastructure.Persistanse.Protos.User, User>();
+            CreateMap<User, Infastructure.Persistanse.Protos.User>();
         }
     }
 }
