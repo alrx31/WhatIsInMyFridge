@@ -15,16 +15,8 @@ public class GreeterService (
         
         foreach (var id in request.Ids)
         {
-            var user = _unitOfWork.GetUserById(id);
-            response.Users.Add(new User
-            {
-                Id = user.Result.id,
-                Name = user.Result.name,
-                Login = user.Result.login,
-                Email = user.Result.email,
-                IsAdmin = user.Result.isAdmin,
-                Password = user.Result.password
-            });
+            var user = await _unitOfWork.GetUserById(id);
+            response.Users.Add(user)
         }
 
         return Task.FromResult(response);
