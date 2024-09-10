@@ -25,8 +25,10 @@ namespace DAL.Repositories
 
         Task AddProductsToFridge(List<ProductFridgeModel> products);
 
-        Task RemoveProductFromFridge(int fridgeId, int productId);  
+        Task RemoveProductFromFridge(int fridgeId, string productId);
 
-        //TODO: Task<List<smth>> getProductsFromFridge(int fridgeId);
+        Task<List<ProductFridgeModel>> GetProductsFromFridge(int fridgeId);
+
+        Task<List<Fridge>> GetAllFridges();
     }
 }

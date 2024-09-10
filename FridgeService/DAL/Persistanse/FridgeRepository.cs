@@ -39,8 +39,6 @@ namespace DAL.Persistanse
         {
             var fridge = await _context.fridges.FindAsync(fridgeId);
 
-            // TODO: use grpc to check if user exists
-
             var model = new UserFridge
             {
                 fridgeId = fridgeId,
@@ -81,11 +79,21 @@ namespace DAL.Persistanse
             await _context.productFridgeModels.AddRangeAsync(products);
         }
 
-        public async Task RemoveProductFromFridge(int fridgeId, int productId)
+        public async Task RemoveProductFromFridge(int fridgeId, string productId)
         {
             var model = await _context.productFridgeModels.FirstOrDefaultAsync(f => f.fridgeId == fridgeId && f.productId == productId);
 
             _context.productFridgeModels.Remove(model);
+        }
+
+        public async Task<List<ProductFridgeModel>> GetProductsFromFridge(int fridgeId)
+        {
+            return await _context.productFridgeModels.Where(m => m.fridgeId == fridgeId).ToListAsync();
+        }
+
+        public async Task<List<Fridge>> GetAllFridges()
+        {
+            return await _context.fridges.ToListAsync();
         }
     }
 }

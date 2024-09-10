@@ -1,10 +1,9 @@
 ﻿using DAL.Repositories;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using DAL.Persistanse;
-using Microsoft.EntityFrameworkCore;
 using DAL.Persistanse.Protos;
 using DAL.IRepositories;
+using DAL.Entities;
 
 
 namespace DAL.DI
@@ -18,11 +17,17 @@ namespace DAL.DI
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IFridgeRepository,FridgeRepository>();
             services.AddScoped<IgRPCService, gRPCService>();
+            services.AddScoped<IProductsgRPCService, ProductsgRPCService>();
 
 
             services.AddGrpcClient<Greeter.GreeterClient>(o =>
             {
-                o.Address = new Uri("http://localhost:8081"); // Укажите адрес вашего gRPC сервера
+                o.Address = new Uri("http://localhost:8081");
+            });
+
+            services.AddGrpcClient<Products.ProductsClient>(o =>
+            {
+                o.Address = new Uri("http://localhost:8083");
             });
 
             return services;

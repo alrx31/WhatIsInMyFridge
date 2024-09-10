@@ -1,6 +1,7 @@
 using BLL.DI;
 using DAL.DI;
 using DAL.Persistanse;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Middlewares;
 
@@ -8,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddBLLDependencies();
+builder.Services.AddBLLDependencies(builder.Configuration.GetConnectionString("HangFire"));
 builder.Services.AddDALDependencies();
 
 builder.Services.AddControllers();
@@ -36,6 +37,15 @@ app.UseAuthorization();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+
+app.UseHangfireDashboard();
+
+
+
+JobScheduler.ConfigureJobs(app.Services.GetRequiredService<IServiceScopeFactory>());
+
+
+app.MapHangfireDashboard();
 app.MapControllers();
 
 app.Run();

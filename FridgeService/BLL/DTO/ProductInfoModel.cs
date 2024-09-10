@@ -8,7 +8,7 @@ namespace BLL.DTO
 {
     public class ProductInfoModel
     {
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
         public int Count { get; set; }
     }
 }

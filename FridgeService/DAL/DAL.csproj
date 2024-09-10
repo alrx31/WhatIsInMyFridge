@@ -16,6 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Hangfire" Version="1.8.14" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
@@ -27,6 +28,9 @@
 
 	<ItemGroup>
 		<Protobuf Include="Persistanse\Protos\Users.proto" GrpcServices="Client" />
+	</ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="Persistanse\Protos\Product.proto" GrpcServices="Client" />
 	</ItemGroup>
 
 
