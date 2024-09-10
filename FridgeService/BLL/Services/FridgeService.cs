@@ -3,9 +3,7 @@ using DAL.Entities;
 using DAL.Repositories;
 using BLL.DTO;
 using Presentation.Middlewares.Exceptions;
-using System.Net;
 using DAL.IRepositories;
-using AutoMapper.Configuration.Annotations;
 
 namespace BLL.Services
 {
@@ -195,7 +193,6 @@ namespace BLL.Services
 
         public async Task CheckProducts()
         {
-            // check all products in all fridges
             var fridges = await _fridgeRepository.GetAllFridges();
 
             foreach (var fridge in fridges)

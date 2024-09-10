@@ -15,8 +15,11 @@ namespace DAL.Persistanse
         public async Task<List<DAL.Entities.User>> GetUsers(List<int> ids)
         {
             var UsersIds = new UsersIds();
+
             UsersIds.Ids.AddRange(ids);
+            
             var reply = await _greeterClient.GetUsersAsync(UsersIds);
+            
             return reply.Users.Select(u => new DAL.Entities.User
             {
                 id = u.Id,
@@ -33,7 +36,9 @@ namespace DAL.Persistanse
         {
             var res = new UserExistRequest();
             res.UserId = userid;
+
             var reply = await _greeterClient.CheckUserExistAsync(res);
+            
             return reply.IsExist;
         }
     }

@@ -65,7 +65,8 @@ namespace DAL.Persistanse
 
         public async Task<Fridge> UpdateFridge(Fridge fridge)
         {
-            _context.Update(fridge);
+            _context.fridges.Update(fridge);
+
             return fridge;
         }
 

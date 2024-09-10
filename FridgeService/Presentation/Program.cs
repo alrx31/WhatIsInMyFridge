@@ -8,7 +8,6 @@ using Presentation.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddBLLDependencies(builder.Configuration.GetConnectionString("HangFire"));
 builder.Services.AddDALDependencies();
 
@@ -37,11 +36,10 @@ app.UseAuthorization();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-
 app.UseHangfireDashboard();
 
 
-
+// Hangfire configuration
 JobScheduler.ConfigureJobs(app.Services.GetRequiredService<IServiceScopeFactory>());
 
 

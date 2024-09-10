@@ -3,8 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using DAL.Persistanse;
 using DAL.Persistanse.Protos;
 using DAL.IRepositories;
-using DAL.Entities;
-
 
 namespace DAL.DI
 {

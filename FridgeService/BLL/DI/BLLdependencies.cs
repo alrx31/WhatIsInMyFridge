@@ -6,7 +6,6 @@ using FluentValidation;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace BLL.DI
 {

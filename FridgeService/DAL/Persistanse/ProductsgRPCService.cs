@@ -15,6 +15,7 @@ namespace DAL.Persistanse
         public async Task<List<DAL.Entities.Product>> GetProducts(List<string> ids)
         {
             var ProductsIds = new ProductsIds();
+
             ProductsIds.Ids.AddRange(ids);
 
             var reply = await _productsClient.GetProductsAsync(ProductsIds);

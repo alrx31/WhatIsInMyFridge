@@ -1,5 +1,4 @@
-﻿
-using DAL.Repositories;
+﻿using DAL.Repositories;
 
 namespace DAL.Persistanse
 {
