@@ -91,5 +91,11 @@ namespace Presentation.Controllers
             await _fridgeService.CheckProducts(fridgeId);
             return Ok();
         }
+
+        [HttpGet("{fridgeId}/products")]
+        public async Task<IActionResult> GetProducts(int fridgeId)
+        {
+            return Ok(await _fridgeService.GetFridgeProducts(fridgeId));
+        }
     }
 }

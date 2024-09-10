@@ -20,6 +20,7 @@ namespace BLL.Services
         Task<List<User>> GetFridgeUsers(int fridgeId);
         Task CheckProducts(int fridgeId);
         Task CheckProducts();
+        Task<List<Product>> GetFridgeProducts(int fridgeId);
     }
 
     public class FridgeService: IFridgeService
@@ -201,5 +202,15 @@ namespace BLL.Services
                 await CheckProducts(fridge.id);
             }
         }
+
+        public async Task<List<Product>> GetFridgeProducts(int fridgeId)
+        {
+            var productsModel = await _fridgeRepository.GetProductsFromFridge(fridgeId);
+               
+            var ids = productsModel.Select(p => p.productId).ToList();
+
+            return await _productsgRPCService.GetProducts(ids);
+        }
+
     }
 }
