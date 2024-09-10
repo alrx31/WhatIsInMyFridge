@@ -1,33 +1,41 @@
 ﻿using Domain.Entities;
 using Domain.Repository;
+using MongoDB.Driver;
 
 namespace Infrastructure.Persistance
 {
     public class RecieptsRepository : IRecieptsRepository
     {
-        public Task AddReciept(Reciept reciept)
+        private readonly IMongoCollection<Reciept>_context;
+
+        public RecieptsRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context.GetCollection<Reciept>("Reciepts");
         }
 
-        public Task DeleteReciept(Reciept reciept)
+        public async Task AddReciept(Reciept reciept)
         {
-            throw new NotImplementedException();
+            await _context.InsertOneAsync(reciept);
         }
 
-        public Task<List<Reciept>> GetAllReciepts(int page, int count)
+        public async Task DeleteReciept(Reciept reciept)
         {
-            throw new NotImplementedException();
+            await _context.DeleteOneAsync(r => r.Id == reciept.Id);
         }
 
-        public Task<Reciept> GetReciept(string recieptId)
+        public async Task<List<Reciept>> GetAllReciepts(int page, int count)
         {
-            throw new NotImplementedException();
+            return await _context.Find(r => true).Skip(page * count).Limit(count).ToListAsync();
         }
 
-        public Task UpdateReciept(Reciept reciept)
+        public async Task<Reciept> GetReciept(string recieptId)
         {
-            throw new NotImplementedException();
+            return await _context.Find(r => r.Id == recieptId).FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateReciept(Reciept reciept)
+        {
+            await _context.ReplaceOneAsync(r => r.Id == reciept.Id, reciept);
         }
     }
 }
