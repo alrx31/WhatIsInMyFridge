@@ -14,12 +14,16 @@ namespace Application.DI
             services.AddAutoMapper(typeof(ProductProfile));
             services.AddAutoMapper(typeof(ListProfile));
             services.AddAutoMapper(typeof(ListManageProfile));
+            services.AddAutoMapper(typeof(RecieptsProfile));
 
             services.AddScoped<AddProductComandHandler>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AddProductComandHandler).Assembly));
 
             services.AddTransient<IValidator<AddProductDTO>, AddProductDTOValidator>();
+            services.AddTransient<IValidator<AddListDTO>, AddListDTOValidator>();
+            services.AddTransient<IValidator<AddProductToListDTO>, AddProductToListDTOValidator>();
+            services.AddTransient<IValidator<AddRecieptDTO>, AddRecieptDTOValidator>();
 
 
             return services;
