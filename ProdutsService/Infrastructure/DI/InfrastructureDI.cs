@@ -14,6 +14,7 @@ namespace Infrastructure.DI
 
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IListRepository, ListRepository>();
+            services.AddScoped<IRecieptsRepository, RecieptsRepository>();
             services.AddScoped<IListManageRepository, ListManageRepository>();
 
             return services;
