@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace DAL.Entities
+﻿namespace DAL.Entities
 {
     public class Fridge
     {
@@ -9,8 +7,9 @@ namespace DAL.Entities
         public string model { get; set; }
 
         public string? serial { get; set; }
+
         
-        public DataSetDateTime boughtDate { get; set; }
+        public DateTime boughtDate { get; set; }
         public int boxNumber { get; set; } = 0;
 
         public List<UserFridge> userModelIds { get; set; }

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240904152345_fix")]
-    partial class fix
+    [Migration("20240910170548_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,8 +33,8 @@ namespace DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int>("boughtDate")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("boughtDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("boxNumber")
                         .HasColumnType("integer");
@@ -72,8 +72,9 @@ namespace DAL.Migrations
                     b.Property<int>("fridgeId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("productId")
-                        .HasColumnType("integer");
+                    b.Property<string>("productId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("id");
 

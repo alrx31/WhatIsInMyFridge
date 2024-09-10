@@ -97,19 +97,20 @@ namespace BLL.Services
 
         public async Task<Fridge> UpdateFridge(FridgeAddDTO fridge,int fridgeId)
         {
-            var fridgeModel = await _fridgeRepository.GetFridge(fridgeId);
-            
-            if(fridgeModel == null)
+            var existingFridge = await _fridgeRepository.GetFridge(fridgeId);
+
+            if (existingFridge == null)
             {
                 throw new NotFoundException("Fridge not found");
             }
 
-            var updatedFridge = await _fridgeRepository
-                .UpdateFridge(_mapper.Map<Fridge>((fridge, fridgeId)));
+            _mapper.Map((fridge, fridgeId), existingFridge);
+
+            await _fridgeRepository.UpdateFridge(existingFridge);
 
             await _unitOfWork.CompleteAsync();
 
-            return updatedFridge;
+            return existingFridge;
         }
 
         public async Task AddProductsToList(int fridgeId, List<ProductInfoModel> products)

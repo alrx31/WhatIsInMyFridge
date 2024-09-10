@@ -13,6 +13,8 @@ namespace DAL.Persistanse
         {
             builder.HasKey(f => f.id);
             builder.Property(f => f.id).ValueGeneratedOnAdd();
+
+            builder.Property(f => f.boughtDate);
         }
 
         public void Configure(EntityTypeBuilder<UserFridge> builder)

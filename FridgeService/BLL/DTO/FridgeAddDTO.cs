@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace BLL.DTO
+﻿namespace BLL.DTO
 {
     public class FridgeAddDTO
     {
@@ -9,7 +7,7 @@ namespace BLL.DTO
 
         public string? Serial { get; set; }
 
-        public DataSetDateTime BoughtDate { get; set; }
+        public DateTime BoughtDate { get; set; }
         public int BoxNumber { get; set; } = 0;
     }
 }

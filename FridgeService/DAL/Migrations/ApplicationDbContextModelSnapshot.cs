@@ -30,8 +30,8 @@ namespace DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<int>("boughtDate")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("boughtDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("boxNumber")
                         .HasColumnType("integer");

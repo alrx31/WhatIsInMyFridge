@@ -13,23 +13,6 @@ namespace DAL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    login = table.Column<string>(type: "text", nullable: false),
-                    email = table.Column<string>(type: "text", nullable: false),
-                    password = table.Column<string>(type: "text", nullable: false),
-                    isAdmin = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "fridges",
                 columns: table => new
                 {
@@ -38,7 +21,7 @@ namespace DAL.Migrations
                     name = table.Column<string>(type: "text", nullable: false),
                     model = table.Column<string>(type: "text", nullable: false),
                     serial = table.Column<string>(type: "text", nullable: true),
-                    boughtDate = table.Column<int>(type: "integer", nullable: false),
+                    boughtDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     boxNumber = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -52,7 +35,7 @@ namespace DAL.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    productId = table.Column<int>(type: "integer", nullable: false),
+                    productId = table.Column<string>(type: "text", nullable: false),
                     count = table.Column<int>(type: "integer", nullable: false),
                     fridgeId = table.Column<int>(type: "integer", nullable: false),
                     addTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -82,12 +65,6 @@ namespace DAL.Migrations
                 {
                     table.PrimaryKey("PK_userFridges", x => x.id);
                     table.ForeignKey(
-                        name: "FK_userFridges_User_userId",
-                        column: x => x.userId,
-                        principalTable: "User",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_userFridges_fridges_fridgeId",
                         column: x => x.fridgeId,
                         principalTable: "fridges",
@@ -104,11 +81,6 @@ namespace DAL.Migrations
                 name: "IX_userFridges_fridgeId",
                 table: "userFridges",
                 column: "fridgeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_userFridges_userId",
-                table: "userFridges",
-                column: "userId");
         }
 
         /// <inheritdoc />
@@ -119,9 +91,6 @@ namespace DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "userFridges");
-
-            migrationBuilder.DropTable(
-                name: "User");
 
             migrationBuilder.DropTable(
                 name: "fridges");
