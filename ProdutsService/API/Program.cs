@@ -1,8 +1,23 @@
 using API.ExceptionsHandlingMiddleware;
 using Infrastructure.DI;
 using Application.DI;
+using Infrastructure.Persistance;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// add port
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8083, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+    });
+    options.ListenAnyIP(8084, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+    });
+});
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
@@ -31,6 +46,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.MapGrpcService<ProductgRPCService>();
+
+app.UseMiddleware <ExceptionHandlingMiddleware>();
 
 app.Run();

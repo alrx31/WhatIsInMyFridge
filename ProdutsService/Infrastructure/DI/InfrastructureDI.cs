@@ -17,6 +17,8 @@ namespace Infrastructure.DI
             services.AddScoped<IRecieptsRepository, RecieptsRepository>();
             services.AddScoped<IListManageRepository, ListManageRepository>();
 
+            services.AddGrpc();
+
             return services;
         }
     }
