@@ -11,5 +11,4 @@ namespace BLL.Validators
             RuleForEach(x => x.ProductsInfos).SetValidator(new ProductInfoValidator());
         }
     }
-    
 }

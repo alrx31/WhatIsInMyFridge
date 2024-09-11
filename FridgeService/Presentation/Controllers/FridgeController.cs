@@ -89,6 +89,7 @@ namespace Presentation.Controllers
         public async Task<IActionResult> CheckProducts(int fridgeId)
         {
             await _fridgeService.CheckProducts(fridgeId);
+
             return Ok();
         }
 

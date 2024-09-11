@@ -25,21 +25,18 @@ namespace BLL.Services
 
     public class FridgeService: IFridgeService
     {
-        private readonly IFridgeRepository _fridgeRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IgRPCService _grpcService;
         private readonly IProductsgRPCService _productsgRPCService;
 
         public FridgeService(
-            IFridgeRepository fridgeRepository,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IgRPCService igRPCService,
             IProductsgRPCService productsgRPCService
             )
         {
-            _fridgeRepository = fridgeRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _grpcService = igRPCService;
@@ -48,14 +45,12 @@ namespace BLL.Services
 
         public async Task AddFridge(FridgeAddDTO fridge)
         {
-            await _fridgeRepository.AddFridge(_mapper.Map<Fridge>(fridge));
-         
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.AddFridge(_mapper.Map<Fridge>(fridge));
         }
 
         public async Task<Fridge> GetFridge(int fridgeId)
         {
-            var fridge =  await _fridgeRepository.GetFridge(fridgeId);
+            var fridge =  await _unitOfWork.GetFridge(fridgeId);
             
             if(fridge is null)
             {
@@ -67,9 +62,7 @@ namespace BLL.Services
 
         public async Task RemoveFridgeById(int fridgeId)
         {
-            await _fridgeRepository.RemoveFridge(fridgeId);
-        
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.RemoveFridge(fridgeId);
         }
 
         public async Task AddUserToFridge(int fridgeId, int userId)
@@ -79,9 +72,7 @@ namespace BLL.Services
                 throw new NotFoundException("User not found");
             }
 
-            await _fridgeRepository.AddUserToFridge(fridgeId, userId);
-        
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.AddUserToFridge(fridgeId, userId);
         }
 
         public async Task RemoveUserFromFridge(int fridgeId, int userId)
@@ -91,34 +82,30 @@ namespace BLL.Services
                 throw new BadRequestException("Invalid fridge or user id");
             }
 
-            await _fridgeRepository.RemoveUserFromFridge(fridgeId, userId);
-
-            await _unitOfWork.CompleteAsync();        
+            await _unitOfWork.RemoveUserFromFridge(fridgeId, userId);    
         }
 
         public async Task<Fridge> UpdateFridge(FridgeAddDTO fridge,int fridgeId)
         {
-            var existingFridge = await _fridgeRepository.GetFridge(fridgeId);
+            var existingFridge = await _unitOfWork.GetFridge(fridgeId);
 
-            if (existingFridge == null)
+            if (existingFridge is null)
             {
                 throw new NotFoundException("Fridge not found");
             }
 
             _mapper.Map((fridge, fridgeId), existingFridge);
 
-            await _fridgeRepository.UpdateFridge(existingFridge);
-
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.UpdateFridge(existingFridge);
 
             return existingFridge;
         }
 
         public async Task AddProductsToList(int fridgeId, List<ProductInfoModel> products)
         {
-            var fridge = await _fridgeRepository.GetFridge(fridgeId);
+            var fridge = await _unitOfWork.GetFridge(fridgeId);
             
-            if(fridge == null)
+            if(fridge is null)
             {
                 throw new NotFoundException("Fridge not found");
             }
@@ -136,49 +123,45 @@ namespace BLL.Services
                 });
             }
 
-            await _fridgeRepository.AddProductsToFridge(productFridgeModels);
-            
-            await _unitOfWork.CompleteAsync();
+            await _unitOfWork.AddProductsToFridge(productFridgeModels);
         }
 
         public async Task RemoveProductFromFridge(int fridgeId, string productId)
         {
-            var fridge = await _fridgeRepository.GetFridge(fridgeId);
-            
-            if(fridge == null)
-            {
-                throw new NotFoundException("Fridge not found");
-            }
-
-            await _fridgeRepository.RemoveProductFromFridge(fridgeId, productId);
-            
-            await _unitOfWork.CompleteAsync();
-        }
-
-        public async Task<List<User>> GetFridgeUsers(int fridgeId)
-        {
-            var fridge = await _fridgeRepository.GetFridge(fridgeId);
+            var fridge = await _unitOfWork.GetFridge(fridgeId);
             
             if(fridge is null)
             {
                 throw new NotFoundException("Fridge not found");
             }
 
-            var ids = await _fridgeRepository.GetUsersFromFridge(fridgeId);
+            await _unitOfWork.RemoveProductFromFridge(fridgeId, productId);
+        }
+
+        public async Task<List<User>> GetFridgeUsers(int fridgeId)
+        {
+            var fridge = await _unitOfWork.GetFridge(fridgeId);
+            
+            if(fridge is null)
+            {
+                throw new NotFoundException("Fridge not found");
+            }
+
+            var ids = await _unitOfWork.GetUsersFromFridge(fridgeId);
 
             return await _grpcService.GetUsers(ids);
         }
 
         public async Task CheckProducts(int fridgeId)
         {
-            var fridge = await _fridgeRepository.GetFridge(fridgeId);
+            var fridge = await _unitOfWork.GetFridge(fridgeId);
 
             if(fridge is null)
             {
                 throw new NotFoundException("Fridge not found");
             }
 
-            var productsModel = await _fridgeRepository.GetProductsFromFridge(fridgeId);
+            var productsModel = await _unitOfWork.GetProductsFromFridge(fridgeId);
 
             var ids = productsModel.Select(p => p.productId).ToList();
 
@@ -195,7 +178,7 @@ namespace BLL.Services
 
         public async Task CheckProducts()
         {
-            var fridges = await _fridgeRepository.GetAllFridges();
+            var fridges = await _unitOfWork.GetAllFridges();
 
             foreach (var fridge in fridges)
             {
@@ -205,12 +188,11 @@ namespace BLL.Services
 
         public async Task<List<Product>> GetFridgeProducts(int fridgeId)
         {
-            var productsModel = await _fridgeRepository.GetProductsFromFridge(fridgeId);
+            var productsModel = await _unitOfWork.GetProductsFromFridge(fridgeId);
                
             var ids = productsModel.Select(p => p.productId).ToList();
 
             return await _productsgRPCService.GetProducts(ids);
         }
-
     }
 }

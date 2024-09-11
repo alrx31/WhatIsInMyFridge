@@ -10,10 +10,8 @@ namespace DAL.DI
     {
         public static IServiceCollection AddDALDependencies(this IServiceCollection services)
         {
-            services.AddScoped<IFridgeRepository, FridgeRepository>();
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IFridgeRepository,FridgeRepository>();
             services.AddScoped<IgRPCService, gRPCService>();
             services.AddScoped<IProductsgRPCService, ProductsgRPCService>();
 
