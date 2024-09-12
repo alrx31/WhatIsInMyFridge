@@ -2,24 +2,35 @@
 using DAL.Entities;
 using DAL.Repositories;
 using BLL.DTO;
-using Presentation.Middlewares.Exceptions;
 using DAL.IRepositories;
+using BLL.Exceptions;
 
 namespace BLL.Services
 {
     public interface IFridgeService
     {
         Task AddFridge(FridgeAddDTO fridge);
+
         Task<Fridge> GetFridge(int fridgeId);
+        
         Task RemoveFridgeById(int fridgeId);
+        
         Task AddUserToFridge(int fridgeId, int userId);
+        
         Task RemoveUserFromFridge(int fridgeId, int userId);
+        
         Task<Fridge> UpdateFridge(FridgeAddDTO fridge,int fridgeId);
+        
         Task AddProductsToList(int fridgeId, List<ProductInfoModel> products);
+        
         Task RemoveProductFromFridge(int fridgeId, string productId);
+        
         Task<List<User>> GetFridgeUsers(int fridgeId);
+        
         Task CheckProducts(int fridgeId);
+        
         Task CheckProducts();
+        
         Task<List<Product>> GetFridgeProducts(int fridgeId);
     }
 

@@ -8,6 +8,7 @@ namespace BLL.Validators
         public ProductInfoValidator()
         {
             RuleFor(x => x.ProductId).NotNull().NotEmpty();
+            
             RuleFor(x => x.Count).NotNull().NotEmpty().GreaterThan(0);
         }
     }

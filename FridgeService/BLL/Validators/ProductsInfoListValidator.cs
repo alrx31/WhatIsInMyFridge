@@ -8,6 +8,7 @@ namespace BLL.Validators
         public ProductsInfoListValidator()
         {
             RuleFor(x => x.ProductsInfos).NotNull();
+            
             RuleForEach(x => x.ProductsInfos).SetValidator(new ProductInfoValidator());
         }
     }

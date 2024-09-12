@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Presentation.Middlewares.Exceptions;
+using BLL.Exceptions;
 
 namespace Presentation.Middlewares
 {
