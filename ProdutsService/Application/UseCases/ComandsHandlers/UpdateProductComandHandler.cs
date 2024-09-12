@@ -20,7 +20,7 @@ namespace Application.UseCases.ComandsHandlers
         {
             var product = await _productRepository.GetProduct(request.Id);
 
-            if(product == null)
+            if(product is null)
             {
                 throw new NotFoundException("Product not found");
             }

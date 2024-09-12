@@ -13,6 +13,5 @@ namespace Domain.Entities
         public TimeSpan ExpirationTime { get; set; }
 
         public List<ProductInList>? Lists { get; set; }
-        //public List<ProductInReciept>? Reciepts { get; set; }
     }
 }

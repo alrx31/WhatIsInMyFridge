@@ -4,11 +4,6 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Repository;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.UseCases.ComandsHandlers
 {
@@ -29,7 +24,8 @@ namespace Application.UseCases.ComandsHandlers
         {
             var list = await _listRepository.GetListById(request.ListId);
 
-            if (list is null) {
+            if (list is null)
+            {
                 throw new NotFoundException("List not found");
             }
 

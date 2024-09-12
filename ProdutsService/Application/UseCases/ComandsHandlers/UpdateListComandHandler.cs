@@ -20,7 +20,7 @@ namespace Application.UseCases.ComandsHandlers
         {
             var list = await _listRepository.GetListById(request.Id);
 
-            if(list == null)
+            if(list is null)
             {
                 throw new NotFoundException("List not found");
             }
