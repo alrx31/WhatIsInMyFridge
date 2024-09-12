@@ -105,7 +105,7 @@ namespace BLL.Services
                 throw new NotFoundException("Fridge not found");
             }
 
-            _mapper.Map((fridge, fridgeId), existingFridge);
+            _mapper.Map(fridge, existingFridge);
 
             await _unitOfWork.UpdateFridge(existingFridge);
 

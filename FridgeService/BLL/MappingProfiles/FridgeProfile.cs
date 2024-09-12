@@ -10,14 +10,8 @@ namespace BLL.MappingProfiles
         {
             CreateMap<FridgeAddDTO, Fridge>()
                 .ForMember(f => f.boughtDate, opt => opt.MapFrom(src => src.BoughtDate));
-            
-            CreateMap<(FridgeAddDTO, int), Fridge>()
-                .ForMember(f => f.id, opt => opt.MapFrom(src => src.Item2))
-                .ForMember(f => f.serial, opt => opt.MapFrom(src => src.Item1.Serial))
-                .ForMember(f => f.boxNumber, opt => opt.MapFrom(src => src.Item1.BoxNumber))
-                .ForMember(f => f.boughtDate, opt => opt.MapFrom(src => src.Item1.BoughtDate))
-                .ForMember(f => f.model, opt => opt.MapFrom(src => src.Item1.Model))
-                .ForMember(f => f.name, opt => opt.MapFrom(src => src.Item1.Name));
+
+            CreateMap<FridgeAddDTO, Fridge>();
         }
     }
 }
