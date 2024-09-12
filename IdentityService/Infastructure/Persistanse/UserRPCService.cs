@@ -17,7 +17,7 @@ public class GreeterService (
         
         foreach (var id in request.Ids)
         {
-            var user = await _unitOfWork.GetUserById(id);
+            var user = await _unitOfWork.UserRepository.GetUserById(id);
             response.Users.Add(_mapper.Map<Infastructure.Persistanse.Protos.User>(user));
         }
 
@@ -28,7 +28,7 @@ public class GreeterService (
     {
         var response = new isUserExist();
         
-        response.IsExist = await _unitOfWork.GetUserById(request.UserId) != null;
+        response.IsExist = await _unitOfWork.UserRepository.GetUserById(request.UserId) != null;
         
         return response;
     }

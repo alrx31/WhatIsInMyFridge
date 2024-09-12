@@ -25,11 +25,11 @@ namespace Application.UseCases.Handlers.Comands
         public async Task<User> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
             var model = request.user;
-            var user = await _unitOfWork.GetCacheData<User>($"user-{request.id}");
+            var user = await _unitOfWork.CacheRepository.GetCacheData<User>($"user-{request.id}");
 
             if (user is null)
             {
-                user = await _unitOfWork.GetUserById(request.id);
+                user = await _unitOfWork.UserRepository.GetUserById(request.id);
             }
 
             if (user is null)
@@ -39,17 +39,13 @@ namespace Application.UseCases.Handlers.Comands
 
             model.Password = Scripts.GetHash(model.Password);
 
-            User user1 = await _unitOfWork.UpdateUser(_mapper.Map<User>(model));
+            User user1 = await _unitOfWork.UserRepository.UpdateUser(_mapper.Map<User>(model));
 
-            if (user1 is null)
-            {
-                throw new NotFoundException("Invalid User");
-            }
+            await _unitOfWork.CacheRepository.SetCatcheData($"user-{request.id}", user1);
 
-            await _unitOfWork.SetCatcheData($"user-{request.id}", user1);
+            await _unitOfWork.CompleteAsync();
 
             return user1;
         }
-
     }
 }

@@ -37,18 +37,18 @@ namespace Application.UseCases.Handlers.Comands
                 throw new BadRequestException("Invalid token");
             }
 
-            var identityUser = await _unitOfWork.GetTokenModel(principal.Identity.Name);
+            var identityUser = await _unitOfWork.UserRepository.GetTokenModel(principal.Identity.Name);
 
             if (identityUser is null || string.IsNullOrEmpty(identityUser.refreshToken) || identityUser.refreshTokenExpiryTime < DateTime.UtcNow)
             {
                 throw new BadRequestException("Invalid token");
             }
 
-            var user = await _unitOfWork.GetCacheData<User>($"user-{identityUser.id}");
+            var user = await _unitOfWork.CacheRepository.GetCacheData<User>($"user-{identityUser.id}");
 
             if (user is null)
             {
-                var tempUser = _mapper.Map<UserDTO>(await _unitOfWork.GetUserById(identityUser.id));
+                var tempUser = _mapper.Map<UserDTO>(await _unitOfWork.UserRepository.GetUserById(identityUser.id));
                 
                 if(tempUser is null)
                 {
@@ -58,7 +58,9 @@ namespace Application.UseCases.Handlers.Comands
                 response.User = tempUser;
                 
 
-                await _unitOfWork.SetCatcheData($"user-{identityUser.id}", response.User, new TimeSpan(24, 0, 0));
+                await _unitOfWork.CacheRepository.SetCatcheData($"user-{identityUser.id}", response.User, new TimeSpan(24, 0, 0));
+                
+                await _unitOfWork.CompleteAsync();
             }
             else
             {
@@ -69,17 +71,19 @@ namespace Application.UseCases.Handlers.Comands
             response.JwtToken = _jwtService.GenerateJwtToken(identityUser.email);
             refreshToken = _jwtService.GenerateRefreshToken();
 
-            var identityUserTokenModel = await _unitOfWork.GetTokenModel(identityUser.email);
+            var identityUserTokenModel = await _unitOfWork.UserRepository.GetTokenModel(identityUser.email);
 
             if (identityUserTokenModel is null)
             {
-                await _unitOfWork.AddRefreshTokenField(new RefreshTokenModel
+                await _unitOfWork.UserRepository.AddRefreshTokenField(new RefreshTokenModel
                 {
                     email = identityUser.email,
                     refreshTokenExpiryTime = DateTime.UtcNow.AddHours(12),
                     userId = identityUser.id,
                     user = null
                 });
+                
+                await _unitOfWork.CompleteAsync();
             }
             else
             {
@@ -89,7 +93,9 @@ namespace Application.UseCases.Handlers.Comands
 
             response.RefreshToken = refreshToken;
 
-            await _unitOfWork.UpdateRefreshTokenAsync(identityUserTokenModel);
+            await _unitOfWork.UserRepository.UpdateRefreshTokenAsync(identityUserTokenModel);
+
+            await _unitOfWork.CompleteAsync();
 
             return response;
         }

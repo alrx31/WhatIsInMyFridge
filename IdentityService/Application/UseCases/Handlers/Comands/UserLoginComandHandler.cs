@@ -29,7 +29,7 @@ namespace Application.UseCases.Handlers.Comands
             var password = request.Password;
             var response = new LoginResponse();
 
-            var identifyUser = await _unitOfWork.GetUserByLogin(login);
+            var identifyUser = await _unitOfWork.UserRepository.GetUserByLogin(login);
 
             if (identifyUser is null ||
                 (identifyUser.password == Scripts.GetHash(password)) == false)
@@ -42,18 +42,20 @@ namespace Application.UseCases.Handlers.Comands
             response.JwtToken = _jwtService.GenerateJwtToken(identifyUser.email);
             var RefreshToken = _jwtService.GenerateRefreshToken();
 
-            var identityUserTokenModel = await _unitOfWork.GetTokenModel(identifyUser.email);
+            var identityUserTokenModel = await _unitOfWork.UserRepository.GetTokenModel(identifyUser.email);
 
             if (identityUserTokenModel is null)
             {
 
-                await _unitOfWork.AddRefreshTokenField(new RefreshTokenModel
+                await _unitOfWork.UserRepository.AddRefreshTokenField(new RefreshTokenModel
                 {
                     email = identifyUser.email,
                     refreshTokenExpiryTime = DateTime.UtcNow.AddHours(12),
                     userId = identifyUser.id,
                     user = null
                 });
+
+                await _unitOfWork.CompleteAsync();
             }
             else
             {
@@ -63,9 +65,11 @@ namespace Application.UseCases.Handlers.Comands
 
             response.RefreshToken = RefreshToken;
 
-            await _unitOfWork.UpdateRefreshTokenAsync(identityUserTokenModel);
+            await _unitOfWork.UserRepository.UpdateRefreshTokenAsync(identityUserTokenModel);
 
-            await _unitOfWork.SetCatcheData($"user-{response.User.id}", response.User, new TimeSpan(24, 0, 0));
+            await _unitOfWork.CacheRepository.SetCatcheData($"user-{response.User.id}", response.User, new TimeSpan(24, 0, 0));
+
+            await _unitOfWork.CompleteAsync();
 
             return response;
         }

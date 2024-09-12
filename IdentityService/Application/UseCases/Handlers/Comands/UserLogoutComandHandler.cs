@@ -15,8 +15,9 @@ namespace Application.UseCases.Handlers.Comands
 
         public async Task<Unit> Handle(UserLogoutCommand request, CancellationToken cancellationToken)
         {
-            await _unitOfWork.CanselRefreshToken(request.UserId);
+            await _unitOfWork.UserRepository.CanselRefreshToken(request.UserId);
 
+            await _unitOfWork.CompleteAsync();
 
             return Unit.Value;
         }

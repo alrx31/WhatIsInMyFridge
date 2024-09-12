@@ -15,13 +15,13 @@ namespace Application.UseCases.Handlers.Queries
 
         public async Task<User> Handle(GetUserQueryByIdQuery request, CancellationToken cancellationToken)
         {
-            var user1 = await _unitOfWork.GetCacheData<User>($"user-{request.Id}");
+            var user1 = await _unitOfWork.CacheRepository.GetCacheData<User>($"user-{request.Id}");
             if (user1 != null)
             {
                 return user1;
             }
 
-            var user = await _unitOfWork.GetUserById(request.Id);
+            var user = await _unitOfWork.UserRepository.GetUserById(request.Id);
 
             if (user is null)
             {

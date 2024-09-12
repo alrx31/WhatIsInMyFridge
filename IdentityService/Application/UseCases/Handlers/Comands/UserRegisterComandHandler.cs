@@ -23,7 +23,7 @@ namespace Application.UseCases.Handlers.Comands
 
         public async Task<Unit> Handle(UserRegisterCommand model,CancellationToken cancellationToken)
         {
-            var userCheck = await _unitOfWork.GetUserByLogin(model.Login);
+            var userCheck = await _unitOfWork.UserRepository.GetUserByLogin(model.Login);
 
             if (!(userCheck is null))
             {
@@ -31,11 +31,11 @@ namespace Application.UseCases.Handlers.Comands
             }
             model.Password = Scripts.GetHash(model.Password);   
 
-            await _unitOfWork.RegisterUser(_mapper.Map<User>(model));
+            await _unitOfWork.UserRepository.RegisterUser(_mapper.Map<User>(model));
 
             await _unitOfWork.CompleteAsync();
 
-            var user = await _unitOfWork.GetUserByLogin(model.Login);
+            var user = await _unitOfWork.UserRepository.GetUserByLogin(model.Login);
 
             if (user is null)
             {
@@ -51,7 +51,9 @@ namespace Application.UseCases.Handlers.Comands
                 user = null
             };
 
-            await _unitOfWork.AddRefreshTokenField(newToken);
+            await _unitOfWork.UserRepository.AddRefreshTokenField(newToken);
+
+            await _unitOfWork.CompleteAsync();
 
             return Unit.Value;
         }

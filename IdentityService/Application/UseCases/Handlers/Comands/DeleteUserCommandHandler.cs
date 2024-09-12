@@ -15,11 +15,11 @@ namespace Application.UseCases.Handlers.Comands
 
         public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _unitOfWork.GetCacheData<User>($"user-{request.InitiatorId}");
+            var user = await _unitOfWork.CacheRepository.GetCacheData<User>($"user-{request.InitiatorId}");
 
             if (user is null)
             {
-                user = await _unitOfWork.GetUserById(request.Id);
+                user = await _unitOfWork.UserRepository.GetUserById(request.Id);
             }
 
             if (user is null)
@@ -27,18 +27,20 @@ namespace Application.UseCases.Handlers.Comands
                 throw new NotFoundException("User not found");
             }
 
-            var token = await _unitOfWork.GetTokenModel(user.email);
+            var token = await _unitOfWork.UserRepository.GetTokenModel(user.email);
 
             if (user.isAdmin || user.id == request.Id)
             {
-                await _unitOfWork.RemoveCacheData($"user-{request.Id}");
+                await _unitOfWork.CacheRepository.RemoveCacheData($"user-{request.Id}");
 
-                await _unitOfWork.DeleteUser(request.Id);
+                await _unitOfWork.UserRepository.DeleteUser(request.Id);
 
                 if (token != null)
                 {
-                    await _unitOfWork.DeleteRefreshTokenByUserId(request.Id);
+                    await _unitOfWork.UserRepository.DeleteRefreshTokenByUserId(request.Id);
                 }
+
+                await _unitOfWork.CompleteAsync();
             }
             else
             {
