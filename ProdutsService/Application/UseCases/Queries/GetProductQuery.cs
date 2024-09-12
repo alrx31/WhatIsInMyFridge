@@ -1,5 +1,4 @@
-﻿using Amazon.Runtime.Internal;
-using Domain.Entities;
+﻿using Domain.Entities;
 using MediatR;
 
 namespace Application.UseCases.Queries

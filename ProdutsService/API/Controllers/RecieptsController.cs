@@ -25,6 +25,7 @@ namespace API.Controllers
         public async Task<IActionResult> AddReciept([FromBody] AddRecieptDTO model)
         {
             await _mediator.Send(_mapper.Map<AddRecieptComand>(model));
+            
             return Ok();
         }
 
@@ -38,6 +39,7 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteReciept(string id)
         {
             await _mediator.Send(_mapper.Map<DeleteRecieptComand>(id));
+            
             return Ok();
         }
 
@@ -45,6 +47,7 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateReciept(string id, [FromBody] AddRecieptDTO model)
         {
             await _mediator.Send(_mapper.Map<UpdateRecieptComand>((model,id)));
+            
             return Ok();
         }
 

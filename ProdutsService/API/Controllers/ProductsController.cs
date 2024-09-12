@@ -24,6 +24,7 @@ namespace API.Controllers
         public async Task<IActionResult> AddProduct([FromBody] AddProductDTO product)
         {
             await _mediator.Send(_mapper.Map<AddProductComand>(product));
+           
             return Ok();
         }
 
@@ -37,6 +38,7 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteProduct(string id)
         {
             await _mediator.Send(_mapper.Map<DeleteProductComand>(id));
+            
             return Ok();
         }
 
@@ -44,6 +46,7 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateProduct(string id, [FromBody] AddProductDTO product)
         {
             await _mediator.Send(_mapper.Map<UpdateProductComand>((product,id)));
+            
             return Ok();
         }
 

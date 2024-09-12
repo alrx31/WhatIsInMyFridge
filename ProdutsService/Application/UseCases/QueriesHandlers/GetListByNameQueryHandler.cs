@@ -17,7 +17,7 @@ namespace Application.UseCases.QueriesHandlers
         {
             var list = await _listRepository.GetListByName(request.Name);
 
-            if(list == null)
+            if(list is null)
             {
                 throw new NotFoundException("List not found");
             }

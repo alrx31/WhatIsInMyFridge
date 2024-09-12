@@ -1,7 +1,6 @@
 ﻿using Domain.Repository;
 using Grpc.Core;
 using Infrastructure.Persistanse.Protos;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Infrastructure.Persistance
 {

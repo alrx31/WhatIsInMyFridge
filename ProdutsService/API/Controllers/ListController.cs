@@ -1,5 +1,4 @@
 ﻿using Application.DTO;
-using Application.Exceptions;
 using Application.UseCases.Comands;
 using Application.UseCases.Queries;
 using AutoMapper;
@@ -82,8 +81,5 @@ namespace API.Controllers
 
             return Ok();
         }
-
-
-
     }
 }

@@ -11,7 +11,9 @@ namespace Application.MappingProfiles
         public ProductProfile()
         {
             CreateMap<AddProductComand, Product>();
+            
             CreateMap<AddProductDTO, AddProductComand>();
+            
             CreateMap<(AddProductDTO,string), UpdateProductComand>()
                 .ForMember(dest => dest.Id, opt=>opt.MapFrom(src=>src.Item2))
                 .ForMember(dest => dest.Name, opt=>opt.MapFrom(src=>src.Item1.Name))
@@ -19,8 +21,11 @@ namespace Application.MappingProfiles
                 .ForMember(dest => dest.ExpirationTime, opt=>opt.MapFrom(src=>src.Item1.ExpirationTime));
 
             CreateMap<int, GetProductQuery>();
+            
             CreateMap<int,DeleteProductComand>();
+            
             CreateMap<UpdateProductComand, Product>();
+            
             CreateMap<(int,int), GetAllProductsQuery>()
                 .ForMember(dest => dest.Page, opt => opt.MapFrom(src => src.Item1))
                 .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.Item2));
