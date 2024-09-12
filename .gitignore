@@ -1,0 +1,27 @@
+﻿################################################################################
+# Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
+################################################################################
+
+/IdentityService/Application/bin/Debug/net8.0
+/IdentityService/Application/obj
+/IdentityService/Domain/bin/Debug/net8.0
+/IdentityService/Domain/obj
+/IdentityService/Identity/.vs
+/IdentityService/Identity/bin/Debug/net8.0
+/IdentityService/Identity/obj
+/IdentityService/Infastructure/bin/Debug/net8.0
+/IdentityService/Infastructure/obj
+/IdentityService/Presentation/bin/Debug/net8.0
+/IdentityService/Presentation/obj
+/.vs
+/IdentityService/.vs
+/IdentityService/Tests/bin/Debug/net8.0
+/IdentityService/Tests/obj
+/FridgeService/.idea/.idea.FridgeService/.idea
+/FridgeService/.vs/FridgeService
+/FridgeService/Application/obj
+/FridgeService/Domain/obj
+/FridgeService/Fridge/obj
+/FridgeService/Infrastructure/obj/Debug/net8.0
+/FridgeService
+/ProdutsService
