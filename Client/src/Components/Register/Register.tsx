@@ -10,18 +10,17 @@ const Register = (
 ) => {
     
     const [email,setEmale] = useState("");
+    const [login,setLogin] = useState("");
     const [password, setPassword] = useState("")
-    const [birthDate,setBirthDate] = useState(new Date())
-    const [firstName,setFirstName] = useState("");
-    const [lastName,setLastName] = useState("");
-    
+    const [name,setName] = useState("");
+        
     const {store} = useContext(Context)
     
     const history = useNavigate();
     
     let handleSubmit = (e:any)=>{
         e.preventDefault();
-        store.registration(email,password,firstName,lastName,birthDate);
+        store.registration(email,password,name,login);
         if(!store.isAuht){
             history('/login')
         }
@@ -29,8 +28,8 @@ const Register = (
     
     return (
         <div className="register-page">
-            <form onSubmit={handleSubmit}>
-                <h2>Регистрация</h2>
+            <form onSubmit={handleSubmit} className={"register-form"}>
+                <h2>Register</h2>
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <input
@@ -42,7 +41,7 @@ const Register = (
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="password">Пароль</label>
+                    <label htmlFor="password">Password</label>
                     <input
                         type="password"
                         id="password"
@@ -52,37 +51,27 @@ const Register = (
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="firstName">Имя</label>
+                    <label htmlFor="firstName">Name</label>
                     <input
                         type="text"
                         id="firstName"
                         name="firstName"
-                        onChange={e=>setFirstName(e.target.value)}
-                        value={firstName}
+                        onChange={e=>setName(e.target.value)}
+                        value={name}
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="lastName">Фамилия</label>
+                    <label htmlFor="lastName">Login</label>
                     <input
                         type="text"
                         id="lastName"
                         name="lastName"
-                        onChange={e=>setLastName(e.target.value)}
-                        value={lastName}
+                        onChange={e=>setLogin(e.target.value)}
+                        value={login}
                     />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="birthDate">Дата рождения</label>
-                    <input
-                        type="date"
-                        id="birthDate"
-                        name="birthDate"
-                        onChange={e=>setBirthDate(new Date(e.target.value))}
-                        value={birthDate.toString()}
-                    />
-                </div>
-                <button type="submit" className="login-button">Зарегистрироваться</button>
-                <NavLink to={"/login"}>Уже есть аккаунт?</NavLink>
+                <button type="submit" className="login-button">Register</button>
+                <NavLink to={"/login"}>have account?</NavLink>
             </form>
         </div>
     )

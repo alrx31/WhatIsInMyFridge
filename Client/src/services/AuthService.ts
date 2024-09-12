@@ -1,5 +1,5 @@
 import $api from '../http'
-import { AxiosResponse } from 'axios'
+import { AxiosResponse } from "axios";
 import {IAuthResponse} from "../models/AuthResponse";
 import Store from "../store/store";
 
@@ -18,12 +18,10 @@ export default class AuthService{
         password:string,
         FirstName:string,
         LastName:string,
-        BirthDate:Date
     ):Promise<AxiosResponse<IAuthResponse>>{
         return $api.post<IAuthResponse>('/Participants/register', {
             FirstName,
             LastName,
-            BirthDate,
             RegistrationDate:new Date(),
             email,
             password

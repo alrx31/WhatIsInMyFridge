@@ -5,8 +5,6 @@ import UserService from "../services/UserService";
 import axios from "axios";
 import {API_URL} from "../http";
 import {IAuthResponse} from "../models/AuthResponse";
-import EventsService from "../services/EventsService";
-import {IEvent} from "../models/Event";
 
 export default class Store {
     user = {} as IUser;
@@ -34,6 +32,7 @@ export default class Store {
 
     async login(email: string, password: string) {
         this.setLoading(true)
+        
         try {
             const response = await AuthService.login(email, password);
             localStorage.setItem('token', response.data.jwtToken);
@@ -55,17 +54,15 @@ export default class Store {
     async registration(
         email: string,
         password: string,
-        firstName: string,
-        lastName: string,
-        BirthDate: Date
+        name: string,
+        login: string,
     ) {
         try {
             const response = await AuthService.register(
                 email,
                 password,
-                firstName,
-                lastName,
-                BirthDate
+                name,
+                login
             );
             if (response.status === 200) {
                 alert('Успешная регистрация');
@@ -77,7 +74,7 @@ export default class Store {
 
     async logout() {
         try {
-            const response = await AuthService.logout(this.user.id);
+            const response = await AuthService.logout(this.user.Id);
             localStorage.removeItem('token');
             this.setAuth(false);
             this.setUser({} as IUser);
@@ -101,13 +98,11 @@ export default class Store {
             
             const res = await UserService.fetchUserById(response.data.userId);
             if (res.data) this.setUser({
-                id: res.data.id,
-                firstName: res.data.firstName,
-                lastName: res.data.lastName,
-                email: res.data.email,
-                birthDate: res.data.birthDate,
-                registrationDate: res.data.registrationDate,
-                isAdmin: res.data.isAdmin
+                Id: res.data.id,
+                Name: res.data.firstName,
+                Login: res.data.login,
+                Email: res.data.email,
+                IsAdmin: res.data.isAdmin
             });
             else console.log('Ошибка получения данных пользователя');
 

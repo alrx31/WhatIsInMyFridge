@@ -1,5 +1,4 @@
-﻿import {IEvent} from "../models/Event";
-import {AxiosResponse} from "axios";
+﻿import {AxiosResponse} from "axios";
 import $api from "../http";
 
 export default class ParticipantService {

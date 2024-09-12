@@ -1,5 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios'
-import { config } from 'process';
+import axios from 'axios'
 import {IAuthResponse} from "../models/AuthResponse";
 
 export const API_URL = "http://localhost:5274/api";
