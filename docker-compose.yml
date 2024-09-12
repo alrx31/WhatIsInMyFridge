@@ -3,10 +3,10 @@ networks:
   entityservicenetwork:
     driver: bridge
 services:
-  service:
-    image: identityservice         
+  identityservice:
     build:
-      context: .         
+      context: ./IdentityService
+      dockerfile: Dockerfile        
     ports:
       - "8080:8080"
       - "8081:8081" 
@@ -17,12 +17,24 @@ services:
       - redis
     networks:
       - entityservicenetwork
+  #fridgeservice:
+   # build:
+    #  context: ./FridgeService
+     # dockerfile: Dockerfile
+    #ports:
+     # - "8082:8082"
+    #environment:
+     # ConnectionStrings__DefaultConnection: "Host=postgres;Database=FridgeDb;Username=alex;Password=postgres123"
+    #depends_on:
+     # - identityservice
+    #networks:
+     # - entityservicenetwork
   postgres:
     image: postgres:15
     environment:
       POSTGRES_USER: alex
       POSTGRES_PASSWORD: postgres123
-      POSTGRES_DB: UsersDb
+      POSTGRES_DB: UsersDb,FridgeDb
     ports:
       - "5432:5432"
     volumes:
