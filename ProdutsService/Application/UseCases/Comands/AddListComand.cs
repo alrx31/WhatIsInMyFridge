@@ -1,16 +1,13 @@
-﻿using MediatR;
+﻿using Application.DTO;
+using MediatR;
 
 namespace Application.UseCases.Comands
 {
     public class AddListComand
         (
-            string name,
-            int weight,
-            decimal price
-        ): IRequest
+            AddListDTO model
+        ) : IRequest
     {
-        public string Name = name;
-        public int Weight = weight;
-        public decimal Price = price;
+        public AddListDTO Model = model;
     }
 }

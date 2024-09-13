@@ -18,14 +18,14 @@ namespace Application.UseCases.ComandsHandlers
 
         public async Task Handle(AddRecieptComand request, CancellationToken cancellationToken)
         {
-            var reciept = await _recieptsRepository.GetRecieptByNameAsync(request.Name, cancellationToken);
+            var reciept = await _recieptsRepository.GetRecieptByNameAsync(request.Model.Name, cancellationToken);
 
             if(reciept is not null)
             {
                 throw new AlreadyExistsException("Reciept already exists");
             }
 
-            await _recieptsRepository.AddAsync(_mapper.Map<Reciept>(request),cancellationToken);
+            await _recieptsRepository.AddAsync(_mapper.Map<Reciept>(request.Model),cancellationToken);
         }
 
     }

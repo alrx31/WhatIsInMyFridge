@@ -29,7 +29,7 @@ namespace Application.UseCases.ComandsHandlers
                 throw new NotFoundException("List not found");
             }
 
-            var product = await _productRepository.GetByIdAsync(request.ProductId,cancellationToken);
+            var product = await _productRepository.GetByIdAsync(request.Model.ProductId,cancellationToken);
         
             if(product is null)
             {

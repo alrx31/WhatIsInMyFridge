@@ -34,13 +34,13 @@ namespace API.Controllers
             return Ok(await _mediator.Send(_mapper.Map<GetListQuery>(id), cancellationToken));
         }
 
-        [HttpGet("name/{name}")]
+        /*[HttpGet("name/{name}")]
         public async Task<IActionResult> GetListByName(string name, CancellationToken cancellationToken)
         {
             await _mediator.Send(_mapper.Map<GetListByNameQuery>(name), cancellationToken);
 
             return Ok();
-        }
+        }*/
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteListById(string id, CancellationToken cancellationToken)

@@ -12,13 +12,12 @@ namespace Application.MappingProfiles
         {
             CreateMap<AddProductComand, Product>();
             
-            CreateMap<AddProductDTO, AddProductComand>();
-            
+            CreateMap<AddProductDTO, AddProductComand>()
+                .ConstructUsing(src => new AddProductComand(src));
+
             CreateMap<(AddProductDTO,string), UpdateProductComand>()
                 .ForMember(dest => dest.Id, opt=>opt.MapFrom(src=>src.Item2))
-                .ForMember(dest => dest.Name, opt=>opt.MapFrom(src=>src.Item1.Name))
-                .ForMember(dest => dest.PricePerKilo, opt=>opt.MapFrom(src=>src.Item1.PricePerKilo))
-                .ForMember(dest => dest.ExpirationTime, opt=>opt.MapFrom(src=>src.Item1.ExpirationTime));
+                .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Item1));
 
             CreateMap<int, GetProductQuery>();
             
@@ -32,7 +31,7 @@ namespace Application.MappingProfiles
 
             CreateMap<UpdateProductComand,Product>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.ExpirationTime, opt => opt.MapFrom(src => src.ExpirationTime));
+            .ForMember(dest => dest.ExpirationTime, opt => opt.MapFrom(src => src.Model.ExpirationTime));
 
         }
     }

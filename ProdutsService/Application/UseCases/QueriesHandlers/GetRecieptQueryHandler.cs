@@ -1,4 +1,5 @@
-﻿using Application.UseCases.Queries;
+﻿using Application.Exceptions;
+using Application.UseCases.Queries;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Repository;
@@ -17,7 +18,14 @@ namespace Application.UseCases.QueriesHandlers
 
         public async Task<Reciept> Handle(GetRecieptQuery request, CancellationToken cancellationToken)
         {
-            return await _recieptsRepository.GetByIdAsync(request.RecieptId,cancellationToken);
+            var reciept = await _recieptsRepository.GetByIdAsync(request.RecieptId, cancellationToken);
+
+            if (reciept is null)
+            {
+                throw new NotFoundException("Reciept not found");
+            }
+
+            return reciept;
         }
     }
 }

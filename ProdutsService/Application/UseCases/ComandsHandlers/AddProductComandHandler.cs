@@ -17,14 +17,14 @@ namespace Application.UseCases.ComandsHandlers
 
         public async Task Handle(AddProductComand request, CancellationToken cancellationToken)
         {
-            var product = await _repository.GetProductByName(request.Name,cancellationToken);
+            var product = await _repository.GetProductByName(request.Model.Name,cancellationToken);
 
             if (product is not null)
             {
                 throw new AlreadyExistsException("Product already exists");
             }
 
-            await _repository.AddAsync(_mapper.Map<Product>(request),cancellationToken);
+            await _repository.AddAsync(_mapper.Map<Product>(request.Model),cancellationToken);
         }
     }
 }
