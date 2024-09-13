@@ -25,10 +25,9 @@ namespace Application.UseCases.ComandsHandlers
                 throw new NotFoundException("Product not found");
             }
 
-            var pr = _mapper.Map<Product>(request);
-            pr.Id = product.Id;
+            _mapper.Map(request, product);
 
-            await _productRepository.UpdateAsync(pr,cancellationToken);
+            await _productRepository.UpdateAsync(product,cancellationToken);
         }
     }
 }

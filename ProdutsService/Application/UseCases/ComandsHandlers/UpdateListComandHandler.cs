@@ -24,11 +24,10 @@ namespace Application.UseCases.ComandsHandlers
             {
                 throw new NotFoundException("List not found");
             }
-
-            var ls = _mapper.Map<ProductsList>(request);
-            ls.CreateData = list.CreateData;
             
-            await _listRepository.UpdateAsync(ls,cancellationToken);
+            _mapper.Map(request, list);
+            
+            await _listRepository.UpdateAsync(list, cancellationToken);
         }
     }
 }
