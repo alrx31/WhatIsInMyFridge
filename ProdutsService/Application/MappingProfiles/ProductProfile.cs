@@ -29,6 +29,11 @@ namespace Application.MappingProfiles
             CreateMap<(int,int), GetAllProductsQuery>()
                 .ForMember(dest => dest.Page, opt => opt.MapFrom(src => src.Item1))
                 .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.Item2));
+
+            CreateMap<UpdateProductComand,Product>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.ExpirationTime, opt => opt.MapFrom(src => src.ExpirationTime));
+
         }
     }
 }
