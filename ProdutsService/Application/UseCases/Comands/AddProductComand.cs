@@ -1,16 +1,13 @@
-﻿using MediatR;
+﻿using Application.DTO;
+using MediatR;
 
 namespace Application.UseCases.Comands
 {
     public class AddProductComand
         (
-            string name,
-            decimal pricePerKilo,
-            TimeSpan expirationTime
+            AddProductDTO model
         ):IRequest
     {
-        public string Name = name;
-        public decimal PricePerKilo = pricePerKilo;
-        public TimeSpan ExpirationTime = expirationTime;
+        public AddProductDTO Model { get; set; }
     }
 }

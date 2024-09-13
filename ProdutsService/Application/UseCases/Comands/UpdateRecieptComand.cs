@@ -1,22 +1,18 @@
-﻿using MediatR;
+﻿using Application.DTO;
+using MediatR;
 
 namespace Application.UseCases.Comands
 {
     public class UpdateRecieptComand:IRequest
     {
         public string Id { get; set; }
-        public string Name { get; set; }
-        public TimeSpan CookDuration { get; set; }
-        public int Portions { get; set; }
-        public int Kkal { get; set; }
+
+        public AddRecieptDTO Model { get; set; }
         
-        public UpdateRecieptComand(string id, string name, TimeSpan cookDuration, int portions, int kkal)
+        public UpdateRecieptComand(string id, AddRecieptDTO model)
         {
             Id = id;
-            Name = name;
-            CookDuration = cookDuration;
-            Portions = portions;
-            Kkal = kkal;
+            Model = model;
         }
         public UpdateRecieptComand() { }
     }

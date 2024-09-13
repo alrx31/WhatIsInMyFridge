@@ -1,12 +1,17 @@
-﻿using MediatR;
+﻿using Application.DTO;
+using MediatR;
 
 namespace Application.UseCases.Comands
 {
     public class AddRecieptComand:IRequest
     {
-        public string Name { get; set; }
-        public TimeSpan CookDuration { get; set; }
-        public int Portions { get; set; }
-        public int Kkal { get; set; }
+        public AddRecieptDTO Model { get; set; }
+
+        public AddRecieptComand(AddRecieptDTO model)
+        {
+            Model = model;
+        }
+
+        public AddRecieptComand() { }
     }
 }

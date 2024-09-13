@@ -10,18 +10,31 @@ namespace Application.MappingProfiles
     {
         public RecieptsProfile()
         {
-            CreateMap<AddRecieptDTO, AddRecieptComand>();
-            
+            CreateMap<AddRecieptDTO, AddRecieptComand>()
+                .ConstructUsing(x => new AddRecieptComand(x));
+
             CreateMap<AddRecieptComand, Reciept>();
+
+            CreateMap<AddRecieptDTO, Reciept>();
+
+            CreateMap<string, GetRecieptQuery>()
+                .ForMember(dest => dest.RecieptId, opt => opt.MapFrom(src => src));
             
-            CreateMap<string, GetRecieptQuery>();
-            
-            CreateMap<string, DeleteRecieptComand>();
+            CreateMap<string, DeleteRecieptComand>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src));
             
             CreateMap<(AddRecieptDTO,string),UpdateRecieptComand>()
-                .ConstructUsing(x=>new UpdateRecieptComand(x.Item2,x.Item1.Name,x.Item1.CookDuration,x.Item1.Portions,x.Item1.Kkal));
-            
-            CreateMap<UpdateRecieptComand,Reciept>();
+                .ConstructUsing(x=>new UpdateRecieptComand(x.Item2,x.Item1));
+
+            CreateMap<UpdateRecieptComand, Reciept>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Model.Name))
+                .ForMember(dest => dest.Kkal, opt => opt.MapFrom(src => src.Model.Kkal))
+                .ForMember(dest => dest.CookDuration, opt => opt.MapFrom(src => src.Model.CookDuration))
+                .ForMember(dest => dest.Portions, opt => opt.MapFrom(src => src.Model.Portions));
+
+            CreateMap<(int, int), GetAllRecieptsQuery>()
+                .ConstructUsing(x => new GetAllRecieptsQuery(x.Item1, x.Item2));
         }
     }
 }

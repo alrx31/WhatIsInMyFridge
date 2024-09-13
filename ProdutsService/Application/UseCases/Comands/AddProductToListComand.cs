@@ -1,20 +1,17 @@
-﻿using MediatR;
+﻿using Application.DTO;
+using MediatR;
 
 namespace Application.UseCases.Comands
 {
     public class AddProductToListComand:IRequest
     {
         public string ListId { get; set; }
-        public string ProductId { get; set; }
-        public int Weight { get; set; } 
-        public decimal Cost { get; set; }
+        public AddProductToListDTO Model { get; set; }
 
-        public AddProductToListComand(string listId,string productId, int weight, decimal cost)
+        public AddProductToListComand(string listId, AddProductToListDTO model)
         {
             listId = ListId;
-            ProductId = productId;
-            Weight = weight;
-            Cost = cost;
+            Model = model;
         }
 
         public AddProductToListComand() { }
