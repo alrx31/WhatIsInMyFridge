@@ -17,14 +17,14 @@ namespace Application.UseCases.ComandsHandlers
 
         public async Task Handle(DeleteRecieptComand request, CancellationToken cancellationToken)
         {
-            var reciept = await _repository.GetReciept(request.Id);
+            var reciept = await _repository.GetByIdAsync(request.Id,cancellationToken);
 
             if (reciept is null)
             {
                 throw new NotFoundException("Reciept not found");
             }
 
-            await _repository.DeleteReciept(reciept);
+            await _repository.DeleteAsync(reciept.Id,cancellationToken);
         }
     }
 }

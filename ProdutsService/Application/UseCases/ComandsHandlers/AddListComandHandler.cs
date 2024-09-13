@@ -1,4 +1,5 @@
-﻿using Application.UseCases.Comands;
+﻿using Application.Exceptions;
+using Application.UseCases.Comands;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Repository;
@@ -17,7 +18,14 @@ namespace Application.UseCases.ComandsHandlers
 
         public async Task Handle(AddListComand request, CancellationToken cancellationToken)
         {
-            await _listRepository.AddList(_mapper.Map<ProductsList>(request));
+            var list = await _listRepository.GetListByName(request.Name,cancellationToken);
+
+            if (list is not null) 
+            {
+                throw new AlreadyExistsException("List already exists");
+            }
+
+            await _listRepository.AddAsync(_mapper.Map<ProductsList>(request),cancellationToken);
         }
     }
 }

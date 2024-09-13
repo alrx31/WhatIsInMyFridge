@@ -17,7 +17,7 @@ namespace Application.UseCases.QueriesHandlers
 
         public async Task<Reciept> Handle(GetRecieptQuery request, CancellationToken cancellationToken)
         {
-            return await _recieptsRepository.GetReciept(request.RecieptId);
+            return await _recieptsRepository.GetByIdAsync(request.RecieptId,cancellationToken);
         }
     }
 }

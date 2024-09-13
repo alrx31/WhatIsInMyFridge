@@ -24,4 +24,7 @@
 /FridgeService/Fridge/obj
 /FridgeService/Infrastructure/obj/Debug/net8.0
 /FridgeService
-/ProdutsService
+/ProdutsService/.vs/ProjectEvaluation
+/Client/.vs
+/Client/node_modules
+/Client/node_modules/.bin/acorn

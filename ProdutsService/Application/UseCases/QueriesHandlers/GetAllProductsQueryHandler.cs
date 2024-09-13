@@ -15,17 +15,7 @@ namespace Application.UseCases.QueriesHandlers
 
         public async Task<List<Product>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
-            if (request.Count < 1)
-            {
-                throw new ValidationDataException("Count must be greater than 0");
-            }
-
-            if(request.Page < 1)
-            {
-                throw new ValidationDataException("Page must be greater than 0");
-            }
-
-            return await _productRepository.GetAllProducts(request.Page,request.Count);
+            return await _productRepository.GetAllPaginationAsync(request.Page,request.Count,cancellationToken);
         }
     }
 }

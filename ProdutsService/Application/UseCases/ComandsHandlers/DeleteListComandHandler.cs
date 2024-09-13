@@ -1,4 +1,5 @@
-﻿using Application.UseCases.Comands;
+﻿using Application.Exceptions;
+using Application.UseCases.Comands;
 using Domain.Repository;
 using MediatR;
 
@@ -14,7 +15,14 @@ namespace Application.UseCases.ComandsHandlers
         }
         public async Task Handle(DeleteListComand request, CancellationToken cancellationToken)
         {
-            await _listRepository.DeleteListById(request.Id);
+            var list = await _listRepository.GetByIdAsync(request.Id,cancellationToken);
+
+            if(list is null)
+            {
+                throw new NotFoundException("List not found");
+            }
+
+            await _listRepository.DeleteAsync(request.Id,cancellationToken);
         }
     }
 }

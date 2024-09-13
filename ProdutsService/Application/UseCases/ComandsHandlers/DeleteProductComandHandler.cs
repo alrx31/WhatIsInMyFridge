@@ -1,4 +1,5 @@
-﻿using Application.UseCases.Comands;
+﻿using Application.Exceptions;
+using Application.UseCases.Comands;
 using Domain.Repository;
 using MediatR;
 
@@ -15,7 +16,14 @@ namespace Application.UseCases.ComandsHandlers
 
         public async Task Handle(DeleteProductComand request, CancellationToken cancellationToken)
         {
-            await _productRepository.DeleteProductById(request.Id);
+            var product = await _productRepository.GetByIdAsync(request.Id,cancellationToken);
+
+            if (product is null)
+            {
+                throw new NotFoundException("Product not found");
+            }
+
+            await _productRepository.DeleteAsync(request.Id,cancellationToken);
         }
     }
 }

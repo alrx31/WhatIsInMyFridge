@@ -4,28 +4,27 @@ using MongoDB.Driver;
 
 namespace Infrastructure.Persistance
 {
-    public class ListManageRepository : IListManageRepository
+    public class ListManageRepository :BaseRepository<ProductInList>, IListManageRepository
     {
         private readonly IMongoCollection<ProductInList> _context;
 
-        public ListManageRepository(ApplicationDbContext context)
+        public ListManageRepository(ApplicationDbContext context):base(context, "ListProducts")
         {
             _context = context.GetCollection<ProductInList>("ListProducts");
         }
 
-        public async Task AddProductToList(ProductInList productInList)
+        public Task DeleteProductInList(string listId, string productId, CancellationToken cancellationToken)
         {
-            await _context.InsertOneAsync(productInList);
+            var filter = Builders<ProductInList>.Filter.Eq("ListId", listId) & Builders<ProductInList>.Filter.Eq("ProductId", productId);
+
+            return _context.DeleteOneAsync(filter, cancellationToken);
         }
 
-        public async Task DeleteProductInList(string listId, string productId)
+        public Task<List<string>> GetListProducts(string listId, CancellationToken cancellationToken)
         {
-            await _context.DeleteOneAsync(p => p.ListId == listId && p.ProductId == productId);
-        }
+            var filter = Builders<ProductInList>.Filter.Eq("ListId", listId);
 
-        public async Task<List<string>> GetListProducts(string listId)
-        {
-            return await _context.Find(p => p.ListId == listId).Project(p => p.ProductId).ToListAsync();
+            return _collection.Find(filter).Project(p => p.ProductId).ToListAsync(cancellationToken);
         }
     }
 }
