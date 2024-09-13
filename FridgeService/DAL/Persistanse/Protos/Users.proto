@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option csharp_namespace = "DAL.Persistanse.Protos";
+
+
+service Greeter {
+  rpc GetUsers (UsersIds) returns (UsersResponse);
+  rpc CheckUserExist (UserExistRequest) returns (isUserExist);
+}
+
+message UserExistRequest{
+    int32 UserId = 1;
+}
+
+message UsersIds{
+	repeated int32 ids = 1;
+}
+
+message User {
+    int32 id = 1;
+    string name =2;
+    string login =3;
+    string email =4;
+    string password =5; 
+    bool isAdmin =6;
+}
+message UsersResponse {
+    repeated User users = 1;
+}
+
+message isUserExist {
+	bool isExist = 1;
+}
