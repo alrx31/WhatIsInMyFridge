@@ -17,18 +17,18 @@ services:
       - redis
     networks:
       - entityservicenetwork
-  #fridgeservice:
-   # build:
-    #  context: ./FridgeService
-     # dockerfile: Dockerfile
-    #ports:
-     # - "8082:8082"
-    #environment:
-     # ConnectionStrings__DefaultConnection: "Host=postgres;Database=FridgeDb;Username=alex;Password=postgres123"
-    #depends_on:
-     # - identityservice
-    #networks:
-     # - entityservicenetwork
+  fridgeservice:
+    build:
+      context: ./FridgeService
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Database=FridgeDb;Username=alex;Password=postgres123"
+    depends_on:
+      - identityservice
+    networks:
+      - entityservicenetwork
   postgres:
     image: postgres:15
     environment:
