@@ -4,38 +4,23 @@ using MongoDB.Driver;
 
 namespace Infrastructure.Persistance
 {
-    public class RecieptsRepository : IRecieptsRepository
+    public class RecieptsRepository :BaseRepository<Reciept>, IRecieptsRepository
     {
         private readonly IMongoCollection<Reciept>_context;
 
-        public RecieptsRepository(ApplicationDbContext context)
+        public RecieptsRepository(ApplicationDbContext context):base(context,"Reciepts")
         {
             _context = context.GetCollection<Reciept>("Reciepts");
         }
 
-        public async Task AddReciept(Reciept reciept)
+        public async Task<List<Reciept>> GetAllRecieptsPaginationAsync(int page, int count, CancellationToken cancellationToken)
         {
-            await _context.InsertOneAsync(reciept);
+            return await _context.Find(Builders<Reciept>.Filter.Empty).Skip((page - 1) * count).Limit(count).ToListAsync(cancellationToken);
         }
 
-        public async Task DeleteReciept(Reciept reciept)
+        public Task<Reciept> GetRecieptByNameAsync(string name, CancellationToken cancellationToken)
         {
-            await _context.DeleteOneAsync(r => r.Id == reciept.Id);
-        }
-
-        public async Task<List<Reciept>> GetAllReciepts(int page, int count)
-        {
-            return await _context.Find(r => true).Skip(page * count).Limit(count).ToListAsync();
-        }
-
-        public async Task<Reciept> GetReciept(string recieptId)
-        {
-            return await _context.Find(r => r.Id == recieptId).FirstOrDefaultAsync();
-        }
-
-        public async Task UpdateReciept(Reciept reciept)
-        {
-            await _context.ReplaceOneAsync(r => r.Id == reciept.Id, reciept);
+            return _context.Find(r => r.Name == name).FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

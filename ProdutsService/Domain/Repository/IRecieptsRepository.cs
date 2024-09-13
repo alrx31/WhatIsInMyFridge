@@ -2,16 +2,10 @@
 
 namespace Domain.Repository
 {
-    public interface IRecieptsRepository
+    public interface IRecieptsRepository:IBaseRepository<Reciept>
     {
-        Task AddReciept(Reciept reciept);
-        
-        Task DeleteReciept(Reciept reciept);
-        
-        Task<List<Reciept>> GetAllReciepts(int page, int count);
-        
-        Task<Reciept> GetReciept(string recieptId);
-        
-        Task UpdateReciept(Reciept reciept);
+        Task<Reciept> GetRecieptByNameAsync(string name, CancellationToken cancellationToken);
+
+        Task<List<Reciept>> GetAllRecieptsPaginationAsync(int page, int count, CancellationToken cancellationToken);
     }
 }

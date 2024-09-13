@@ -1,4 +1,5 @@
-﻿using Application.UseCases.Comands;
+﻿using Application.Exceptions;
+using Application.UseCases.Comands;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Repository;
@@ -17,7 +18,14 @@ namespace Application.UseCases.ComandsHandlers
 
         public async Task Handle(AddRecieptComand request, CancellationToken cancellationToken)
         {
-            await _recieptsRepository.AddReciept(_mapper.Map<Reciept>(request));
+            var reciept = await _recieptsRepository.GetRecieptByNameAsync(request.Name, cancellationToken);
+
+            if(reciept is not null)
+            {
+                throw new AlreadyExistsException("Reciept already exists");
+            }
+
+            await _recieptsRepository.AddAsync(_mapper.Map<Reciept>(request),cancellationToken);
         }
 
     }

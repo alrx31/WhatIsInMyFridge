@@ -2,20 +2,12 @@
 
 namespace Domain.Repository
 {
-    public interface IProductRepository
+    public interface IProductRepository:IBaseRepository<Product>
     {
-        Task AddProduct(Product product);
+        Task<Product> GetProductByName(string name, CancellationToken cancellationToken);
 
-        Task<Product> GetProduct(string id);
+        Task<List<Product>> GetProductRange(List<string> listProductsModels,CancellationToken cancellationToken);
 
-        Task DeleteProductById(string id);
-
-        Task UpdateProduct(Product product);
-        
-        Task<Product> GetProductByName(string name);
-
-        Task<List<Product>> GetAllProducts(int page, int count);
-        
-        Task<List<Product>> GetProductRange(List<string> listProductsModels);
+        Task<List<Product>> GetAllPaginationAsync(int page, int count,CancellationToken cancellationToken);
     }
 }

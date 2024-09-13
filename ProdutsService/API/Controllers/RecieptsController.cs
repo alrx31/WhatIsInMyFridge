@@ -22,39 +22,39 @@ namespace API.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> AddReciept([FromBody] AddRecieptDTO model)
+        public async Task<IActionResult> AddReciept([FromBody] AddRecieptDTO model, CancellationToken cancellationToken)
         {
-            await _mediator.Send(_mapper.Map<AddRecieptComand>(model));
+            await _mediator.Send(_mapper.Map<AddRecieptComand>(model),cancellationToken);
             
             return Ok();
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRecieptById(string id)
+        public async Task<IActionResult> GetRecieptById(string id, CancellationToken cancellationToken)
         {
-            return Ok(await _mediator.Send(_mapper.Map<GetRecieptQuery>(id)));
+            return Ok(await _mediator.Send(_mapper.Map<GetRecieptQuery>(id),cancellationToken));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReciept(string id)
+        public async Task<IActionResult> DeleteReciept(string id, CancellationToken cancellationToken)
         {
-            await _mediator.Send(_mapper.Map<DeleteRecieptComand>(id));
+            await _mediator.Send(_mapper.Map<DeleteRecieptComand>(id),cancellationToken);
             
             return Ok();
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateReciept(string id, [FromBody] AddRecieptDTO model)
+        public async Task<IActionResult> UpdateReciept(string id, [FromBody] AddRecieptDTO model, CancellationToken cancellationToken)
         {
-            await _mediator.Send(_mapper.Map<UpdateRecieptComand>((model,id)));
+            await _mediator.Send(_mapper.Map<UpdateRecieptComand>((model,id)), cancellationToken);
             
             return Ok();
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllReciepts([FromQuery] int page, [FromQuery] int count)
+        public async Task<IActionResult> GetAllReciepts([FromQuery] int page, [FromQuery] int count, CancellationToken cancellationToken)
         {
-            return Ok(await _mediator.Send(_mapper.Map<GetAllRecieptsQuery>((page, count))));
+            return Ok(await _mediator.Send(_mapper.Map<GetAllRecieptsQuery>((page, count)), cancellationToken));
         }
 
     }

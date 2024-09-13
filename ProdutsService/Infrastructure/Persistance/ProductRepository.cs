@@ -4,57 +4,37 @@ using MongoDB.Driver;
 
 namespace Infrastructure.Persistance
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
         private readonly IMongoCollection<Product> _products;
 
-        public ProductRepository(ApplicationDbContext context)
+        public ProductRepository(ApplicationDbContext context):base(context, "Products")
         {
             _products = context.GetCollection<Product>("Products");
         }
 
-        public async Task AddProduct(Product product)
-        {
-            await _products.InsertOneAsync(product);
-        }
-
-        public async Task<Product> GetProduct(string id)
-        {
-            return await _products.Find(p => p.Id == id).FirstOrDefaultAsync();
-        }
-
-        public async Task DeleteProductById(string id)
-        {
-            await _products.DeleteOneAsync(p => p.Id == id);
-        }
-
-        public async Task UpdateProduct(Product product)
-        {
-            await _products.ReplaceOneAsync(p => p.Id == product.Id, product);
-        }
-
-        public async Task<Product> GetProductByName(string name)
+        public async Task<Product> GetProductByName(string name,CancellationToken cancellationToken)
         {
             return await _products.Find(p => p.Name == name).FirstOrDefaultAsync();
         }
-        
-        public async Task<List<Product>> GetAllProducts(int page, int count)
-        {
-            return await _products.Find(p => true).Skip((page - 1)* count).Limit(count).ToListAsync();
-        }
 
-        public async Task<List<Product>> GetProductRange(List<string> listProductsModels)
+        public async Task<List<Product>> GetProductRange(List<string> listProductsModels,CancellationToken cancellationToken)
         {
             var listProducts = listProductsModels;
             var products = new List<Product>();
 
             foreach (var productId in listProducts)
             {
-                var product = await GetProduct(productId);
+                var product = await this.GetByIdAsync(productId,cancellationToken);
                 products.Add(product);
             }
             
             return products;
+        }
+
+        public async Task<List<Product>> GetAllPaginationAsync(int page, int count,CancellationToken cancellationToken)
+        {
+            return await _products.Find(Builders<Product>.Filter.Empty).Skip((page - 1) * count).Limit(count).ToListAsync(cancellationToken);
         }
     }
 }

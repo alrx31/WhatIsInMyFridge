@@ -13,7 +13,9 @@ namespace Infrastructure.Persistance
 
         public override async Task<ProductssResponse> GetProducts(ProductsIds ids, ServerCallContext context)
         {
-            var products = await _productRepository.GetProductRange(ids.Ids.ToList<string>());
+            var cancellationToken = context.CancellationToken;
+
+            var products = await _productRepository.GetProductRange(ids.Ids.ToList<string>(),cancellationToken);
 
             var response = new ProductssResponse();
 

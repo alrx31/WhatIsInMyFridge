@@ -2,12 +2,10 @@
 
 namespace Domain.Repository
 {
-    public interface IListManageRepository
+    public interface IListManageRepository:IBaseRepository<ProductInList>
     {
-        Task AddProductToList(ProductInList productInList);
+        Task DeleteProductInList(string listId, string productId, CancellationToken cancellationToken);
 
-        Task DeleteProductInList(string listId,string productId);
-
-        Task<List<string>> GetListProducts(string listId);
+        Task<List<string>> GetListProducts(string listId, CancellationToken cancellationToken);
     }
 }

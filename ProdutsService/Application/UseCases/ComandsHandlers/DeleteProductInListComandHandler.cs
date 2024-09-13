@@ -21,21 +21,21 @@ namespace Application.UseCases.ComandsHandlers
 
         public async Task Handle(DeleteProductInListComand request, CancellationToken cancellationToken)
         {
-            var list = await _listRepository.GetListById(request.ListId);
+            var list = await _listRepository.GetByIdAsync(request.ListId,cancellationToken);
 
             if (list is null)
             {
                 throw new Exception("List not found");
             }
 
-            var product = await _productRepository.GetProduct(request.ProductId);
+            var product = await _productRepository.GetByIdAsync(request.ProductId,cancellationToken);
 
             if (product is null)
             {
                 throw new Exception("Product not found");
             }
 
-            await _listManageRepository.DeleteProductInList(request.ListId,request.ProductId);
+            await _listManageRepository.DeleteProductInList(request.ListId,request.ProductId,cancellationToken);
         }
     
     }

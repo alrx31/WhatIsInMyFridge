@@ -17,7 +17,7 @@ namespace Application.UseCases.QueriesHandlers
 
         public async Task<ProductsList> Handle(GetListQuery request, CancellationToken cancellationToken)
         {
-            var res = await _listRepository.GetListById(request.Id);
+            var res = await _listRepository.GetByIdAsync(request.Id,cancellationToken);
             
             if(res is null)
             {

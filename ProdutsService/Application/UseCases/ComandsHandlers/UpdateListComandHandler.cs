@@ -18,7 +18,7 @@ namespace Application.UseCases.ComandsHandlers
 
         public async Task Handle(UpdateListComand request, CancellationToken cancellationToken)
         {
-            var list = await _listRepository.GetListById(request.Id);
+            var list = await _listRepository.GetByIdAsync(request.Id,cancellationToken);
 
             if(list is null)
             {
@@ -28,7 +28,7 @@ namespace Application.UseCases.ComandsHandlers
             var ls = _mapper.Map<ProductsList>(request);
             ls.CreateData = list.CreateData;
             
-            await _listRepository.UpdateList(ls);
+            await _listRepository.UpdateAsync(ls,cancellationToken);
         }
     }
 }

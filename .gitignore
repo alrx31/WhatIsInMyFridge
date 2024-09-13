@@ -15,3 +15,6 @@
 /IdentityService
 /FridgeService
 /ProdutsService/.vs/ProjectEvaluation
+/Client/.vs
+/Client/node_modules
+/Client/node_modules/.bin/acorn

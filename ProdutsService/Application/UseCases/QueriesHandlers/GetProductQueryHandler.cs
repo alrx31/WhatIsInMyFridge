@@ -16,7 +16,7 @@ namespace Application.UseCases.QueriesHandlers
 
         public async Task<Product> Handle(GetProductQuery request, CancellationToken cancellationToken)
         {
-            return await _productRepository.GetProduct(request.Id);
+            return await _productRepository.GetByIdAsync(request.Id, cancellationToken);
         }
     }
 }

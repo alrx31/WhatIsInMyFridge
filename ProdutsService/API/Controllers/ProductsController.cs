@@ -21,39 +21,39 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> AddProduct([FromBody] AddProductDTO product)
+        public async Task<IActionResult> AddProduct([FromBody] AddProductDTO product,CancellationToken cancellationToken)
         {
-            await _mediator.Send(_mapper.Map<AddProductComand>(product));
+            await _mediator.Send(_mapper.Map<AddProductComand>(product),cancellationToken);
            
             return Ok();
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(string id)
+        public async Task<IActionResult> GetProduct(string id, CancellationToken cancellationToken)
         {
-            return Ok(await _mediator.Send(_mapper.Map<GetProductQuery>(id)));
+            return Ok(await _mediator.Send(_mapper.Map<GetProductQuery>(id), cancellationToken));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(string id)
+        public async Task<IActionResult> DeleteProduct(string id, CancellationToken cancellationToken)
         {
-            await _mediator.Send(_mapper.Map<DeleteProductComand>(id));
+            await _mediator.Send(_mapper.Map<DeleteProductComand>(id),cancellationToken);
             
             return Ok();
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateProduct(string id, [FromBody] AddProductDTO product)
+        public async Task<IActionResult> UpdateProduct(string id, [FromBody] AddProductDTO product, CancellationToken cancellationToken)
         {
-            await _mediator.Send(_mapper.Map<UpdateProductComand>((product,id)));
+            await _mediator.Send(_mapper.Map<UpdateProductComand>((product,id)),cancellationToken);
             
             return Ok();
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllProducts([FromQuery] int page, [FromQuery] int count)
+        public async Task<IActionResult> GetAllProducts([FromQuery] int page, [FromQuery] int count, CancellationToken cancellationToken)
         {
-            return Ok(await _mediator.Send(_mapper.Map<GetAllProductsQuery>((page, count))));
+            return Ok(await _mediator.Send(_mapper.Map<GetAllProductsQuery>((page, count)),cancellationToken));
         }
     }
 }

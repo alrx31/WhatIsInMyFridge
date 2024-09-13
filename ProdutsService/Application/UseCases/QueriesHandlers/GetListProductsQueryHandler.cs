@@ -1,4 +1,5 @@
-﻿using Application.UseCases.Queries;
+﻿using Application.Exceptions;
+using Application.UseCases.Queries;
 using Domain.Entities;
 using Domain.Repository;
 using MediatR;
@@ -18,16 +19,16 @@ namespace Application.UseCases.QueriesHandlers
 
         public async Task<List<Product>> Handle(GetListProductsQuery request, CancellationToken cancellationToken)
         {
-            var list = await _listRepository.GetListById(request.ListId);
+            var list = await _listRepository.GetByIdAsync(request.ListId,cancellationToken);
 
             if (list is null)
             {
-                throw new Exception("List not found");
+                throw new NotFoundException("List not found");
             }
 
-            var listProductsModels = await _listManageRepository.GetListProducts(request.ListId);
+            var listProductsModels = await _listManageRepository.GetListProducts(request.ListId,cancellationToken);
 
-            return await _productRepository.GetProductRange(listProductsModels);
+            return await _productRepository.GetProductRange(listProductsModels,cancellationToken);
         }
     }
 }
