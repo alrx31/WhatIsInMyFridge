@@ -27,6 +27,8 @@ namespace DAL.DI
             services.AddScoped<IgRPCService, gRPCService>();
             services.AddScoped<IProductsgRPCService, ProductsgRPCService>();
 
+            services.AddScoped<IKafkaProducer, KafkaProducer>();
+
 
             services.AddGrpcClient<Greeter.GreeterClient>(o =>
             {
