@@ -2,9 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Persistance
 {
@@ -30,8 +27,8 @@ namespace Infrastructure.Persistance
 
             using (var consumer = new ConsumerBuilder<Ignore, string>(config).Build())
             {
-                consumer.Subscribe(_configuration["Kafka:Topic1"]);
-                consumer.Subscribe(_configuration["Kafka:Topic2"]);
+                consumer.Subscribe(new[] { _configuration["Kafka:Topic1"], _configuration["Kafka:Topic2"] });
+
 
                 try
                 {
