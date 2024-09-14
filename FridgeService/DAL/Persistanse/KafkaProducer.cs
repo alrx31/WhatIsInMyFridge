@@ -17,7 +17,8 @@ namespace DAL.Persistanse
         {
             var config = new ProducerConfig
             {
-                BootstrapServers = "kafka:9092"
+                BootstrapServers = "kafka:9092",
+
             };
 
             _producer = new ProducerBuilder<Null, string>(config).Build();
