@@ -5,7 +5,6 @@ using BLL.Exceptions;
 using DAL.Interfaces;
 using DAL.IRepositories;
 using DAL.Repositories;
-using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 
 namespace BLL.Services
@@ -239,14 +238,10 @@ namespace BLL.Services
 
         public async Task<List<Product>> GetFridgeProducts(int fridgeId)
         {
-            _logger.LogInformation("start");
             var productsModel = await _unitOfWork.FridgeRepository.GetProductsFromFridge(fridgeId);
-            _logger.LogInformation($"{productsModel.Count}");
+               
             var ids = productsModel.Select(p => p.productId).ToList();
-            _logger.LogInformation($"{ids.ToString()}");
-            var data = await _productsgRPCService.GetProducts(ids);
-            _logger.LogInformation($"{data.ToString()}");
-            return data;
+            return await _productsgRPCService.GetProducts(ids);
         }
 
         public async Task DevideProductFromFridge(int fridgeId, int count, string productId)
@@ -254,6 +249,7 @@ namespace BLL.Services
             if(count == 0)
             {
                 await this.RemoveProductFromFridge(fridgeId, productId);
+
                 return;
             }
 

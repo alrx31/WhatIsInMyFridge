@@ -19,13 +19,14 @@ namespace DAL.Persistanse
             ProductsIds.Ids.AddRange(ids);
 
             var reply = await _productsClient.GetProductsAsync(ProductsIds);
-            
+
             return reply.Products.Select(p => new DAL.Entities.Product
             {
                 Id = p.Id,
                 Name = p.Name,
                 PricePerKilo = (decimal)p.PricePerKilo,
-                ExpirationTime = TimeSpan.Parse(p.ExpTime)
+                ExpirationTime = TimeSpan.Parse(p.ExpTime),
+
             }).ToList<DAL.Entities.Product>();
         }
     }
