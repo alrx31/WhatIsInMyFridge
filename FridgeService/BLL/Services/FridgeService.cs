@@ -246,7 +246,7 @@ namespace BLL.Services
         {
             if(count == 0)
             {
-                await RemoveProductFromFridge(fridgeId, productId);
+                await this.RemoveProductFromFridge(fridgeId, productId);
                 return;
             }
             
