@@ -14,12 +14,7 @@ namespace DAL.Persistanse
             ApplicationDbContext context
         ):IFridgeRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public FridgeRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         public async Task AddFridge(Fridge fridge)
         {

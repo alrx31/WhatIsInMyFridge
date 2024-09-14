@@ -1,8 +1,8 @@
 ﻿using BLL.DTO;
+using BLL.Exceptions;
 using BLL.Services;
 using DAL.IRepositories;
 using Microsoft.AspNetCore.Mvc;
-using Presentation.Middlewares.Exceptions;
 
 namespace Presentation.Controllers
 {
@@ -14,7 +14,8 @@ namespace Presentation.Controllers
         private readonly IgRPCService _gRPCService;
 
         public FridgeController(
-            IFridgeService fridgeService
+            IFridgeService fridgeService,
+            IgRPCService gRPCService
             )
         {
             _fridgeService = fridgeService;

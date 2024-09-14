@@ -2,20 +2,22 @@ using BLL.DI;
 using DAL.DI;
 using DAL.Persistanse;
 using Hangfire;
+using Hangfire.Dashboard;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Middlewares;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // IP configuration
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(8082); // Listen on port 8082
+    options.ListenAnyIP(8082);
 });
 
 // Add services to the container.
 builder.Services.AddBLLDependencies(builder.Configuration.GetConnectionString("HangFire"));
-builder.Services.AddDALDependencies();
+builder.Services.AddDALDependencies(builder.Configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -33,11 +35,15 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.Migrate();
+
+    if (!dbContext.Database.CanConnect())
+    {
+        dbContext.Database.Migrate();
+    }
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || true)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -49,7 +55,13 @@ app.UseAuthorization();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseHangfireDashboard();
+// Hangfire configuration
+// Configure Authorization fro production
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = Array.Empty<IDashboardAuthorizationFilter>()
+});
+
 
 
 // Hangfire configuration

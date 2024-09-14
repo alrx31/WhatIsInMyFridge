@@ -1,4 +1,5 @@
-﻿using DAL.IRepositories;
+﻿using DAL.Interfaces;
+using DAL.IRepositories;
 using StackExchange.Redis;
 using System.Text.Json;
 

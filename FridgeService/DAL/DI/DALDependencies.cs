@@ -7,19 +7,21 @@ using DAL.Persistanse.Protos;
 using DAL.IRepositories;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.Builder;
+using DAL.Interfaces;
 
 
 namespace DAL.DI
 {
     public static  class DALDependencies
     {
-        public static IServiceCollection AddDALDependencies(this IServiceCollection services)
+        public static IServiceCollection AddDALDependencies(this IServiceCollection services,IConfiguration configuration)
+        {
+            // redis
+            services.AddScoped<IConnectionMultiplexer>(_ =>
             {
-                return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"));
+                return ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis"));
             });
 
-            services.AddScoped<IFridgeRepository, FridgeRepository>();
-            
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IFridgeRepository,FridgeRepository>();
             services.AddScoped<IgRPCService, gRPCService>();
@@ -28,7 +30,7 @@ namespace DAL.DI
 
             services.AddGrpcClient<Greeter.GreeterClient>(o =>
             {
-                o.Address = new Uri("http://localhost:8081");
+                o.Address = new Uri("http://identityservice:8081");
             });
 
             services.AddGrpcClient<Products.ProductsClient>(o =>

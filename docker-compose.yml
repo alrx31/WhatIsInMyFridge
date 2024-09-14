@@ -40,6 +40,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    networks:
+      - entityservicenetwork
   
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -52,13 +54,15 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
+    networks:
+      - entityservicenetwork
 
   postgres:
     image: postgres:15
     environment:
       POSTGRES_USER: alex
       POSTGRES_PASSWORD: postgres123
-      POSTGRES_DB: UsersDb,FridgeDb
+      POSTGRES_DB: UsersDb,FridgeDb,HangFireDb
     ports:
       - "5432:5432"
     volumes:

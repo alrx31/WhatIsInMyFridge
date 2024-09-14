@@ -22,10 +22,10 @@ namespace BLL.DI
             services.AddAutoMapper(typeof(FridgeProfile));
 
             services.AddHangfire(config =>
-            config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                  .UseSimpleAssemblyNameTypeSerializer()
-                  .UseDefaultTypeSerializer()
-                  .UsePostgreSqlStorage(HangfireConnectionString));
+               config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                     .UseSimpleAssemblyNameTypeSerializer()
+                     .UseDefaultTypeSerializer()
+                     .UsePostgreSqlStorage(HangfireConnectionString));
 
             services.AddHangfireServer();
 

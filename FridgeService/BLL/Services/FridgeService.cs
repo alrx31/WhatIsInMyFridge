@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using DAL.Entities;
-using DAL.Repositories;
 using BLL.DTO;
-using Presentation.Middlewares.Exceptions;
-using System.Net;
-using DAL.IRepositories;
 using BLL.Exceptions;
-using AutoMapper.Configuration.Annotations;
+using DAL.Interfaces;
+using DAL.IRepositories;
+using DAL.Repositories;
 
 namespace BLL.Services
 {
