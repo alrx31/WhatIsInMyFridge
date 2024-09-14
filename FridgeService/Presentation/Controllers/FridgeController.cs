@@ -1,7 +1,6 @@
 ﻿using BLL.DTO;
 using BLL.Exceptions;
-using BLL.Services;
-using DAL.Interfaces;
+using BLL.Services; 
 using DAL.IRepositories;
 using Microsoft.AspNetCore.Mvc;
 
