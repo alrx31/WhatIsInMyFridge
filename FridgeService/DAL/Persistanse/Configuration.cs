@@ -1,4 +1,4 @@
-﻿using DAL.Entities;
+﻿    using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -6,8 +6,8 @@ namespace DAL.Persistanse
 {
     public class ApplicationDbContextConfiguration
         :IEntityTypeConfiguration<Fridge>,
-        IEntityTypeConfiguration<UserFridge>,
-        IEntityTypeConfiguration<ProductFridgeModel>
+    IEntityTypeConfiguration<UserFridge>,
+    IEntityTypeConfiguration<ProductFridgeModel>
     {
         public void Configure(EntityTypeBuilder<Fridge> builder)
         {
@@ -33,5 +33,6 @@ namespace DAL.Persistanse
                 .WithMany(f => f.products)
                 .HasForeignKey(pf => pf.fridgeId);
         }
+
     }
 }

@@ -16,6 +16,11 @@ namespace DAL.Persistanse
     {
         private readonly ApplicationDbContext _context;
 
+        public FridgeRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public async Task AddFridge(Fridge fridge)
         {
             await _context.fridges.AddAsync(fridge);
@@ -31,13 +36,18 @@ namespace DAL.Persistanse
             var fridge = await _context.fridges.FindAsync(fridgeId);
 
             _context.productFridgeModels.RemoveRange(_context.productFridgeModels.Where(fm => fm.fridgeId == fridgeId));
+
             _context.userFridges.RemoveRange(_context.userFridges.Where(uf => uf.fridgeId == fridgeId));
+
             _context.fridges.Remove(fridge);
+
         }
 
         public async Task AddUserToFridge(int fridgeId, int userId)
         {
             var fridge = await _context.fridges.FindAsync(fridgeId);
+
+            // TODO: use grpc to check if user exists
 
             var model = new UserFridge
             {

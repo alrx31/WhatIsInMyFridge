@@ -7,6 +7,12 @@ using Presentation.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// IP configuration
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8082); // Listen on port 8082
+});
+
 // Add services to the container.
 builder.Services.AddBLLDependencies(builder.Configuration.GetConnectionString("HangFire"));
 builder.Services.AddDALDependencies();
@@ -22,6 +28,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(op =>
 });
 
 var app = builder.Build();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
