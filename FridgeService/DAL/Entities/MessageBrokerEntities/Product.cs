@@ -10,5 +10,7 @@
             ProductId = productId;
             FridgeId = fridgeId;
         }
+
+        public Product() { }
     }
 }

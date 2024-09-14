@@ -25,5 +25,6 @@ namespace DAL.Interfaces
         Task<List<ProductFridgeModel>> GetProductsFromFridge(int fridgeId);
 
         Task<List<Fridge>> GetAllFridges();
+        Task DevideProductFromFridge(int fridgeId, int productId, int count);
     }
 }

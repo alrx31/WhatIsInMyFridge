@@ -14,9 +14,15 @@ namespace BLL.MappingProfiles
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.productId))
                 .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.count));
 
-            CreateMap<(string productId, int fridgeId), DAL.Entities.MessageBrokerEntities.Product>()
-                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.productId))
-                .ForMember(dest => dest.FridgeId, opt => opt.MapFrom(src => src.fridgeId));
+            CreateMap<(string, int), DAL.Entities.MessageBrokerEntities.ProductRemove>()
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Item1))
+                .ForMember(dest => dest.FridgeId, opt => opt.MapFrom(src => src.Item2))
+                .ForMember(dest => dest.Count, opt => opt.MapFrom(src => 0));
+
+            CreateMap<(string, int,int), DAL.Entities.MessageBrokerEntities.ProductRemove>()
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Item1))
+                .ForMember(dest => dest.FridgeId, opt => opt.MapFrom(src => src.Item2))
+                .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.Item3));
         }
     }
 }

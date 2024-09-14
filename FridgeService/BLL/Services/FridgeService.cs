@@ -5,6 +5,7 @@ using BLL.Exceptions;
 using DAL.Interfaces;
 using DAL.IRepositories;
 using DAL.Repositories;
+using System.Runtime.InteropServices;
 
 namespace BLL.Services
 {
@@ -33,6 +34,8 @@ namespace BLL.Services
         Task CheckProducts();
         
         Task<List<Product>> GetFridgeProducts(int fridgeId);
+
+        Task DevideProductFromFridge(int fridgeId, int count, int productId);
     }
 
     public class FridgeService: IFridgeService
@@ -237,6 +240,25 @@ namespace BLL.Services
             var ids = productsModel.Select(p => p.productId).ToList();
 
             return await _productsgRPCService.GetProducts(ids);
+        }
+
+        public async Task DevideProductFromFridge(int fridgeId, int count, int productId)
+        {
+            var fridge = await _unitOfWork.FridgeRepository.GetFridge(fridgeId);
+
+            if (fridge is null)
+            {
+                throw new NotFoundException("Fridge not found");
+            }
+
+            await _unitOfWork.FridgeRepository.DevideProductFromFridge(fridgeId, productId,count);
+
+            await _unitOfWork.CompleteAsync();
+
+            var message = _mapper.Map<DAL.Entities.MessageBrokerEntities.ProductRemove>((productId, fridgeId,count));
+
+            await _kafkaProducer.ProduceAsync<DAL.Entities.MessageBrokerEntities.ProductRemove>("RemoveProduct", message);
+
         }
     }
 }
