@@ -35,7 +35,7 @@ namespace BLL.Services
         
         Task<List<Product>> GetFridgeProducts(int fridgeId);
 
-        Task DevideProductFromFridge(int fridgeId, int count, int productId);
+        Task DevideProductFromFridge(int fridgeId, int count, string productId);
     }
 
     public class FridgeService: IFridgeService
