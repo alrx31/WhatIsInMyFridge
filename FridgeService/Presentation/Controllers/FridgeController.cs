@@ -1,6 +1,7 @@
 ﻿using BLL.DTO;
 using BLL.Exceptions;
 using BLL.Services;
+using DAL.Interfaces;
 using DAL.IRepositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,15 +13,28 @@ namespace Presentation.Controllers
     {
         private readonly IFridgeService _fridgeService;
         private readonly IgRPCService _gRPCService;
+        // kafka for test
+        private readonly IKafkaProducer kafkaProducer;
 
         public FridgeController(
             IFridgeService fridgeService,
-            IgRPCService gRPCService
+            IgRPCService gRPCService,
+            IKafkaProducer kafkaProducer
             )
         {
             _fridgeService = fridgeService;
             _gRPCService = gRPCService;
+            this.kafkaProducer = kafkaProducer;
         }
+
+        [HttpPut("kafka")]
+        public async Task<IActionResult> Kafka()
+        {
+            await kafkaProducer.ProduceAsync("test", "test");
+
+            return Ok();
+        }
+
 
         [HttpPut]
         public async Task<IActionResult> AddFridge([FromBody] FridgeAddDTO fridge)
