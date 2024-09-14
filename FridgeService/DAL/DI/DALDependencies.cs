@@ -37,7 +37,7 @@ namespace DAL.DI
 
             services.AddGrpcClient<Products.ProductsClient>(o =>
             {
-                o.Address = new Uri("http://localhost:8083");
+                o.Address = new Uri("http://host.docker.internal:8083");
             });
 
             return services;

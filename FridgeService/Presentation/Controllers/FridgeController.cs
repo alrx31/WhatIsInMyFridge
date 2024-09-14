@@ -63,11 +63,6 @@ namespace Presentation.Controllers
         [HttpPatch("{fridgeId}")]
         public async Task<IActionResult> UpdateFridge([FromBody] FridgeAddDTO fridge, int fridgeId)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid fridge model");
-            }
-
             var res = await _fridgeService.UpdateFridge(fridge, fridgeId);
             
             return Ok(res);
@@ -76,11 +71,6 @@ namespace Presentation.Controllers
         [HttpPut("{fridgeId}/products")]
         public async Task<IActionResult> AddProductsToFridge([FromBody] List<ProductInfoModel> products, int fridgeId)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid products model");
-            }
-
             await _fridgeService.AddProductsToFridge(fridgeId, products);
             
             return Ok();

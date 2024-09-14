@@ -1,15 +1,18 @@
 ﻿using DAL.Entities;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Persistanse
 {
     public class FridgeRepository
         (
-            ApplicationDbContext context
+            ApplicationDbContext context,
+            ILogger<FridgeRepository> logger
         ):IFridgeRepository
     {
         private readonly ApplicationDbContext _context = context;
+        private readonly ILogger<FridgeRepository> _logger = logger;
 
         public async Task AddFridge(Fridge fridge)
         {
@@ -101,21 +104,39 @@ namespace DAL.Persistanse
         {
             var model = await _context.productFridgeModels.FirstOrDefaultAsync(f => f.fridgeId == fridgeId && f.productId == productId);
 
-            model.count -= count;
+            _logger.LogInformation("start devide");
+
+            if (model is not null)
+            {
+                _logger.LogInformation("not null");
+                model.count = model.count - count;
+            }
+            else
+            {
+                _logger.LogInformation("null");
+            }
+
+            _logger.LogInformation("calc");
 
             if(model.count < 0)
             {
+
                 throw new Exception("invalid count of product");
             }
 
             if(model.count == 0)
             {
+                _logger.LogInformation(" equals to 0");
+
                 _context.productFridgeModels.Remove(model);
             }
             else
             {
+                _logger.LogInformation("unequals to 0");
+
                 _context.productFridgeModels.Update(model);
             }
+            _logger.LogInformation("end devide");
         }
     }
 }

@@ -6,6 +6,7 @@ using DAL.Interfaces;
 using DAL.IRepositories;
 using DAL.Repositories;
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.Logging;
 
 namespace BLL.Services
 {
@@ -46,6 +47,7 @@ namespace BLL.Services
         private readonly IgRPCService _grpcService;
         private readonly IProductsgRPCService _productsgRPCService;
         private readonly IKafkaProducer _kafkaProducer;
+        private readonly ILogger<FridgeService> _logger;
 
         public FridgeService(
             IFridgeRepository fridgeRepository,
@@ -53,7 +55,8 @@ namespace BLL.Services
             IUnitOfWork unitOfWork,
             IgRPCService igRPCService,
             IProductsgRPCService productsgRPCService,
-            IKafkaProducer kafkaProducer
+            IKafkaProducer kafkaProducer,
+            ILogger<FridgeService> logger
             )
         {
             _fridgeRepository = fridgeRepository;
@@ -62,6 +65,7 @@ namespace BLL.Services
             _grpcService = igRPCService;
             _productsgRPCService = productsgRPCService;
             _kafkaProducer = kafkaProducer;
+            _logger = logger;
         }
 
         public async Task AddFridge(FridgeAddDTO fridge)
@@ -180,9 +184,9 @@ namespace BLL.Services
             
             await _unitOfWork.CompleteAsync();
 
-            var message = _mapper.Map<DAL.Entities.MessageBrokerEntities.Product>((productId,fridgeId));
+            var message = _mapper.Map<DAL.Entities.MessageBrokerEntities.ProductRemove>((productId,fridgeId));
 
-            await _kafkaProducer.ProduceAsync<DAL.Entities.MessageBrokerEntities.Product>("RemoveProduct",message);
+            await _kafkaProducer.ProduceAsync<DAL.Entities.MessageBrokerEntities.ProductRemove>("RemoveProduct",message);
         }
 
         public async Task<List<User>> GetFridgeUsers(int fridgeId)
@@ -235,11 +239,14 @@ namespace BLL.Services
 
         public async Task<List<Product>> GetFridgeProducts(int fridgeId)
         {
+            _logger.LogInformation("start");
             var productsModel = await _unitOfWork.FridgeRepository.GetProductsFromFridge(fridgeId);
-               
+            _logger.LogInformation($"{productsModel.Count}");
             var ids = productsModel.Select(p => p.productId).ToList();
-
-            return await _productsgRPCService.GetProducts(ids);
+            _logger.LogInformation($"{ids.ToString()}");
+            var data = await _productsgRPCService.GetProducts(ids);
+            _logger.LogInformation($"{data.ToString()}");
+            return data;
         }
 
         public async Task DevideProductFromFridge(int fridgeId, int count, string productId)
@@ -249,7 +256,7 @@ namespace BLL.Services
                 await this.RemoveProductFromFridge(fridgeId, productId);
                 return;
             }
-            
+
             var fridge = await _unitOfWork.FridgeRepository.GetFridge(fridgeId);
 
             if (fridge is null)
