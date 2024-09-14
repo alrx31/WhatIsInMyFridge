@@ -242,14 +242,21 @@ namespace BLL.Services
             return await _productsgRPCService.GetProducts(ids);
         }
 
-        public async Task DevideProductFromFridge(int fridgeId, int count, int productId)
+        public async Task DevideProductFromFridge(int fridgeId, int count, string productId)
         {
+            if(count == 0)
+            {
+                await RemoveProductFromFridge(fridgeId, productId);
+                return;
+            }
+            
             var fridge = await _unitOfWork.FridgeRepository.GetFridge(fridgeId);
 
             if (fridge is null)
             {
                 throw new NotFoundException("Fridge not found");
             }
+
 
             await _unitOfWork.FridgeRepository.DevideProductFromFridge(fridgeId, productId,count);
 

@@ -95,7 +95,7 @@ namespace Presentation.Controllers
         }
 
         [HttpDelete("{fridgeId}/products/{productId}/{count}")]
-        public async Task<IActionResult> DevideProductFromFridge(int fridgeId, int count, int productId)
+        public async Task<IActionResult> DevideProductFromFridge(int fridgeId, int count, string productId)
         {
             await _fridgeService.DevideProductFromFridge(fridgeId, count, productId);
             return Ok();

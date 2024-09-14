@@ -1,11 +1,6 @@
 ﻿using DAL.Entities;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Persistanse
 {
@@ -100,6 +95,27 @@ namespace DAL.Persistanse
         public async Task<List<Fridge>> GetAllFridges()
         {
             return await _context.fridges.ToListAsync();
+        }
+
+        public async Task DevideProductFromFridge(int fridgeId, string productId, int count)
+        {
+            var model = await _context.productFridgeModels.FirstOrDefaultAsync(f => f.fridgeId == fridgeId && f.productId == productId);
+
+            model.count -= count;
+
+            if(model.count < 0)
+            {
+                throw new Exception("invalid count of product");
+            }
+
+            if(model.count == 0)
+            {
+                _context.productFridgeModels.Remove(model);
+            }
+            else
+            {
+                _context.productFridgeModels.Update(model);
+            }
         }
     }
 }
