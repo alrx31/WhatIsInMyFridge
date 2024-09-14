@@ -12,7 +12,7 @@ namespace BLL.DI
     public static class BLLdependencies
     {
         public static IServiceCollection AddBLLDependencies(this IServiceCollection services,string HangfireConnectionString)
-        {
+        {   
             services.AddScoped<IFridgeService, FridgeService>();
 
             services.AddTransient<IValidator<FridgeAddDTO>, FridgeRegisterValidator>();

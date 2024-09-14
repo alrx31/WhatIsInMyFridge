@@ -155,8 +155,10 @@ namespace BLL.Services
             
             await _unitOfWork.CompleteAsync();
 
+            var productsIds = productFridgeModels.Select(p => p.productId).ToList();
+
             await _kafkaProducer.ProduceAsync<DAL.Entities.MessageBrokerEntities.Product>
-                ("AddProducts", _mapper.Map<DAL.Entities.MessageBrokerEntities.Product>((products, fridgeId)));
+                ("AddProducts", _mapper.Map<DAL.Entities.MessageBrokerEntities.Product>((productsIds, fridgeId)));
         }
 
         public async Task RemoveProductFromFridge(int fridgeId, string productId)
