@@ -15,6 +15,5 @@
         public List<UserFridge> userModelIds { get; set; }
 
         public List<ProductFridgeModel> products { get; set; }
-
     }
 }

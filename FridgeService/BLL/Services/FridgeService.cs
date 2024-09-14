@@ -22,7 +22,7 @@ namespace BLL.Services
         
         Task<Fridge> UpdateFridge(FridgeAddDTO fridge,int fridgeId);
         
-        Task AddProductsToList(int fridgeId, List<ProductInfoModel> products);
+        Task AddProductsToFridge(int fridgeId, List<ProductInfoModel> products);
         
         Task RemoveProductFromFridge(int fridgeId, string productId);
         
@@ -42,13 +42,15 @@ namespace BLL.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IgRPCService _grpcService;
         private readonly IProductsgRPCService _productsgRPCService;
+        private readonly IKafkaProducer _kafkaProducer;
 
         public FridgeService(
             IFridgeRepository fridgeRepository,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IgRPCService igRPCService,
-            IProductsgRPCService productsgRPCService
+            IProductsgRPCService productsgRPCService,
+            IKafkaProducer kafkaProducer
             )
         {
             _fridgeRepository = fridgeRepository;
@@ -56,6 +58,7 @@ namespace BLL.Services
             _unitOfWork = unitOfWork;
             _grpcService = igRPCService;
             _productsgRPCService = productsgRPCService;
+            _kafkaProducer = kafkaProducer;
         }
 
         public async Task AddFridge(FridgeAddDTO fridge)
@@ -126,7 +129,7 @@ namespace BLL.Services
             return existingFridge;
         }
 
-        public async Task AddProductsToList(int fridgeId, List<ProductInfoModel> products)
+        public async Task AddProductsToFridge(int fridgeId, List<ProductInfoModel> products)
         {
             var fridge = await _unitOfWork.FridgeRepository.GetFridge(fridgeId);
             
@@ -151,6 +154,9 @@ namespace BLL.Services
             await _unitOfWork.FridgeRepository.AddProductsToFridge(productFridgeModels);
             
             await _unitOfWork.CompleteAsync();
+
+            await _kafkaProducer.ProduceAsync<DAL.Entities.MessageBrokerEntities.Product>
+                ("AddProducts", _mapper.Map<DAL.Entities.MessageBrokerEntities.Product>((products, fridgeId)));
         }
 
         public async Task RemoveProductFromFridge(int fridgeId, string productId)
@@ -165,6 +171,9 @@ namespace BLL.Services
             await _unitOfWork.FridgeRepository.RemoveProductFromFridge(fridgeId, productId);
             
             await _unitOfWork.CompleteAsync();
+            
+            await _kafkaProducer.ProduceAsync<DAL.Entities.MessageBrokerEntities.Product>
+                ("RemoveProduct",_mapper.Map<DAL.Entities.MessageBrokerEntities.Product>((productId,fridgeId)));
         }
 
         public async Task<List<User>> GetFridgeUsers(int fridgeId)

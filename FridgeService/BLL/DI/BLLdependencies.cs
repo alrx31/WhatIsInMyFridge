@@ -20,6 +20,7 @@ namespace BLL.DI
             services.AddTransient<IValidator<ProductsInfoList>, ProductsInfoListValidator>();
 
             services.AddAutoMapper(typeof(FridgeProfile));
+            services.AddAutoMapper(typeof(KafkaMapper));
 
             services.AddHangfire(config =>
                config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)

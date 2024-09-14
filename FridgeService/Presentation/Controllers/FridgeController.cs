@@ -13,28 +13,15 @@ namespace Presentation.Controllers
     {
         private readonly IFridgeService _fridgeService;
         private readonly IgRPCService _gRPCService;
-        // kafka for test
-        private readonly IKafkaProducer kafkaProducer;
-
+        
         public FridgeController(
             IFridgeService fridgeService,
-            IgRPCService gRPCService,
-            IKafkaProducer kafkaProducer
+            IgRPCService gRPCService
             )
         {
             _fridgeService = fridgeService;
             _gRPCService = gRPCService;
-            this.kafkaProducer = kafkaProducer;
         }
-
-        [HttpPut("kafka")]
-        public async Task<IActionResult> Kafka()
-        {
-            await kafkaProducer.ProduceAsync("test", "test");
-
-            return Ok();
-        }
-
 
         [HttpPut]
         public async Task<IActionResult> AddFridge([FromBody] FridgeAddDTO fridge)
@@ -95,7 +82,7 @@ namespace Presentation.Controllers
                 throw new BadRequestException("Invalid products model");
             }
 
-            await _fridgeService.AddProductsToList(fridgeId, products);
+            await _fridgeService.AddProductsToFridge(fridgeId, products);
             
             return Ok();
         }
