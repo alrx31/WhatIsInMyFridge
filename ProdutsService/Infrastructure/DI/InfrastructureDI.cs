@@ -16,6 +16,7 @@ namespace Infrastructure.DI
             services.AddScoped<IListRepository, ListRepository>();
             services.AddScoped<IRecieptsRepository, RecieptsRepository>();
             services.AddScoped<IListManageRepository, ListManageRepository>();
+            services.AddHostedService<KafkaConsumerService>();
 
             services.AddGrpc();
 
