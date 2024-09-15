@@ -13,6 +13,11 @@ namespace Infrastructure.Persistance
             _lists = context.GetCollection<ProductsList>("Lists");
         }
 
+        public async Task<ProductsList> GetListByFridgeId(int fridgeId, CancellationToken stoppingToken)
+        {
+            return await _lists.Find(l => l.FridgeId == fridgeId).FirstOrDefaultAsync(stoppingToken);
+        }
+
         public async Task<ProductsList> GetListByName(string name,CancellationToken cancellationToken)
         {
             return await _lists.Find(l => l.Name == name).FirstOrDefaultAsync(cancellationToken);
