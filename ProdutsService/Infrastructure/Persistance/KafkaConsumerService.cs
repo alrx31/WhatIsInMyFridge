@@ -16,7 +16,8 @@ public class KafkaConsumerService : BackgroundService
     public KafkaConsumerService(
         IServiceScopeFactory serviceScopeFactory,
         IConfiguration configuration,
-        ILogger<KafkaConsumerService> logger)
+        ILogger<KafkaConsumerService> logger
+        )
     {
         _serviceScopeFactory = serviceScopeFactory;
         _configuration = configuration;
@@ -86,6 +87,6 @@ public class KafkaConsumerService : BackgroundService
                     consumer.Close();
                 }
             }
-        },stoppingToken);
+        }, stoppingToken);
     }
 }
