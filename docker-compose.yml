@@ -1,0 +1,81 @@
+version: '3.8'
+networks:
+  entityservicenetwork:
+    driver: bridge
+services:
+
+  identityservice:
+    build:
+      context: ./IdentityService
+      dockerfile: Dockerfile        
+    ports:
+      - "8080:8080"
+      - "8081:8081" 
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Database=UsersDb;Username=alex;Password=postgres123"
+    depends_on:
+      - postgres 
+      - redis
+      - kafka
+    networks:
+      - entityservicenetwork
+
+  fridgeservice:
+    build:
+      context: ./FridgeService
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Database=FridgeDb;Username=alex;Password=postgres123"
+    depends_on:
+      - identityservice
+    networks:
+      - entityservicenetwork
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - entityservicenetwork
+  
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    networks:
+      - entityservicenetwork
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: alex
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: UsersDb,FridgeDb,HangFireDb
+    ports:
+      - "5432:5432"
+    volumes:
+         - postgres-data:/var/lib/postgresql/data
+    networks:
+      - entityservicenetwork
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - entityservicenetwork
+
+volumes:
+  postgres-data:

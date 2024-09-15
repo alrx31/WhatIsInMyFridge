@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option csharp_namespace = "DAL.Persistanse.Protos";
+
+
+service Products {
+  rpc GetProducts (ProductsIds) returns (ProductssResponse);
+}
+
+message ProductsIds {
+  repeated string ids = 1;
+}
+
+message ProductssResponse {
+  repeated Product products = 1;
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  float pricePerKilo = 3;
+  string expTime = 4;
+}
