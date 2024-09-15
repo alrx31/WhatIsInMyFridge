@@ -17,5 +17,10 @@ namespace Infrastructure.Persistance
         {
             return await _lists.Find(l => l.Name == name).FirstOrDefaultAsync(cancellationToken);
         }
+
+        public async Task<ProductsList> GetListbyFridgeId(int fridgeId, CancellationToken cancellationToken)
+        {
+            return await _lists.Find(l => l.FridgeId == fridgeId).FirstOrDefaultAsync(cancellationToken);
+        }
     }
 }

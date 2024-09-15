@@ -11,7 +11,7 @@ namespace Domain.Entities
         public string ProductId { get; set; }
         public string ListId { get; set; }
 
-        public int Weight { get; set; }
+        public int Count { get; set; }
         public decimal Cost { get; set; }
     }
 }

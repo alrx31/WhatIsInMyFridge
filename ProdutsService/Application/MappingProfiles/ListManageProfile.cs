@@ -26,7 +26,7 @@ namespace Application.MappingProfiles
                 .ForMember(dest => dest.ListId, opt => opt.MapFrom(src => src.ListId))
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Model.ProductId))
                 .ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Model.Cost))
-                .ForMember(dest => dest.Weight, opt => opt.MapFrom(src => src.Model.Weight));
+                .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.Model.Weight));
                 
         }
     }
