@@ -88,6 +88,7 @@ namespace Presentation.Controllers
         public async Task<IActionResult> DevideProductFromFridge(int fridgeId, int count, string productId)
         {
             await _fridgeService.DevideProductFromFridge(fridgeId, count, productId);
+            
             return Ok();
         }
 
