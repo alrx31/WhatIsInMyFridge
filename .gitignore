@@ -1,7 +1,3 @@
-﻿################################################################################
-# Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
-################################################################################
-
 /IdentityService/Application/bin/Debug/net8.0
 /IdentityService/Application/obj
 /IdentityService/Domain/bin/Debug/net8.0

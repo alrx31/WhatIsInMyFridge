@@ -10,7 +10,6 @@ namespace Application.MappingProfiles
     {
         public ProductProfile()
         {
-
             CreateMap<AddProductComand, Product>();
             CreateMap<AddProductDTO, Product>();
             
