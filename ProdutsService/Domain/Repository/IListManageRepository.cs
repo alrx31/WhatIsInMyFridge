@@ -6,8 +6,6 @@ namespace Domain.Repository
     {
         Task DeleteProductInList(string listId, string productId, CancellationToken cancellationToken);
         
-        Task DevideProductInList(string id, string productId, int count, CancellationToken stoppingToken);
-        
         Task<List<string>> GetListProducts(string listId, CancellationToken cancellationToken);
 
         Task<ProductInList> GetProductInLlist(string listId, string productId, CancellationToken cancellationToken);
