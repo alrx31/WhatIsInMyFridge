@@ -10,7 +10,9 @@ namespace Application.MappingProfiles
     {
         public ProductProfile()
         {
+
             CreateMap<AddProductComand, Product>();
+            CreateMap<AddProductDTO, Product>();
             
             CreateMap<AddProductDTO, AddProductComand>()
                 .ConstructUsing(src => new AddProductComand(src));

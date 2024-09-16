@@ -13,6 +13,7 @@ services:
     depends_on:
       - identityservice
       - fridgeservice
+      - productsservice
     networks:
       - entityservicenetwork
 
@@ -42,6 +43,21 @@ services:
       ConnectionStrings__DefaultConnection: "Host=postgres;Database=FridgeDb;Username=alex;Password=postgres123"
     depends_on:
       - identityservice
+    networks:
+      - entityservicenetwork
+
+  productsservice:
+    build:
+      context: ./ProdutsService
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+      - "8084:8084"
+    environment:
+      ConnectionStrings__MongoDbConnection: "mongodb://mongo:27017/ProductsDB"
+    depends_on:
+      - mongo
+      - fridgeservice
     networks:
       - entityservicenetwork
   
@@ -78,6 +94,15 @@ services:
          - postgres-data:/var/lib/postgresql/data
     networks:
       - entityservicenetwork
+    
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - entityservicenetwork
 
   redis:
     image: redis:latest
@@ -98,3 +123,4 @@ services:
 
 volumes:
   postgres-data:
+  mongo-data:

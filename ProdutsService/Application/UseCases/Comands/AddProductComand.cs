@@ -8,6 +8,6 @@ namespace Application.UseCases.Comands
             AddProductDTO model
         ):IRequest
     {
-        public AddProductDTO Model { get; set; }
+        public AddProductDTO Model { get; set; } = model;
     }
 }
