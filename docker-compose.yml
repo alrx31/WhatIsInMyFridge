@@ -3,6 +3,18 @@ networks:
   entityservicenetwork:
     driver: bridge
 services:
+  
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - identityservice
+      - fridgeservice
+    networks:
+      - entityservicenetwork
 
   identityservice:
     build:
@@ -30,16 +42,6 @@ services:
       ConnectionStrings__DefaultConnection: "Host=postgres;Database=FridgeDb;Username=alex;Password=postgres123"
     depends_on:
       - identityservice
-    networks:
-      - entityservicenetwork
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - "2181:2181"
     networks:
       - entityservicenetwork
   
@@ -81,6 +83,16 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
+    networks:
+      - entityservicenetwork
+ 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
     networks:
       - entityservicenetwork
 
