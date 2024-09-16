@@ -12,7 +12,7 @@ namespace DAL.Interfaces
 
         Task<Fridge> UpdateFridge(Fridge fridge);
 
-        Task AddUserToFridge(int fridgeId, int userId);
+        Task AddUserToFridge(UserFridge model);
 
         Task RemoveUserFromFridge(int fridgeId, int userId);
 
@@ -26,6 +26,6 @@ namespace DAL.Interfaces
 
         Task<List<Fridge>> GetAllFridges();
 
-        Task DevideProductFromFridge(int fridgeId, string productId, int count);
+        Task UpdateProductInFridge(ProductFridgeModel model);
     }
 }

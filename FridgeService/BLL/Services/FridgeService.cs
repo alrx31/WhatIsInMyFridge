@@ -6,6 +6,8 @@ using DAL.Interfaces;
 using DAL.IRepositories;
 using DAL.Repositories;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BLL.Services
 {
@@ -99,8 +101,22 @@ namespace BLL.Services
             {
                 throw new NotFoundException("User not found");
             }
+            
+            var fridge = await _unitOfWork.FridgeRepository.GetFridge(fridgeId);
 
-            await _unitOfWork.FridgeRepository.AddUserToFridge(fridgeId, userId);
+            if (fridge is null)
+            {
+                throw new NotFoundException("Fridge not found");
+            }
+
+            var model = new UserFridge
+            {
+                userId = userId,
+                fridgeId = fridgeId,
+                LinkTime = DateTime.UtcNow
+            };
+
+            await _unitOfWork.FridgeRepository.AddUserToFridge(model);
         
             await _unitOfWork.CompleteAsync();
         }
@@ -207,7 +223,7 @@ namespace BLL.Services
             var fridge = await _unitOfWork.FridgeRepository.GetFridge(fridgeId);
 
             if(fridge is null)
-        {
+            {
                 throw new NotFoundException("Fridge not found");
             }
 
@@ -224,7 +240,7 @@ namespace BLL.Services
                     // Use SignalR to notify user
                 }
             }
-            }
+        }
 
         public async Task CheckProducts()
         {
@@ -234,13 +250,14 @@ namespace BLL.Services
             {
                 await CheckProducts(fridge.id);
             }
-            }
+        }
 
         public async Task<List<Product>> GetFridgeProducts(int fridgeId)
         {
             var productsModel = await _unitOfWork.FridgeRepository.GetProductsFromFridge(fridgeId);
                
             var ids = productsModel.Select(p => p.productId).ToList();
+
             return await _productsgRPCService.GetProducts(ids);
         }
 
@@ -260,15 +277,36 @@ namespace BLL.Services
                 throw new NotFoundException("Fridge not found");
             }
 
+            var products= await _unitOfWork.FridgeRepository.GetProductsFromFridge(fridgeId);
 
-            await _unitOfWork.FridgeRepository.DevideProductFromFridge(fridgeId, productId,count);
+            var model = products.Where(p => p.productId == productId).ToList()[0];
+
+            if (model is null)
+            {
+                throw new NotFoundException("Product in fridge not found");
+            }
+
+            model.count = model.count - count;
+            
+            if (model.count < 0)
+            {
+                throw new Exception("invalid count of product");
+            }
+
+            if (model.count == 0)
+            {
+                await _unitOfWork.FridgeRepository.RemoveProductFromFridge(fridgeId, productId);
+            }
+            else
+            {
+                await _unitOfWork.FridgeRepository.UpdateProductInFridge(model);
+            }
 
             await _unitOfWork.CompleteAsync();
 
             var message = _mapper.Map<DAL.Entities.MessageBrokerEntities.ProductRemove>((productId, fridgeId,count));
 
             await _kafkaProducer.ProduceAsync<DAL.Entities.MessageBrokerEntities.ProductRemove>("RemoveProduct", message);
-
         }
     }
 }
