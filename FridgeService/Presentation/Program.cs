@@ -29,6 +29,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(op =>
     op.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost3000",
+        builder => builder
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
+
 var app = builder.Build();
 
 
@@ -41,6 +52,8 @@ using (var scope = app.Services.CreateScope())
         dbContext.Database.Migrate();
     }
 }
+
+app.UseCors("AllowLocalhost3000");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || true)
