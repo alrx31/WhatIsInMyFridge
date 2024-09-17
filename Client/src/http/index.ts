@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {IAuthResponse} from "../models/AuthResponse";
 
-export const API_URL = "http://localhost:5274/api";
+export const API_URL = "http://localhost:80";
 
 const $api = axios.create({
     withCredentials: true,
@@ -9,7 +9,8 @@ const $api = axios.create({
 })
 
 
-$api.interceptors.request.use((config)=>{
+$api.interceptors.request.use((config) => {
+    
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
     return config;
 })
@@ -21,7 +22,7 @@ $api.interceptors.response.use((config)=>{
     if(error.response.status === 401 && !error.config._isRetry){
         originalRequest._isRetry = true
         try{
-            const response = await axios.post<IAuthResponse>(`${API_URL}/Participants/refresh-token`,{
+            const response = await axios.post<IAuthResponse>(`${API_URL}/api/refresh`,{
                 JwtToken:localStorage.getItem('token'),
                 RefreshToken:""
             }, {withCredentials:true})

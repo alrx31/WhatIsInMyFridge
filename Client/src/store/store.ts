@@ -30,18 +30,14 @@ export default class Store {
     }
 
 
-    async login(email: string, password: string) {
+    async login(login: string, password: string) {
         this.setLoading(true)
         
         try {
-            const response = await AuthService.login(email, password);
+            const response = await AuthService.login(login, password);
             localStorage.setItem('token', response.data.jwtToken);
             this.setAuth(true);
-            if (response.data.userId == 0) {
-                throw 'Ошибка получения данных пользователя';
-            }
-            const res = await UserService.fetchUserById(response.data.userId);
-            if (res.data) this.setUser(res.data);
+            if (response.data) this.setUser(response.data.user);
             else console.log('Ошибка получения данных пользователя');
 
         } catch (e: any) {
@@ -87,22 +83,20 @@ export default class Store {
     async checkAuth() {
         this.setLoading(true);
         try {
-            const response = await axios.post<IAuthResponse>(`${API_URL}/Participants/refresh-token`, {
+            const response = await axios.post<IAuthResponse>(`${API_URL}api/Auth/token`, {
                 JwtToken: localStorage.getItem('token'),
                 RefreshToken: ""
             }, {withCredentials: true})
 
             localStorage.setItem('token', response.data.jwtToken);
-            if (response.data.userId === 0) throw 'Ошибка получения данных пользователя';
+            if (response.data.user == null) throw 'Ошибка получения данных пользователя';
             this.setAuth(true);
-            
-            const res = await UserService.fetchUserById(response.data.userId);
-            if (res.data) this.setUser({
-                Id: res.data.id,
-                Name: res.data.firstName,
-                Login: res.data.login,
-                Email: res.data.email,
-                IsAdmin: res.data.isAdmin
+            if (response.data.user) this.setUser({
+                Id: response.data.user.Id,
+                Name: response.data.user.Name,
+                Login: response.data.user.Login,
+                Email: response.data.user.Email,
+                IsAdmin: response.data.user.IsAdmin
             });
             else console.log('Ошибка получения данных пользователя');
 

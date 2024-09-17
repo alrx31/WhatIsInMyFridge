@@ -22,8 +22,8 @@ function App() {
 
     useEffect(() => {
         // add for tests
-        history('/');
-        return
+        //history('/');
+        //return
         
         if(!store.isAuht) {
             history('/login')

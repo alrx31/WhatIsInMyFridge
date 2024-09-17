@@ -5,24 +5,23 @@ import Store from "../store/store";
 
 export default class AuthService{
     static async login(
-        email:string,
+        login:string,
         password:string
     ):Promise<AxiosResponse<IAuthResponse>>{
-        return $api.post<IAuthResponse>('/Participants/login', {
-            Email:email,
-            Password:password
+        return $api.post<IAuthResponse>('/api/Auth', {
+            "Login":login,
+            "password":password
         })
     }
     static async register(
         email:string,
         password:string,
-        FirstName:string,
-        LastName:string,
+        name:string,
+        login:string,
     ):Promise<AxiosResponse<IAuthResponse>>{
-        return $api.post<IAuthResponse>('/Participants/register', {
-            FirstName,
-            LastName,
-            RegistrationDate:new Date(),
+        return $api.put<IAuthResponse>('/api/Auth', {
+            name,
+            login,
             email,
             password
         })

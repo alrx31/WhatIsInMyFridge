@@ -23,8 +23,6 @@
 /FridgeService/Domain/obj
 /FridgeService/Fridge/obj
 /FridgeService/Infrastructure/obj/Debug/net8.0
-/FridgeService
-/ProdutsService
 Client/.vs/ProjectSettings.json
 Client/.vs/slnx.sqlite
 Client/.vs/VSWorkspaceState.json
@@ -36,3 +34,4 @@ Client/.vs/Client/FileContentIndex/06abfe29-0c9c-4c68-b54a-19ce6bfbaac0.vsidx
 Client/.vs/Client/FileContentIndex/570c8cd1-23a3-40a9-894c-f0333527585b.vsidx
 Client/.vs/Client/v17/.wsuo
 Client/.vs/Client/v17/DocumentLayout.json
+/Client/.vs/Client
