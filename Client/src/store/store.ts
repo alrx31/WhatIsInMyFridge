@@ -37,7 +37,13 @@ export default class Store {
             const response = await AuthService.login(login, password);
             localStorage.setItem('token', response.data.jwtToken);
             this.setAuth(true);
-            if (response.data) this.setUser(response.data.user);
+            if (response.data.user) this.setUser({
+                Id: response.data.user.id,
+                Name: response.data.user.name,
+                Login: response.data.user.login,
+                Email: response.data.user.email,
+                IsAdmin: response.data.user.isAdmin
+            });
             else console.log('Ошибка получения данных пользователя');
 
         } catch (e: any) {
@@ -86,8 +92,19 @@ export default class Store {
             const response = await axios.post(`${API_URL}/api/Auth/token`, {
                 "jwtToken": localStorage.getItem('token'),
             }, { withCredentials: true })
+            if (response.status !== 200) {
+                localStorage.removeItem('token');
+                this.setAuth(false);
+                this.setUser({} as IUser);
+            };
+            if (!response.data.isLoggedIn)
+            {
+                    localStorage.removeItem('token');
+                    this.setAuth(false);
+                    this.setUser({} as IUser);
+                    return;
+            }
             localStorage.setItem('token', response.data.jwtToken);
-            if (response.data.user == null) throw 'Ошибка получения данных пользователя';
             this.setAuth(true);
             console.log(response.data.user);
             if (response.data.user) this.setUser({
@@ -98,7 +115,7 @@ export default class Store {
                 IsAdmin: response.data.user.isAdmin
             });
             else console.log('Ошибка получения данных пользователя');
-            console.log(this.user);
+            console.log(this.user.Id);
 
         } catch (e: any) {
             console.log(e);

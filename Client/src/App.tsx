@@ -19,6 +19,11 @@ function App() {
 
         if (localStorage.getItem('token')) {
             store.checkAuth()
+            .then(()=>{
+                if(!store.isAuth){
+                    history('/login')
+                }
+            })
         }
 
     }, []);

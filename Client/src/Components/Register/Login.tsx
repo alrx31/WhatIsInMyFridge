@@ -20,12 +20,14 @@ const Login = (
     let handleSubmit = async  (e:any)=>{
         e.preventDefault();
         try {
-            await store.login(login, password);
-            if (store.isAuth) {
-                history('/');  // Если авторизация успешна, перенаправляем на главную
-            }else{
-                setMessage("Login or password is incorrect");
-            }
+            store.login(login, password)
+            .then(()=>{
+                if (store.isAuth && !store.isLoading && store.user) {
+                    history('/');
+                }else{
+                    setMessage("Login or password is incorrect");
+                }
+            })
         } catch (e) {
             console.log("Ошибка входа", e);
         }

@@ -7,7 +7,7 @@ export default class AuthService{
     static async login(
         login:string,
         password:string
-    ):Promise<AxiosResponse<IAuthResponse>>{
+    ):Promise<AxiosResponse>{
         return $api.post<IAuthResponse>('/api/Auth', {
             "Login":login,
             "password":password
@@ -27,11 +27,7 @@ export default class AuthService{
         })
     }
 
-    static async logout(userId:number):Promise<AxiosResponse<IAuthResponse>>{
-            let ask = {
-                "Token":localStorage.getItem('token') ? localStorage.getItem('token') : "",
-                "UserId":userId ? userId : 0
-            }
-        return $api.post<IAuthResponse>('/Participants/logout', ask)
+    static async logout(userId:number):Promise<AxiosResponse>{
+        return $api.delete<IAuthResponse>(`/api/Auth/${userId}`)
     }
 }
