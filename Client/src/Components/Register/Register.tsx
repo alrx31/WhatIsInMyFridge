@@ -21,7 +21,8 @@ const Register = (
     let handleSubmit = (e:any)=>{
         e.preventDefault();
         store.registration(email,password,name,login);
-        if(!store.isAuht){
+
+        if (!store.isAuth) {
             history('/login')
         }
     }

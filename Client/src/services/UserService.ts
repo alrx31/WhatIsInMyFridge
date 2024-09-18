@@ -2,6 +2,6 @@
 import $api from "../http";
 export default class UserService {
     static async fetchUserById(id:number):Promise<AxiosResponse> {
-        return $api.get(`/Participants/${id}`);
+        return $api.get(`/api/User/${id}`);
     }
 }

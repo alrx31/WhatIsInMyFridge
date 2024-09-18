@@ -13,11 +13,20 @@ const Login = (
     const [password, setPassword] = useState("")
     const [isLoad,setIsLoad] = useState(false)
     const {store} = useContext(Context);
-    
-    let handleSubmit = (e:any)=>{
+    const history = useNavigate();
+
+    let handleSubmit =async  (e:any)=>{
         e.preventDefault();
-        store.login(login,password);
+        try {
+            await store.login(login, password);
+            if (store.isAuth) {
+                history('/');  // Если авторизация успешна, перенаправляем на главную
+            }
+        } catch (e) {
+            console.log("Ошибка входа", e);
+        }
     }
+
     return (
         <div className="register-page">
             {isLoad ? <Waiter/> : ""}

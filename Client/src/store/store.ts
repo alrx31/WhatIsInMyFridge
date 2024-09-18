@@ -8,7 +8,7 @@ import {IAuthResponse} from "../models/AuthResponse";
 
 export default class Store {
     user = {} as IUser;
-    isAuht = false;
+    isAuth = false;
     isLoading = false;
     pageSize = 5;
 
@@ -17,7 +17,7 @@ export default class Store {
     }
 
     setAuth(bool: boolean) {
-        this.isAuht = bool;
+        this.isAuth = bool;
     }
 
     setUser(user: IUser) {
@@ -83,11 +83,9 @@ export default class Store {
     async checkAuth() {
         this.setLoading(true);
         try {
-            const response = await axios.post<IAuthResponse>(`${API_URL}api/Auth/token`, {
-                JwtToken: localStorage.getItem('token'),
-                RefreshToken: ""
-            }, {withCredentials: true})
-
+            const response = await axios.post<IAuthResponse>(`${API_URL}/api/Auth/token`, {
+                "jwtToken": localStorage.getItem('token'),
+            }, { withCredentials: true })
             localStorage.setItem('token', response.data.jwtToken);
             if (response.data.user == null) throw 'Ошибка получения данных пользователя';
             this.setAuth(true);
@@ -101,7 +99,7 @@ export default class Store {
             else console.log('Ошибка получения данных пользователя');
 
         } catch (e: any) {
-            console.log(e?.response?.data?.message);
+            console.log(e);
         } finally {
             this.setLoading(false);
         }

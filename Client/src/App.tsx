@@ -24,13 +24,12 @@ function App() {
         // add for tests
         //history('/');
         //return
-        
-        if(!store.isAuht) {
+
+        if (!store.isAuth && !store.isLoading) {
             history('/login')
-        }else{
-            history('/')
         }
-    }, [store.isAuht]);
+
+    }, [store.isAuth]);
     
     if(store.isLoading){
         return <Waiter/>

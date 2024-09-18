@@ -24,7 +24,6 @@ $api.interceptors.response.use((config)=>{
         try{
             const response = await axios.post<IAuthResponse>(`${API_URL}/api/refresh`,{
                 JwtToken:localStorage.getItem('token'),
-                RefreshToken:""
             }, {withCredentials:true})
             localStorage.setItem('token',response.data.jwtToken);
             return $api.request(originalRequest);

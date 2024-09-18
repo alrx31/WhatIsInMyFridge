@@ -6,9 +6,6 @@ export const List:React.FC<IListProps> = ({
 
 })=>{
 
-
-
-
     return (
         <div className={"list-page"}>
             <div>
