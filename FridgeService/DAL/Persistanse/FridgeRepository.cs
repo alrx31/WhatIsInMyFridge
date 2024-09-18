@@ -77,6 +77,11 @@ namespace DAL.Persistanse
             _context.productFridgeModels.Remove(model);
         }
 
+        public async Task<ProductFridgeModel> GetProductFromFridge(int fridgeId, string productId)
+        {
+            return await _context.productFridgeModels.FirstOrDefaultAsync(m => m.productId == productId && m.fridgeId == fridgeId);
+        }
+
         public async Task<List<ProductFridgeModel>> GetProductsFromFridge(int fridgeId)
         {
             return await _context.productFridgeModels.Where(m => m.fridgeId == fridgeId).ToListAsync();

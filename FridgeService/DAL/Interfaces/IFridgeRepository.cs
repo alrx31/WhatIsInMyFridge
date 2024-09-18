@@ -22,6 +22,8 @@ namespace DAL.Interfaces
 
         Task RemoveProductFromFridge(int fridgeId, string productId);
 
+        Task<ProductFridgeModel> GetProductFromFridge(int fridgeId, string productId);
+
         Task<List<ProductFridgeModel>> GetProductsFromFridge(int fridgeId);
 
         Task<List<Fridge>> GetAllFridges();

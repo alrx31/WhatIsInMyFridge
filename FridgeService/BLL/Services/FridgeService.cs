@@ -277,9 +277,7 @@ namespace BLL.Services
                 throw new NotFoundException("Fridge not found");
             }
 
-            var products= await _unitOfWork.FridgeRepository.GetProductsFromFridge(fridgeId);
-
-            var model = products.Where(p => p.productId == productId).ToList()[0];
+            var model = await _unitOfWork.FridgeRepository.GetProductFromFridge(fridgeId, productId);
 
             if (model is null)
             {
