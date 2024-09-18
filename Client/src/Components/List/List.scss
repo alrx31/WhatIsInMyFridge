@@ -1,0 +1,40 @@
+.list-page {
+    font-family: Arial, sans-serif;
+    color: var(--darkgray);
+    background-color: var(--lightgray);
+    max-height: 100vh;
+    position: relative;
+
+    .list-page__buttons{
+        position: fixed;
+        top: 0;
+        right: 0;
+        padding: 10px;
+
+        
+
+        button{
+            margin: 20px;
+            padding: 10px 20px;
+
+            background-color: var(--lightblue);
+            color: var(--white);
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+
+            font-size: 16px;
+
+            &:hover{
+                background-color: var(--darkblue);
+                color: var(--lightblue);
+                border: 1px solid var(--lightblue);
+                cursor: pointer;
+            }
+        }
+        
+    }
+    
+   
+  }
+  

@@ -15,12 +15,16 @@ const Login = (
     const {store} = useContext(Context);
     const history = useNavigate();
 
-    let handleSubmit =async  (e:any)=>{
+    const [message,setMessage] = useState("");
+
+    let handleSubmit = async  (e:any)=>{
         e.preventDefault();
         try {
             await store.login(login, password);
             if (store.isAuth) {
                 history('/');  // Если авторизация успешна, перенаправляем на главную
+            }else{
+                setMessage("Login or password is incorrect");
             }
         } catch (e) {
             console.log("Ошибка входа", e);
@@ -32,6 +36,7 @@ const Login = (
             {isLoad ? <Waiter/> : ""}
             <form onSubmit={handleSubmit} className={"login-form"}>
                 <h2>Login</h2>
+                <h3>{message}</h3>
                 <div className="form-group">
                     <label htmlFor="login">Login</label>
                     <input

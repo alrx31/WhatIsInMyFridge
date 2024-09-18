@@ -83,20 +83,22 @@ export default class Store {
     async checkAuth() {
         this.setLoading(true);
         try {
-            const response = await axios.post<IAuthResponse>(`${API_URL}/api/Auth/token`, {
+            const response = await axios.post(`${API_URL}/api/Auth/token`, {
                 "jwtToken": localStorage.getItem('token'),
             }, { withCredentials: true })
             localStorage.setItem('token', response.data.jwtToken);
             if (response.data.user == null) throw 'Ошибка получения данных пользователя';
             this.setAuth(true);
+            console.log(response.data.user);
             if (response.data.user) this.setUser({
-                Id: response.data.user.Id,
-                Name: response.data.user.Name,
-                Login: response.data.user.Login,
-                Email: response.data.user.Email,
-                IsAdmin: response.data.user.IsAdmin
+                Id: response.data.user.id,
+                Name: response.data.user.name,
+                Login: response.data.user.login,
+                Email: response.data.user.email,
+                IsAdmin: response.data.user.isAdmin
             });
             else console.log('Ошибка получения данных пользователя');
+            console.log(this.user);
 
         } catch (e: any) {
             console.log(e);

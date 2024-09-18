@@ -25,6 +25,11 @@ h2 {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+
+  h3{
+    margin-left: 16px;
+    color:var(--red);
+  }
 }
 .register-form {
   background: white;
@@ -34,6 +39,11 @@ h2 {
   width: 100%;
   width: min(600px,90vw);
   box-sizing: border-box;
+
+  h3{
+    margin-left: 16px;
+    color:var(--red);
+  }
 }
 
 .error-form {

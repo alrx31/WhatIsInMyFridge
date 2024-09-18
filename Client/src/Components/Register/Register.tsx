@@ -12,7 +12,10 @@ const Register = (
     const [email,setEmale] = useState("");
     const [login,setLogin] = useState("");
     const [password, setPassword] = useState("")
+    const [repPassword, setRepPassword] = useState("")
     const [name,setName] = useState("");
+
+    const [message,setMessage] = useState("");
         
     const {store} = useContext(Context)
     
@@ -20,17 +23,54 @@ const Register = (
     
     let handleSubmit = (e:any)=>{
         e.preventDefault();
+
+        if(!validateForm()){
+            return;
+        }
+
+
         store.registration(email,password,name,login);
 
         if (!store.isAuth) {
             history('/login')
         }
     }
+
+    let validateForm = ():boolean=>{
+        if(password !== repPassword){
+            setMessage("Passwords do not match");
+            return false;
+        }
+
+        if(password.length < 6){
+            setMessage("Password must be at least 6 characters long");
+            return false;
+        }
+
+        if(!email.includes('@')){
+            setMessage("Email is incorrect");
+            return false;
+        }
+
+        if(name.length < 3){
+            setMessage("Name must be at least 3 characters long");
+            return false;
+        }
+
+        if(login.length < 3){
+            setMessage("Login must be at least 3 characters long");
+            return false;
+        }
+
+        return true;
+    }
+
     
     return (
         <div className="register-page">
             <form onSubmit={handleSubmit} className={"register-form"}>
                 <h2>Register</h2>
+                <h3>{message}</h3>
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <input
@@ -49,6 +89,18 @@ const Register = (
                         name="password"
                         onChange={e=>setPassword(e.target.value)}
                         value={password}
+
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="password">Repeat Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        onChange={e=>setRepPassword(e.target.value)}
+                        value={repPassword}
+
                     />
                 </div>
                 <div className="form-group">

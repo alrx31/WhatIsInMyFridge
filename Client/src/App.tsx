@@ -10,20 +10,20 @@ import {Profile} from "./Components/Profile/Profile";
 import { List } from './Components/List/List';
 
 function App() {
+
     let history = useNavigate();
 
     const {store} = useContext(Context)
     
     useEffect(() => {
-        if(localStorage.getItem('token')){
+
+        if (localStorage.getItem('token')) {
             store.checkAuth()
         }
+
     }, []);
 
     useEffect(() => {
-        // add for tests
-        //history('/');
-        //return
 
         if (!store.isAuth && !store.isLoading) {
             history('/login')
@@ -31,18 +31,21 @@ function App() {
 
     }, [store.isAuth]);
     
-    if(store.isLoading){
+    if (store.isLoading) {
+
         return <Waiter/>
+
     }
     
   return (
       
     <div className="App">
         
+      
 
     
       <Routes>
-            <Route path={"/"} element={<List />} />
+          <Route path={"/"} element={<List />} />
           <Route path={"/fridges"} element={<List />} />
           
 
