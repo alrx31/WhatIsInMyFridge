@@ -36,6 +36,12 @@ namespace Presentation.Controllers
             return Ok(await _fridgeService.GetFridge(fridgeId));
         }
 
+        [HttpGet("")]
+        public async Task<IActionResult> GetFridgesByUserId([FromQuery] int userId)
+        {
+            return Ok(await _fridgeService.GetFridgesByUserId(userId));
+        }
+        
         [HttpDelete("{fridgeId}")]
         public async Task<IActionResult> RemoveFridgeById(int fridgeId)
         {

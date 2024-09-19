@@ -38,6 +38,8 @@ namespace BLL.Services
         Task<List<Product>> GetFridgeProducts(int fridgeId);
 
         Task DevideProductFromFridge(int fridgeId, int count, string productId);
+
+        Task<List<Fridge>> GetFridgesByUserId(int userId);
     }
 
     public class FridgeService: IFridgeService
@@ -83,6 +85,27 @@ namespace BLL.Services
             if(fridge is null)
             {
                 throw new NotFoundException("Fridge not found");
+            }
+
+            return fridge;
+        }
+
+        public async Task<List<Fridge>> GetFridgesByUserId(int userId)
+        {
+            var isUserExist = await _grpcService.CheckUserExist(userId);
+
+            if (!isUserExist)
+            {
+                throw new NotFoundException("User not found");
+            }
+
+            var fridge = await _unitOfWork.FridgeRepository.GetFridgeByUserId(userId);
+
+            _logger.LogInformation("Fridge by user id {userId} is {fridge}", userId, fridge);
+
+            if (fridge is null)
+            {
+                throw new NotFoundException("Fridges not found");
             }
 
             return fridge;

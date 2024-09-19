@@ -24,6 +24,14 @@ namespace DAL.Persistanse
             return await _context.fridges.FindAsync(fridgeId);
         }
 
+        public async Task<List<Fridge>> GetFridgeByUserId(int userId)
+        {
+            return await _context.userFridges
+                .Where(uf => uf.userId == userId)
+                .Join(_context.fridges, uf => uf.fridgeId, f => f.id, (uf, f) => f)
+                .ToListAsync();
+        }
+
         public async Task RemoveFridge(int fridgeId)
         {
             var fridge = await _context.fridges.FindAsync(fridgeId);
