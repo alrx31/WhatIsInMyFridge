@@ -77,11 +77,14 @@ export default class Store {
     async logout() {
         try {
             const response = await AuthService.logout(this.user.Id);
+        } catch (e: any) {
+            console.log(e.response?.data?.message);
+        }
+        finally{
             localStorage.removeItem('token');
             this.setAuth(false);
             this.setUser({} as IUser);
-        } catch (e: any) {
-            console.log(e.response?.data?.message);
+            console.log("logout");
         }
     }
 
@@ -92,18 +95,14 @@ export default class Store {
             const response = await axios.post(`${API_URL}/api/Auth/token`, {
                 "jwtToken": localStorage.getItem('token'),
             }, { withCredentials: true })
-            if (response.status !== 200) {
+            if (response.status !== 200 || !response.data.isLoggedIn) {
+                console.log('Ошибка авторизации');
                 localStorage.removeItem('token');
                 this.setAuth(false);
                 this.setUser({} as IUser);
+                return;
             };
-            if (!response.data.isLoggedIn)
-            {
-                    localStorage.removeItem('token');
-                    this.setAuth(false);
-                    this.setUser({} as IUser);
-                    return;
-            }
+            console.log("ok");
             localStorage.setItem('token', response.data.jwtToken);
             this.setAuth(true);
             console.log(response.data.user);
@@ -119,6 +118,10 @@ export default class Store {
 
         } catch (e: any) {
             console.log(e);
+            console.log('Ошибка авторизации');
+            localStorage.removeItem('token');
+            this.setAuth(false);
+            this.setUser({} as IUser);
         } finally {
             this.setLoading(false);
         }

@@ -5,6 +5,7 @@ import { Context } from "../..";
 import AuthService from "../../services/AuthService";
 import FridgeService from "../../services/FridgeService";
 import { IFridge } from "../../models/Fridge";
+import { IUser } from "../../models/User";
 
 interface IListProps {}
 
@@ -14,21 +15,10 @@ export const List: React.FC<IListProps> = () => {
     const [fridges, setFridges] = React.useState<IFridge[]>([]);
     let history = useNavigate();
 
-    const logoutHandle = async () => {
-        try {
-            await AuthService.logout(store.user.Id);
-            history('/login');
-        } catch (e) {
-            console.error(e);
-        }
-    };
+    
 
     const getFridges = async () => {
         try {
-            if(!store.user.Id) {
-                history('/login');
-                return;
-            }
             const response = await FridgeService.getFridgesByUserId(store.user.Id);
             if (response.status === 200) {
                 const data: IFridge[] = response.data.map((item: any) => ({
@@ -59,38 +49,18 @@ export const List: React.FC<IListProps> = () => {
 
     return (
         <div className="list-page">
-            <header>
-                <h2>Your Fridges</h2>
-
-                <div className="list-page__buttons">
-                    <button className="button__logout" onClick={logoutHandle}>
-                        LogOut
-                    </button>
-                    <button onClick={() => history(`/user/${store.user.Id}`)}>
-                        Profile
-                    </button>
-                </div>
-            </header>
+            
 
             <ul className="list-page__list">
                 {fridges.length === 0 ? (
                     <h1>Fridges Not Found</h1>
                 ) : (
-                    fridges.map((fridge) => (
-                        <div key={fridge.Id} className="fridge_item">
-                            <h2 className="fridge_name">Name: {fridge.Name}</h2>
-                            <p className="fridge_model">Model: {fridge.Model}</p>
-                            <p className="fridge_serial">Serial: {fridge.Serial}</p>
-                            <p className="fridge_boughtDate">Bought Date: {fridge.BoughtDate}</p>
-                            <p className="fridge_boxNumber">Box Number: {fridge.BoxNumber}</p>
-                        </div>
-                    ))
-                )}
-                {fridges.length === 0 ? (
-                    <h1>Fridges Not Found</h1>
-                ) : (
-                    fridges.map((fridge) => (
-                        <div key={fridge.Id} className="fridge_item">
+                    fridges.map((fridge,indx) => (
+                        <div 
+                            key={indx} 
+                            className="fridge_item"
+                            onClick={()=>{history(`/fridge/${fridge.Id}`)}}
+                        >
                             <h2 className="fridge_name">Name: {fridge.Name}</h2>
                             <p className="fridge_model">Model: {fridge.Model}</p>
                             <p className="fridge_serial">Serial: {fridge.Serial}</p>

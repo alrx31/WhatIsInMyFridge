@@ -8,6 +8,7 @@ import {observer} from "mobx-react-lite";
 import {Waiter} from "./Components/Waiter/Waiter";
 import {Profile} from "./Components/Profile/Profile";
 import { List } from './Components/List/List';
+import { FridgePage } from './Components/Fridge/FridgePage';
 
 function App() {
 
@@ -16,36 +17,52 @@ function App() {
     const {store} = useContext(Context)
     
     useEffect(() => {
-
-        if (localStorage.getItem('token')) {
+        try {
             store.checkAuth()
-            .then(()=>{
-                if(!store.isAuth){
-                    history('/login')
-                }
-            })
+        } catch (e: any) {
+            console.error(e);
         }
-
+        finally{
+            console.log(store.isAuth);
+            if (!store.isAuth) {
+                history('/login');  
+            }
+        }  
     }, []);
-
-    useEffect(() => {
-
-        if (!store.isAuth && !store.isLoading) {
-            history('/login')
-        }
-
-    }, [store.isAuth]);
+    
     
     if (store.isLoading) {
-
         return <Waiter/>
-
     }
     
+
+    const logoutHandle = async () => {
+        try {
+            console.log("startLogout");
+            await store.logout();
+        } catch (e) {
+            console.error(e);
+        }
+        finally{
+            history('/login');
+        }
+    };
+
   return (
       
     <div className="App">
-        
+        <header>
+                <h2>Your Fridges</h2>
+
+                <div className="list-page__buttons">
+                    <button className="button__logout" onClick={logoutHandle}>
+                        LogOut
+                    </button>
+                    <button onClick={() => history(`/user/${store.user.Id}`)}>
+                        Profile
+                    </button>
+                </div>
+            </header>
       
 
     
@@ -57,6 +74,8 @@ function App() {
           <Route path={"/login"}  element={<Login/>} />
           <Route path={"/register"} element={<Register />} />
           
+          <Route path={"/fridge/:FridgeId"} element={<FridgePage />} />
+
           <Route path={"/user/:UserId"} element={<Profile />} />
       </Routes>
     </div>

@@ -1,4 +1,4 @@
-﻿import React, {FormEventHandler, useContext, useState} from 'react'
+﻿import React, {FormEventHandler, useContext, useEffect, useState} from 'react'
 import './Register.scss'
 import {NavLink, useNavigate} from "react-router-dom";
 import {Waiter} from "../Waiter/Waiter";
@@ -7,7 +7,7 @@ import {Context} from "../../index";
 import {observer} from "mobx-react-lite";
 
 const Login = (
-    {setUser = (data:IUser) => {}}:any
+    
 )=>{
     const [login,setLogin] = useState("");
     const [password, setPassword] = useState("")
@@ -17,19 +17,23 @@ const Login = (
 
     const [message,setMessage] = useState("");
 
+
     let handleSubmit = async  (e:any)=>{
+        setIsLoad(true);
         e.preventDefault();
         try {
-            store.login(login, password)
-            .then(()=>{
-                if (store.isAuth && !store.isLoading && store.user) {
-                    history('/');
-                }else{
-                    setMessage("Login or password is incorrect");
-                }
-            })
+            await store.login(login, password)   
         } catch (e) {
             console.log("Ошибка входа", e);
+        }
+        finally{
+            console.log(store.isAuth, store.isLoading, store.user?.Id);
+            if (store.isAuth && !store.isLoading && store.user?.Id) {
+                history('/');
+            }else{
+                setMessage("Login or password is incorrect");
+            }
+            setIsLoad(false);
         }
     }
 

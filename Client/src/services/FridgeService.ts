@@ -7,4 +7,10 @@ export default class FridgeService{
     ):Promise<AxiosResponse>{
         return $api.get(`/fridge/api/fridge/?userId=${userId}`)
     }
+
+    static async getFridgeById(
+        fridgeId:number
+    ):Promise<AxiosResponse>{
+        return $api.get(`/fridge/api/fridge/${fridgeId}`)
+    }
 }
