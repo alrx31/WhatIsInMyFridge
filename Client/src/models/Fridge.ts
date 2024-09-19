@@ -1,8 +1,8 @@
 ﻿export interface IFridge {
-    id: number;
-    name: string
-    model: string;
-    serial: string | null;
-    boughtDate: Date;
-    boxNumber: number;
+    Id: number;
+    Name: string
+    Model: string;
+    Serial: string | null;
+    BoughtDate: string;
+    BoxNumber: number;
 }
