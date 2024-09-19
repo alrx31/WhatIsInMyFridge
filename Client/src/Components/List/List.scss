@@ -5,32 +5,42 @@
     max-height: 100vh;
     position: relative;
 
+    header{
+        background-color: var(--darkgray);
+        color: var(--white);
+        padding: 20px 0px;
+        text-align: center;
+        h2{
+            color: var(--white);
+            margin: 0;
+        }
+    }
+
+    button{
+        margin: 8px;
+        padding: 10px 20px;
+
+        background-color: var(--lightblue);
+        color: var(--white);
+        border-radius: 8px;
+        border: 1px solid transparent;
+        transition: all 0.3s;
+
+        font-size: 16px;
+
+        &:hover{
+            background-color: var(--darkblue);
+            color: var(--lightblue);
+            border: 1px solid var(--lightblue);
+            cursor: pointer;
+     
+       }
+    }
+
     .list-page__buttons{
         position: fixed;
         top: 0;
-        right: 0;
-
-        
-
-        button{
-            margin: 8px;
-            padding: 10px 20px;
-
-            background-color: var(--lightblue);
-            color: var(--white);
-            border-radius: 8px;
-            border: 1px solid transparent;
-            transition: all 0.3s;
-
-            font-size: 16px;
-
-            &:hover{
-                background-color: var(--darkblue);
-                color: var(--lightblue);
-                border: 1px solid var(--lightblue);
-                cursor: pointer;
-            }
-        }
+        right: 0;   
     }
 
     .list-page__list
@@ -68,6 +78,35 @@
                 cursor: pointer;
                 margin-bottom: 8px;
             }
+        }
+    }
+
+    footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: var(--darkgray);
+        color: var(--white);
+        padding: 10px 0;
+        text-align: center;
+    }
+    .add-fridge-button{
+        margin: 20px;
+        padding: 10px 20px;
+
+        background-color: var(--lightblue);
+        color: var(--white);
+        border-radius: 8px;
+        border: 1px solid transparent;
+        transition: all 0.3s;
+
+        font-size: 16px;
+
+        &:hover{
+            background-color: var(--darkblue);
+            color: var(--lightblue);
+            border: 1px solid var(--lightblue);
+            cursor: pointer;
         }
     }
     

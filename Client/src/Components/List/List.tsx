@@ -25,6 +25,10 @@ export const List: React.FC<IListProps> = () => {
 
     const getFridges = async () => {
         try {
+            if(!store.user.Id) {
+                history('/login');
+                return;
+            }
             const response = await FridgeService.getFridgesByUserId(store.user.Id);
             if (response.status === 200) {
                 const data: IFridge[] = response.data.map((item: any) => ({
@@ -45,22 +49,28 @@ export const List: React.FC<IListProps> = () => {
         }
     };
 
+    let AddFridgeHandle = ()=>{
+
+    }
+
     useEffect(() => {
         getFridges();
     }, []);
 
     return (
         <div className="list-page">
-            <h2>Your Fridges</h2>
+            <header>
+                <h2>Your Fridges</h2>
 
-            <div className="list-page__buttons">
-                <button className="button__logout" onClick={logoutHandle}>
-                    LogOut
-                </button>
-                <button onClick={() => history(`/user/${store.user.Id}`)}>
-                    Profile
-                </button>
-            </div>
+                <div className="list-page__buttons">
+                    <button className="button__logout" onClick={logoutHandle}>
+                        LogOut
+                    </button>
+                    <button onClick={() => history(`/user/${store.user.Id}`)}>
+                        Profile
+                    </button>
+                </div>
+            </header>
 
             <ul className="list-page__list">
                 {fridges.length === 0 ? (
@@ -76,7 +86,35 @@ export const List: React.FC<IListProps> = () => {
                         </div>
                     ))
                 )}
+                {fridges.length === 0 ? (
+                    <h1>Fridges Not Found</h1>
+                ) : (
+                    fridges.map((fridge) => (
+                        <div key={fridge.Id} className="fridge_item">
+                            <h2 className="fridge_name">Name: {fridge.Name}</h2>
+                            <p className="fridge_model">Model: {fridge.Model}</p>
+                            <p className="fridge_serial">Serial: {fridge.Serial}</p>
+                            <p className="fridge_boughtDate">Bought Date: {fridge.BoughtDate}</p>
+                            <p className="fridge_boxNumber">Box Number: {fridge.BoxNumber}</p>
+                        </div>
+                    ))
+                )}
             </ul>
+
+            <footer>
+            <button
+                className="add-fridge-button"
+                onClick={AddFridgeHandle}
+            >Get Reciept Suggest</button>
+            <button
+                className="add-fridge-button"
+                onClick={AddFridgeHandle}
+            >Lets Shop</button>
+            <button
+                className="add-fridge-button"
+                onClick={AddFridgeHandle}
+            >AddFridge</button>
+            </footer>
         </div>
     );
 };
