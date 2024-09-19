@@ -101,8 +101,6 @@ namespace BLL.Services
 
             var fridge = await _unitOfWork.FridgeRepository.GetFridgeByUserId(userId);
 
-            _logger.LogInformation("Fridge by user id {userId} is {fridge}", userId, fridge);
-
             if (fridge is null)
             {
                 throw new NotFoundException("Fridges not found");
