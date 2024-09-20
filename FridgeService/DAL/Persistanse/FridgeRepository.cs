@@ -1,20 +1,18 @@
 ﻿using DAL.Entities;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Persistanse
 {
     public class FridgeRepository
         (
-            ApplicationDbContext context
-        ):IFridgeRepository
+            ApplicationDbContext context,
+            ILogger<FridgeRepository> logger
+        ) : IFridgeRepository
     {
         private readonly ApplicationDbContext _context = context;
+        private readonly ILogger<FridgeRepository> _logger = logger;
 
         public async Task AddFridge(Fridge fridge)
         {
@@ -26,6 +24,14 @@ namespace DAL.Persistanse
             return await _context.fridges.FindAsync(fridgeId);
         }
 
+        public async Task<List<Fridge>> GetFridgeByUserId(int userId)
+        {
+            return await _context.userFridges
+                .Where(uf => uf.userId == userId)
+                .Join(_context.fridges, uf => uf.fridgeId, f => f.id, (uf, f) => f)
+                .ToListAsync();
+        }
+
         public async Task RemoveFridge(int fridgeId)
         {
             var fridge = await _context.fridges.FindAsync(fridgeId);
@@ -35,23 +41,10 @@ namespace DAL.Persistanse
             _context.userFridges.RemoveRange(_context.userFridges.Where(uf => uf.fridgeId == fridgeId));
 
             _context.fridges.Remove(fridge);
-
         }
 
-        public async Task AddUserToFridge(int fridgeId, int userId)
+        public async Task AddUserToFridge(UserFridge model)
         {
-            var fridge = await _context.fridges.FindAsync(fridgeId);
-
-            // TODO: use grpc to check if user exists
-
-            var model = new UserFridge
-            {
-                fridgeId = fridgeId,
-                fridge = fridge,
-                userId = userId,
-                LinkTime = DateTime.UtcNow
-            };
-
             await _context.userFridges.AddAsync(model);
         }
 
@@ -92,6 +85,11 @@ namespace DAL.Persistanse
             _context.productFridgeModels.Remove(model);
         }
 
+        public async Task<ProductFridgeModel> GetProductFromFridge(int fridgeId, string productId)
+        {
+            return await _context.productFridgeModels.FirstOrDefaultAsync(m => m.productId == productId && m.fridgeId == fridgeId);
+        }
+
         public async Task<List<ProductFridgeModel>> GetProductsFromFridge(int fridgeId)
         {
             return await _context.productFridgeModels.Where(m => m.fridgeId == fridgeId).ToListAsync();
@@ -100,6 +98,11 @@ namespace DAL.Persistanse
         public async Task<List<Fridge>> GetAllFridges()
         {
             return await _context.fridges.ToListAsync();
+        }
+
+        public async Task UpdateProductInFridge(ProductFridgeModel model)
+        {
+            _context.productFridgeModels.Update(model);
         }
     }
 }

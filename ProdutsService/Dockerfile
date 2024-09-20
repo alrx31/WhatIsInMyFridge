@@ -3,12 +3,12 @@ WORKDIR /src
 
 COPY ["Application/Application.csproj", "Application/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
-COPY ["Infastructure/Infastructure.csproj", "Infastructure/"]
+COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 COPY ["API/API.csproj", "API/"]
 RUN dotnet restore "API/API.csproj"
 
 COPY . .
-WORKDIR /src/Identity
+WORKDIR /src/API
 RUN dotnet publish "API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final

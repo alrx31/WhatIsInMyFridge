@@ -12,7 +12,7 @@ namespace BLL.DI
     public static class BLLdependencies
     {
         public static IServiceCollection AddBLLDependencies(this IServiceCollection services,string HangfireConnectionString)
-        {
+        {   
             services.AddScoped<IFridgeService, FridgeService>();
 
             services.AddTransient<IValidator<FridgeAddDTO>, FridgeRegisterValidator>();
@@ -20,6 +20,7 @@ namespace BLL.DI
             services.AddTransient<IValidator<ProductsInfoList>, ProductsInfoListValidator>();
 
             services.AddAutoMapper(typeof(FridgeProfile));
+            services.AddAutoMapper(typeof(KafkaMapper));
 
             services.AddHangfire(config =>
                config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)

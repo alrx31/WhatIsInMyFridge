@@ -20,8 +20,9 @@ namespace Application.MappingProfiles
             
             CreateMap<int, GetListQuery>();
             
-            CreateMap<string, GetListByNameQuery>();
-            
+            CreateMap<string, GetListByNameQuery>()
+                .ConstructUsing(src => new GetListByNameQuery(src));
+
             CreateMap<int, DeleteListComand>();
 
             CreateMap<(AddListDTO, string), UpdateListComand>()

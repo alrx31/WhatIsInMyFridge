@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="2.5.3" />
     <PackageReference Include="FluentValidation" Version="11.9.2" />
     <PackageReference Include="Google.Protobuf" Version="3.28.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.65.0" />

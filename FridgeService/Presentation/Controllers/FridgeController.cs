@@ -1,6 +1,6 @@
 ﻿using BLL.DTO;
 using BLL.Exceptions;
-using BLL.Services;
+using BLL.Services; 
 using DAL.IRepositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +12,7 @@ namespace Presentation.Controllers
     {
         private readonly IFridgeService _fridgeService;
         private readonly IgRPCService _gRPCService;
-
+        
         public FridgeController(
             IFridgeService fridgeService,
             IgRPCService gRPCService
@@ -36,6 +36,12 @@ namespace Presentation.Controllers
             return Ok(await _fridgeService.GetFridge(fridgeId));
         }
 
+        [HttpGet("")]
+        public async Task<IActionResult> GetFridgesByUserId([FromQuery] int userId)
+        {
+            return Ok(await _fridgeService.GetFridgesByUserId(userId));
+        }
+        
         [HttpDelete("{fridgeId}")]
         public async Task<IActionResult> RemoveFridgeById(int fridgeId)
         {
@@ -63,11 +69,6 @@ namespace Presentation.Controllers
         [HttpPatch("{fridgeId}")]
         public async Task<IActionResult> UpdateFridge([FromBody] FridgeAddDTO fridge, int fridgeId)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid fridge model");
-            }
-
             var res = await _fridgeService.UpdateFridge(fridge, fridgeId);
             
             return Ok(res);
@@ -76,12 +77,7 @@ namespace Presentation.Controllers
         [HttpPut("{fridgeId}/products")]
         public async Task<IActionResult> AddProductsToFridge([FromBody] List<ProductInfoModel> products, int fridgeId)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new BadRequestException("Invalid products model");
-            }
-
-            await _fridgeService.AddProductsToList(fridgeId, products);
+            await _fridgeService.AddProductsToFridge(fridgeId, products);
             
             return Ok();
         }
@@ -90,6 +86,14 @@ namespace Presentation.Controllers
         public async Task<IActionResult> RemoveProductFromFridge(int fridgeId, string productId)
         {
             await _fridgeService.RemoveProductFromFridge(fridgeId, productId);
+            
+            return Ok();
+        }
+
+        [HttpDelete("{fridgeId}/products/{productId}/{count}")]
+        public async Task<IActionResult> DevideProductFromFridge(int fridgeId, int count, string productId)
+        {
+            await _fridgeService.DevideProductFromFridge(fridgeId, count, productId);
             
             return Ok();
         }

@@ -73,7 +73,33 @@ public class KafkaConsumerService : BackgroundService
 
                                 var list = await listRepository.GetListbyFridgeId(data.FridgeId, stoppingToken);
 
-                                await listManageRepository.DevideProductInList(list.Id, data.ProductId, data.Count, stoppingToken);
+                                var product = await listManageRepository.GetProductInLlist(list.Id, data.ProductId, stoppingToken);
+
+                                if(product is null)
+                                {
+                                    throw new Exception("Product not found in the list.");
+                                }
+
+                                if(data.Count == 0)
+                                {
+                                    await listManageRepository.DeleteProductInList(list.Id, data.ProductId, stoppingToken);
+                                }
+
+                                if (product.Count - data.Count < 0)
+                                {
+                                    throw new Exception("Product count cannot be negative.");
+                                }
+
+                                if (product.Count - data.Count == 0)
+                                {
+                                    await listManageRepository.DeleteProductInList(list.Id, data.ProductId, stoppingToken);
+                                }
+                                else
+                                {
+                                    product.Count -= data.Count;
+
+                                    await listManageRepository.UpdateAsync(product,stoppingToken);
+                                }
                             }
                         }
                     }

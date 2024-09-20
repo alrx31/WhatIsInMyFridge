@@ -27,15 +27,17 @@ namespace DAL.DI
             services.AddScoped<IgRPCService, gRPCService>();
             services.AddScoped<IProductsgRPCService, ProductsgRPCService>();
 
+            services.AddScoped<IKafkaProducer, KafkaProducer>();
+
 
             services.AddGrpcClient<Greeter.GreeterClient>(o =>
             {
-                o.Address = new Uri("http://identityservice:8081");
+                o.Address = new Uri("http://identityservice:8081/");
             });
 
             services.AddGrpcClient<Products.ProductsClient>(o =>
             {
-                o.Address = new Uri("http://localhost:8083");
+                o.Address = new Uri("http://productsservice:8084");
             });
 
             return services;
