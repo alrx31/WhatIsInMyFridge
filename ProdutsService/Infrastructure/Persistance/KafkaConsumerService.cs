@@ -53,6 +53,7 @@ public class KafkaConsumerService : BackgroundService
                             if (cr.Topic == _configuration["Kafka:Topic1"])
                             {
                                 var data = JsonSerializer.Deserialize<Product>(cr.Value);
+                                
                                 var list = await listRepository.GetListbyFridgeId(data.FridgeId, stoppingToken);
 
                                 for (int i = 0; i < data.ProductId.Count; i++)

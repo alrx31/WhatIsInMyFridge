@@ -26,6 +26,7 @@ namespace DAL.DI
             services.AddScoped<IFridgeRepository,FridgeRepository>();
             services.AddScoped<IgRPCService, gRPCService>();
             services.AddScoped<IProductsgRPCService, ProductsgRPCService>();
+            services.AddScoped<ICacheRepository, CacheRepository>();
 
             services.AddScoped<IKafkaProducer, KafkaProducer>();
 

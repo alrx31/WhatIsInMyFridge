@@ -4,6 +4,8 @@ using DAL.Persistanse;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
+using Microsoft.OpenApi.Models;
 using Presentation.Middlewares;
 using System.Net;
 
@@ -27,6 +29,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(op =>
 {
     op.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+    // ”казываем базовый URL дл€ запросов
+    c.AddServer(new OpenApiServer
+    {
+        Url = "/fridge"
+    });
 });
 
 
@@ -80,8 +94,18 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 // Hangfire configuration
 JobScheduler.ConfigureJobs(app.Services.GetRequiredService<IServiceScopeFactory>());
 
+app.Use((context, next) =>
+{
+    var pathBase = context.Request.Headers["X-Forwarded-PathBase"];
+    if (!StringValues.IsNullOrEmpty(pathBase))
+    {
+        context.Request.PathBase = new PathString(pathBase);
+    }
+    return next();
+});
 
-app.MapHangfireDashboard();
+app.UseHangfireDashboard();
+
 app.MapControllers();
 
 app.Run();

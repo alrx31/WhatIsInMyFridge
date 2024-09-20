@@ -23,7 +23,9 @@ namespace Application.MappingProfiles
             CreateMap<int, GetProductQuery>();
             
             CreateMap<int,DeleteProductComand>();
-            
+
+            CreateMap<AddProductDTO, Product>();
+
             CreateMap<UpdateProductComand, Product>();
             
             CreateMap<(int,int), GetAllProductsQuery>()

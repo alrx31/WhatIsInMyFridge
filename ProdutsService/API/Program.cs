@@ -3,6 +3,7 @@ using Infrastructure.DI;
 using Application.DI;
 using Infrastructure.Persistance;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
