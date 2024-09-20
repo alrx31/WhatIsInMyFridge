@@ -33,12 +33,14 @@ namespace DAL.DI
 
             services.AddGrpcClient<Greeter.GreeterClient>(o =>
             {
-                o.Address = new Uri("http://identityservice:8081/");
+                //o.Address = new Uri("http://nginx/identity.Greeter");
+                o.Address = new Uri("http://identityservice:8081");
             });
 
             services.AddGrpcClient<Products.ProductsClient>(o =>
             {
-                o.Address = new Uri("http://productsservice:8084");
+                //o.Address = new Uri("http://nginx/products.Products");
+                o.Address = new Uri("http://productsservice:8083");
             });
 
             return services;

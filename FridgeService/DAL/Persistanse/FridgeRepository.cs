@@ -104,5 +104,10 @@ namespace DAL.Persistanse
         {
             _context.productFridgeModels.Update(model);
         }
+
+        public async Task<Fridge> GetFridgeBySerial(string serial)
+        {
+            return await _context.fridges.FirstOrDefaultAsync(f => f.serial == serial);
+        }
     }
 }

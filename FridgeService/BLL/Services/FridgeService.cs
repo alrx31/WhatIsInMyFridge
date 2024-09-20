@@ -19,7 +19,7 @@ namespace BLL.Services
         
         Task RemoveFridgeById(int fridgeId);
         
-        Task AddUserToFridge(int fridgeId, int userId);
+        Task AddUserToFridge(string serial, int userId);
         
         Task RemoveUserFromFridge(int fridgeId, int userId);
         
@@ -40,9 +40,11 @@ namespace BLL.Services
         Task DevideProductFromFridge(int fridgeId, int count, string productId);
 
         Task<List<Fridge>> GetFridgesByUserId(int userId);
+        
+        Task<Fridge> GetFridgeBySerial(string serial);
     }
 
-    public class FridgeService: IFridgeService
+    public class FridgeService : IFridgeService
     {
         private readonly IFridgeRepository _fridgeRepository;
         private readonly IMapper _mapper;
@@ -116,24 +118,31 @@ namespace BLL.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public async Task AddUserToFridge(int fridgeId, int userId)
+        public async Task AddUserToFridge(string serial, int userId)
         {
             if(! await _grpcService.CheckUserExist(userId))
             {
                 throw new NotFoundException("User not found");
             }
-            
-            var fridge = await _unitOfWork.FridgeRepository.GetFridge(fridgeId);
+            var fridge = await _unitOfWork.FridgeRepository.GetFridgeBySerial(serial);
 
             if (fridge is null)
             {
                 throw new NotFoundException("Fridge not found");
             }
 
+            var modelT = await _unitOfWork.FridgeRepository.GetUsersFromFridge(fridge.id);
+
+            if (modelT.Contains(userId))
+            {
+                throw new BadRequestException("User already use this fridge");
+            }
+
+
             var model = new UserFridge
             {
                 userId = userId,
-                fridgeId = fridgeId,
+                fridgeId = fridge.id,
                 LinkTime = DateTime.UtcNow
             };
 
@@ -276,10 +285,17 @@ namespace BLL.Services
         public async Task<List<Product>> GetFridgeProducts(int fridgeId)
         {
             var productsModel = await _unitOfWork.FridgeRepository.GetProductsFromFridge(fridgeId);
-               
+
             var ids = productsModel.Select(p => p.productId).ToList();
 
-            return await _productsgRPCService.GetProducts(ids);
+            var PR = await _productsgRPCService.GetProducts(ids);
+            
+            for(var i = 0; i < PR.Count;i++)
+            {
+                PR[i].Count = productsModel[i].count;
+                PR[i].AddTime = productsModel[i].addTime;
+            }
+            return PR;
         }
 
         public async Task DevideProductFromFridge(int fridgeId, int count, string productId)
@@ -326,6 +342,18 @@ namespace BLL.Services
             var message = _mapper.Map<DAL.Entities.MessageBrokerEntities.ProductRemove>((productId, fridgeId,count));
 
             await _kafkaProducer.ProduceAsync<DAL.Entities.MessageBrokerEntities.ProductRemove>("RemoveProduct", message);
+        }
+
+        public async Task<Fridge> GetFridgeBySerial(string serial)
+        {
+            var fridge = await _unitOfWork.FridgeRepository.GetFridgeBySerial(serial);
+            
+            if(fridge is null)
+            {
+                throw new NotFoundException("Fridge not found");
+            }
+
+            return fridge;
         }
     }
 }

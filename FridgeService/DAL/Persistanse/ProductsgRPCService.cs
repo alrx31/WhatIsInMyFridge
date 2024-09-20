@@ -25,8 +25,7 @@ namespace DAL.Persistanse
                 Id = p.Id,
                 Name = p.Name,
                 PricePerKilo = (decimal)p.PricePerKilo,
-                ExpirationTime = TimeSpan.Parse(p.ExpTime),
-
+                ExpirationTime = TimeSpan.Parse(p.ExpTime)
             }).ToList<DAL.Entities.Product>();
         }
     }
