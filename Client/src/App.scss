@@ -40,7 +40,9 @@
         color: var(--lightblue);
         border: 1px solid var(--lightblue);
         cursor: pointer;
- 
+   }
+   &:focus{
+    border-color: var(--darkgray);
    }
   }
 
@@ -48,5 +50,10 @@
       position: fixed;
       top: 0;
       right: 0;   
+      button{
+        &:focus{
+          border-color: var(--white);
+        }
+      }
   }
 }

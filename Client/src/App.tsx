@@ -52,7 +52,7 @@ function App() {
       
     <div className="App">
         <header>
-                <h2>Your Fridges</h2>
+                <h2>What Is In My Fridge</h2>
 
                 <div className="list-page__buttons">
                     <button className="button__logout" onClick={logoutHandle}>
