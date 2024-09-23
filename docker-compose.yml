@@ -2,6 +2,7 @@ version: '3.8'
 networks:
   entityservicenetwork:
     driver: bridge
+
 services:
   
   nginx:
@@ -10,6 +11,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - /var/log/nginx:/var/log/nginx
     depends_on:
       - identityservice
       - fridgeservice
@@ -110,7 +112,7 @@ services:
       - "6379:6379"
     networks:
       - entityservicenetwork
- 
+    
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -121,6 +123,31 @@ services:
     networks:
       - entityservicenetwork
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    volumes:
+      - elasticsearch-data-volume:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.9.0
+    restart: always
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
 volumes:
   postgres-data:
   mongo-data:
+  elasticsearch-data-volume:
+    driver: local
