@@ -3,6 +3,7 @@ networks:
   entityservicenetwork:
     driver: bridge
 
+
 services:
   
   nginx:
@@ -134,6 +135,9 @@ services:
       - elasticsearch-data-volume:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
+    networks:
+      - entityservicenetwork
+
   kibana:
     container_name: kibana
     image: docker.elastic.co/kibana/kibana:8.9.0
@@ -145,6 +149,24 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+    networks:
+      - entityservicenetwork
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.9.0
+    container_name: filebeat
+    entrypoint: "filebeat -e -strict.perms=false"
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - /var/log/nginx:/var/log/nginx
+    depends_on:
+      - elasticsearch
+      - kibana
+    networks:
+      - entityservicenetwork
+
+
+
 
 volumes:
   postgres-data:

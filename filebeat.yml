@@ -1,0 +1,19 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/*.log
+
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/IdentityService/*.log  # Путь к логам первого сервиса
+    fields:
+      service: identityService           # Добавляем произвольное поле для идентификации сервиса
+    fields_under_root: true
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+
+setup.kibana:
+  host: "http://kibana:5601"
