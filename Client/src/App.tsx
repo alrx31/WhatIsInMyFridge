@@ -8,26 +8,29 @@ import {observer} from "mobx-react-lite";
 import {Waiter} from "./Components/Waiter/Waiter";
 import {Profile} from "./Components/Profile/Profile";
 import { List } from './Components/List/List';
-import { FridgePage } from './Components/Fridge/FridgePage';
+import {FridgePage} from './Components/Fridge/FridgePage';
+import { AddFridgePage } from './Components/Fridge/AddFridgePage';
 
 function App() {
 
-    let history = useNavigate();
-
+    
     const {store} = useContext(Context)
     
+    let history = useNavigate();
+
+
     useEffect(() => {
-        try {
-            store.checkAuth()
-        } catch (e: any) {
-            console.error(e);
-        }
-        finally{
+        store.checkAuth()
+        .finally(()=>{
             console.log(store.isAuth);
             if (!store.isAuth) {
+                console.log(!store.isAuth);
                 history('/login');  
+            }else{
+                
             }
-        }  
+        });
+        
     }, []);
     
     
@@ -52,7 +55,9 @@ function App() {
       
     <div className="App">
         <header>
-                <h2>What Is In My Fridge</h2>
+                <h2
+                    onClick={() => {history('/')}}
+                >What Is In My Fridge</h2>
 
                 <div className="list-page__buttons">
                     <button className="button__logout" onClick={logoutHandle}>
@@ -75,6 +80,8 @@ function App() {
           <Route path={"/register"} element={<Register />} />
           
           <Route path={"/fridge/:FridgeId"} element={<FridgePage />} />
+
+            <Route path={"/add-fridge"} element={<AddFridgePage />} />
 
           <Route path={"/user/:UserId"} element={<Profile />} />
       </Routes>

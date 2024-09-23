@@ -19,6 +19,8 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
 
     const {store} = useContext(Context);
 
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
+
     const [fridge, setFridge] = useState<IFridge>({} as IFridge);
     const [products, setProducts] = useState<IProduct[]>([] as IProduct[]);
     
@@ -75,7 +77,20 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
     }
 
 
+    let deleteFridgeHandle = async () => {
+        try{
+            let response = await FridgeService.deleteFridgeFromUser(store.user.Id, Number(FridgeId));
+            if(response.status === 200){
+                history('/');
+            }else{
+                alert('Error deleting the fridge');
+            }
 
+        }catch(e:any){
+            console.error(e);
+            alert('Error deleting the fridge');
+        }
+    }
     
     return (
         <>
@@ -83,8 +98,13 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
                 className="fridge-page"
             > 
                 <h1>Fridge Page</h1>
-                <h2>{fridge.Name}</h2>
-                <h2>{fridge.Model}</h2>
+                <h2>Name: {fridge.Name}</h2>
+                <h2>Model: {fridge.Model}</h2>
+                <h2>Serial: {fridge.Serial}</h2>
+                <br/>
+                <button
+                    onClick={()=>setShowDeletePopup(true)}
+                >Remove frige</button>
 
 
                 <ul>
@@ -115,9 +135,22 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
                 
                 >Remove Products</button>
                 <button
-                
+                    onClick={() => history('/')}
                 >Go Back</button>
             </div>
+
+            {showDeletePopup && (
+                <div className="popup-overlay">
+                    <div className="popup">
+                        <h2>Confirm Deletion</h2>
+                        <p>Are you sure you want to delete this fridge?</p>
+                        <div className="popup-buttons">
+                            <button onClick={deleteFridgeHandle} className="confirm-button">Yes</button>
+                            <button onClick={() => setShowDeletePopup(false)} className="cancel-button">No</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

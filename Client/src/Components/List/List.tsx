@@ -33,14 +33,13 @@ export const List: React.FC<IListProps> = () => {
             }
         } catch (e: any) {
             console.error(e);
-            history('/');
         } finally {
             setIsLoading(false);
         }
     };
 
     let AddFridgeHandle = ()=>{
-
+        history('/add-fridge');
     }
 
     useEffect(() => {
@@ -73,12 +72,10 @@ export const List: React.FC<IListProps> = () => {
 
             <footer>
             <button
-                className="add-fridge-button"
-                onClick={AddFridgeHandle}
+                className="get-reciept-button"
             >Get Reciept Suggest</button>
             <button
-                className="add-fridge-button"
-                onClick={AddFridgeHandle}
+                className="get-list-button"
             >Lets Shop</button>
             <button
                 className="add-fridge-button"

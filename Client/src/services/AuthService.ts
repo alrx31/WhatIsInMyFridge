@@ -19,6 +19,7 @@ export default class AuthService{
         name:string,
         login:string,
     ):Promise<AxiosResponse<IAuthResponse>>{
+        console.log(email,password,name,login)
         return $api.put<IAuthResponse>('/api/Auth', {
             name,
             login,

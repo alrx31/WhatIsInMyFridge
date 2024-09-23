@@ -117,11 +117,10 @@ export default class Store {
             console.log(this.user.Id);
 
         } catch (e: any) {
-            console.log(e);
-            console.log('Ошибка авторизации');
             localStorage.removeItem('token');
             this.setAuth(false);
             this.setUser({} as IUser);
+            console.log('Ошибка авторизации');
         } finally {
             this.setLoading(false);
         }

@@ -2,19 +2,12 @@
     font-family: Arial, sans-serif;
     color: var(--darkgray);
     background-color: var(--lightgray);
-    max-height: 100vh;
+    padding-top: 50px;
+    max-height: 90vh;
+    padding-bottom: 100px;
     position: relative;
-
-    header{
-        background-color: var(--darkgray);
-        color: var(--white);
-        padding: 20px 0px;
-        text-align: center;
-        h2{
-            color: var(--white);
-            margin: 0;
-        }
-    }
+    overflow-y: scroll;
+    
 
     button{
         margin: 8px;

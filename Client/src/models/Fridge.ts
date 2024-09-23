@@ -2,7 +2,7 @@
     Id: number;
     Name: string
     Model: string;
-    Serial: string | null;
+    Serial: string;
     BoughtDate: string;
     BoxNumber: number;
 }

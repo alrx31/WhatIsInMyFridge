@@ -63,3 +63,148 @@
 
     
 }
+
+
+.fridge-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90dvh;
+
+  
+    .title {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+  
+    .fridge-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  
+        & input {
+            cursor: pointer;
+        }
+
+      .form-label {
+        margin-bottom: 0.25rem;
+        font-size: 1.2rem;
+        color: #555;
+
+      }
+      .flex-label{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;      
+        margin-bottom: 2rem;
+      }
+  
+      .form-input {
+        padding: 0.8rem;
+        width: 100%;
+        max-width: 400px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        margin-bottom: 2rem;
+        transition: border-color 0.3s;
+  
+        &.input-error {
+          border-color: #e74c3c;
+        }
+      }
+  
+      .error-message {
+        color: #e74c3c;
+        margin: 1rem 0;
+      }
+  
+      .success-message {
+        color: #2ecc71;
+        margin-bottom: 1rem;
+      }
+  
+      .submit-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        color: #fff;
+        background-color: #3498db;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+  
+        &:hover {
+          background-color: #2980b9;
+        }
+      }
+    }
+  }
+  
+
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    text-align: center;
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    p {
+        margin-bottom: 20px;
+    }
+
+    .popup-buttons {
+        display: flex;
+        justify-content: space-around;
+
+        .confirm-button, .cancel-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+
+            &.confirm-button {
+                background-color: #e74c3c;
+                color: white;
+
+                &:hover {
+                    background-color: #c0392b;
+                }
+            }
+
+            &.cancel-button {
+                background-color: #3498db;
+                color: white;
+
+                &:hover {
+                    background-color: #2980b9;
+                }
+            }
+        }
+    }
+}
