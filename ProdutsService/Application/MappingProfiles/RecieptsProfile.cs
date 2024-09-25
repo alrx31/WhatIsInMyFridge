@@ -3,6 +3,7 @@ using Application.UseCases.Comands;
 using Application.UseCases.Queries;
 using AutoMapper;
 using Domain.Entities;
+using System.Net.Http.Headers;
 
 namespace Application.MappingProfiles
 {
@@ -35,6 +36,15 @@ namespace Application.MappingProfiles
 
             CreateMap<(int, int), GetAllRecieptsQuery>()
                 .ConstructUsing(x => new GetAllRecieptsQuery(x.Item1, x.Item2));
+        
+            CreateMap<AddProductToRecieptDTO,AddProductToRecieptComand>()
+                .ConstructUsing(x => new AddProductToRecieptComand(x));
+
+            CreateMap<DeleteProductFromRecieptDTO, DeleteProductFromRecieptComand>()
+                .ConstructUsing(x => new DeleteProductFromRecieptComand(x.RecieptId,x.ProductId));
+
+            CreateMap<string, GetProductsFromRecieptQuery>()
+                .ConstructUsing(x => new GetProductsFromRecieptQuery(x));
         }
     }
 }

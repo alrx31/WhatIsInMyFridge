@@ -57,5 +57,27 @@ namespace API.Controllers
             return Ok(await _mediator.Send(_mapper.Map<GetAllRecieptsQuery>((page, count)), cancellationToken));
         }
 
+        [HttpPut("reciept/products")]
+        public async Task<IActionResult> AddProductToReciept([FromBody] AddProductToRecieptDTO model, CancellationToken cancellationToken)
+        {
+            await _mediator.Send(_mapper.Map<AddProductToRecieptComand>(model), cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpDelete("reciept/products")]
+        public async Task<IActionResult> DeleteProductFromReciept([FromBody] DeleteProductFromRecieptDTO model, CancellationToken cancellationToken)
+        {
+            await _mediator.Send(_mapper.Map<DeleteProductFromRecieptComand>(model), cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpGet("reciept/{RecieptId}/products")]
+        public async Task<IActionResult> GetProductsFromReciept(string RecieptId)
+        {
+            return Ok(await _mediator.Send(_mapper.Map<GetProductsFromRecieptQuery>(RecieptId)));
+        }
+
     }
 }

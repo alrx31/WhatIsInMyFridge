@@ -7,9 +7,9 @@ namespace Domain.Entities
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public int Id { get; set; }
-        public int ProductId { get; set; }
-        public int RecieptId { get; set; }
+        public string Id { get; set; }
+        public string ProductId { get; set; }
+        public string RecieptId { get; set; }
         public int Weight { get; set; }
     }
 }
