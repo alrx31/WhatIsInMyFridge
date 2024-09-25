@@ -33,6 +33,8 @@ services:
       - postgres 
       - redis
       - kafka
+    volumes:
+      - /var/log/identityservice:/var/log/identityservice
     networks:
       - entityservicenetwork
 
@@ -46,6 +48,8 @@ services:
       ConnectionStrings__DefaultConnection: "Host=postgres;Database=FridgeDb;Username=alex;Password=postgres123"
     depends_on:
       - identityservice
+    volumes:
+      - /var/log/fridgeservice:/var/log/fridgeservice
     networks:
       - entityservicenetwork
 
@@ -61,6 +65,8 @@ services:
     depends_on:
       - mongo
       - fridgeservice
+    volumes:
+      - /var/log/productsservice:/var/log/productsservice
     networks:
       - entityservicenetwork
   
@@ -80,6 +86,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    volumes:
+      - ./kafka_logs:/var/log/kafka
     depends_on:
       - zookeeper
     networks:
@@ -95,6 +103,7 @@ services:
       - "5432:5432"
     volumes:
          - postgres-data:/var/lib/postgresql/data
+         - ./postgres_logs:/var/log/postgresql
     networks:
       - entityservicenetwork
     
@@ -104,6 +113,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+      - ./mongodb_logs:/var/log/mongodb
     networks:
       - entityservicenetwork
 
@@ -111,6 +121,8 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
+    volumes:
+      - ./redis_logs:/var/log/redis
     networks:
       - entityservicenetwork
     
@@ -157,8 +169,14 @@ services:
     container_name: filebeat
     entrypoint: "filebeat -e -strict.perms=false"
     volumes:
-      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - /var/log/nginx:/var/log/nginx
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/log/nginx:/var/log/nginx:ro
+      - /var/log/identityservice:/var/log/identityservice:ro
+      - /var/log/fridgeservice:/var/log/fridgeservice:ro
+      - /var/log/productsservice:/var/log/productsservice:ro
+      - /var/lib/kafka/logs:/var/lib/kafka/logs:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - elasticsearch
       - kibana

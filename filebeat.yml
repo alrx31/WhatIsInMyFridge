@@ -1,19 +1,157 @@
 filebeat.inputs:
-  - type: log
-    enabled: true
-    paths:
-      - /var/log/nginx/*.log
+- type: log
+  paths:
+    - /var/log/identityservice/*.log
+  fields:
+    component: "identityservice"
 
-  - type: log
-    enabled: true
-    paths:
-      - /var/log/IdentityService/*.log  # Путь к логам первого сервиса
-    fields:
-      service: identityService           # Добавляем произвольное поле для идентификации сервиса
-    fields_under_root: true
+- type: log
+  paths:
+    - /var/log/kafka/kafka.log  
+    - /var/lib/kafka/logs/*.log  
+  fields:
+    component: "kafka"
+
+- type: log
+  paths:
+    - /var/log/productsservice/*.log
+  fields:
+    component: "productsservice"
+
+- type: log
+  paths:
+    - /var/log/*.log
+  fields:
+    component: "fridgeservice"
+
+- type: log
+  paths:
+    - /var/log/*.log
+  fields:
+    component: "MongoDB"
+
+- type: log
+  paths:
+    - /var/log/*.log
+  fields:
+    component: "PostgreSQL"
+
+- type: log
+  paths:
+    - /var/log/*.log
+  fields:
+    component: "RedisDB"
+
+- type: log
+  paths:
+    - /var/log/nginx/*.log
+  fields:
+    component: "nginx"
+
+
+processors:
+  - add_fields:
+      target: ''
+      fields:
+        environment: production
+
+  - add_fields:
+      target: ''
+      fields:
+        application: nginx
+      when.contains:
+        fields.log_type: nginx
+
+  - add_fields:
+      target: ''
+      fields:
+        application: identityservice
+      when.contains:
+        fields.log_type: identityservice
+
+  - add_fields:
+      target: ''
+      fields:
+        application: fridgeservice
+      when.contains:
+        fields.log_type: fridgeservice
+
+  - add_fields:
+      target: ''
+      fields:
+        application: productsservice
+      when.contains:
+        fields.log_type: productsservice
+
+  - add_fields:
+      target: ''
+      fields:
+        application: kafka
+      when.contains:
+        fields.log_type: kafka
+
+  - add_fields:
+      target: ''
+      fields:
+        application: mongo
+      when.contains:
+        fields.log_type: MongoDB
+  
+  - add_fields:
+      target: ''
+      fields:
+        application: postgres
+      when.contains:
+        fields.log_type: PostgreSQL
+
+  - add_fields:
+      target: ''
+      fields:
+        application: redis
+      when.contains:
+        fields.log_type: RedisDB
 
 output.elasticsearch:
   hosts: ["http://elasticsearch:9200"]
+  indices:
+    
+    - index: "nginx-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields.log_type: nginx
+    
+    - index: "identityservice-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields.log_type: identityservice
+    
+    - index: "fridgeservice-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields.log_type: fridgeservice
+    
+    - index: "productsservice-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields.log_type: productsservice
+
+    - index: "kafka-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields.log_type: kafka
+
+    - index: "mongodb-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields.log_type: MongoDB
+    
+    - index: "postgresql-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields.log_type: PostgreSQL
+    
+    - index: "redis-%{[agent.version]}-%{+yyyy.MM.dd}"
+      when.contains:
+        fields.log_type: RedisDB
+
 
 setup.kibana:
   host: "http://kibana:5601"
+
+setup.template.settings:
+  index.number_of_shards: 1
+  index.codec: best_compression
+  _source.enabled: true

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Models;
 using Presentation.Middlewares;
 using System.Net;
-
+using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 // IP configuration
@@ -16,6 +16,14 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(8082);
 });
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()  
+    .WriteTo.File("/var/log/fridgeservice/logs.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddBLLDependencies(builder.Configuration.GetConnectionString("HangFire"));
@@ -36,7 +44,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 
-    // Указываем базовый URL для запросов
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ URL пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     c.AddServer(new OpenApiServer
     {
         Url = "/fridge"
