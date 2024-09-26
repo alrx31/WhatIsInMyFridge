@@ -102,10 +102,8 @@ export default class Store {
                 this.setUser({} as IUser);
                 return;
             };
-            console.log("ok");
             localStorage.setItem('token', response.data.jwtToken);
             this.setAuth(true);
-            console.log(response.data.user);
             if (response.data.user) this.setUser({
                 Id: response.data.user.id,
                 Name: response.data.user.name,
@@ -114,7 +112,6 @@ export default class Store {
                 IsAdmin: response.data.user.isAdmin
             });
             else console.log('Ошибка получения данных пользователя');
-            console.log(this.user.Id);
 
         } catch (e: any) {
             localStorage.removeItem('token');

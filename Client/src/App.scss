@@ -11,6 +11,13 @@
     margin-top: 16px;
     text-align: center;
   }
+  .header__title{
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover{
+      color: var(--lightblue);
+    }
+  }
 
   header{
     background-color: var(--darkgray);

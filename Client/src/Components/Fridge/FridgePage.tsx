@@ -5,7 +5,6 @@ import { IFridge } from "../../models/Fridge";
 import FridgeService from "../../services/FridgeService";
 import './FridgePage.scss';
 import { IProduct } from "../../models/Product";
-import ProductService from "../../services/ProductService";
 
 interface IFridgePageProps {}
 
@@ -44,7 +43,7 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
                 };
                 setFridge(data);
 
-                const productsResponse = await ProductService.getProductsByFridgeId(Number(FridgeId));
+                const productsResponse = await FridgeService.getProductsByFridgeId(Number(FridgeId));
                 if (productsResponse.status === 200) {
                     console.log(productsResponse.data);
                     const productsData: IProduct[] = productsResponse.data.map((product: any) => {
@@ -97,8 +96,7 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
             <div 
                 className="fridge-page"
             > 
-                <h1>Fridge Page</h1>
-                <h2>Name: {fridge.Name}</h2>
+                <h1>{fridge.Name}</h1>
                 <h2>Model: {fridge.Model}</h2>
                 <h2>Serial: {fridge.Serial}</h2>
                 <br/>

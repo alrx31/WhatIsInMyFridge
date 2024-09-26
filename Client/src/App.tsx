@@ -10,6 +10,7 @@ import {Profile} from "./Components/Profile/Profile";
 import { List } from './Components/List/List';
 import {FridgePage} from './Components/Fridge/FridgePage';
 import { AddFridgePage } from './Components/Fridge/AddFridgePage';
+import { RecieptPage } from './Components/Reciept/RecieptPage';
 
 function App() {
 
@@ -22,7 +23,6 @@ function App() {
     useEffect(() => {
         store.checkAuth()
         .finally(()=>{
-            console.log(store.isAuth);
             if (!store.isAuth) {
                 console.log(!store.isAuth);
                 history('/login');  
@@ -56,6 +56,7 @@ function App() {
     <div className="App">
         <header>
                 <h2
+                    className="header__title"
                     onClick={() => {history('/')}}
                 >What Is In My Fridge</h2>
 
@@ -80,6 +81,8 @@ function App() {
           <Route path={"/register"} element={<Register />} />
           
           <Route path={"/fridge/:FridgeId"} element={<FridgePage />} />
+
+          <Route path={"/reciept/:RecieptId"} element={<RecieptPage />} />
 
             <Route path={"/add-fridge"} element={<AddFridgePage />} />
 

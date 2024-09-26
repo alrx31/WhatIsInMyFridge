@@ -1,17 +1,10 @@
+import { IProduct } from "./Product";
+
 export interface IReciept {
     id:string;
     name:string;
     cookDuration:string;
     portions:number;
     kkal:number;
+    products:IProduct[];
 }
-
-/*
-{
-  "name": "string",
-  "cookDuration": "20:20:20",
-  "portions": 1,
-  "kkal": 1
-}
-
-*/
