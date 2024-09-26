@@ -45,6 +45,9 @@ namespace Application.MappingProfiles
 
             CreateMap<string, GetProductsFromRecieptQuery>()
                 .ConstructUsing(x => new GetProductsFromRecieptQuery(x));
+        
+            CreateMap<(Product,int),ProductInReciept>()
+                .ConstructUsing(x => new ProductInReciept(x.Item1, x.Item2));
         }
     }
 }

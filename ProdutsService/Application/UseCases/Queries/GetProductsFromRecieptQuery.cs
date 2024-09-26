@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.UseCases.Queries
 {
-    public class GetProductsFromRecieptQuery:IRequest<List<Product>>
+    public class GetProductsFromRecieptQuery:IRequest<List<ProductInReciept>>
     {
         public string RecieptId { get; }
 

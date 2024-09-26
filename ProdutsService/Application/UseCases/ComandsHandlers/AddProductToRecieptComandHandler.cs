@@ -1,8 +1,10 @@
 ﻿using Application.Exceptions;
 using Application.UseCases.Comands;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Repository;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.ComandsHandlers
 {
@@ -33,7 +35,14 @@ namespace Application.UseCases.ComandsHandlers
                 throw new NotFoundException("Product not found");
             }
 
-            reciept.Products.Add(product);
+            var productInReciept = _mapper.Map<ProductInReciept>((product,request.Model.Weight));
+
+            if(reciept.Products is null)
+            {
+                reciept.Products = new List<ProductInReciept>();
+            }
+
+            reciept.Products.Add(productInReciept);
 
             await _recieptsRepository.UpdateAsync(reciept, cancellationToken);
         }

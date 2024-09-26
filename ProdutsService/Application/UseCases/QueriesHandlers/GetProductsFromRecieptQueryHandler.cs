@@ -12,13 +12,13 @@ namespace Application.UseCases.QueriesHandlers
             IRecieptsRepository recieptsRepository,
             IProductRepository productRepository,
             IMapper mapper
-        ) :IRequestHandler<GetProductsFromRecieptQuery,List<Product>>
+        ) :IRequestHandler<GetProductsFromRecieptQuery,List<ProductInReciept>>
     {
         private readonly IRecieptsRepository _recieptsRepository = recieptsRepository;
         private readonly IProductRepository _productRepository = productRepository;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<List<Product>> Handle(GetProductsFromRecieptQuery request, CancellationToken cancellationToken)
+        public async Task<List<ProductInReciept>> Handle(GetProductsFromRecieptQuery request, CancellationToken cancellationToken)
         {
             var reciept = await _recieptsRepository.GetByIdAsync(request.RecieptId, cancellationToken);
 

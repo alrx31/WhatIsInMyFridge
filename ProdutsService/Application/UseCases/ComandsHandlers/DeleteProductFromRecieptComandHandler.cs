@@ -38,7 +38,8 @@ namespace Application.UseCases.ComandsHandlers
                 throw new NotFoundException("Product not found");
             }
 
-            reciept.Products.Remove(product);
+
+            reciept?.Products?.RemoveAll(p => p.Id == request.ProductId);
 
             await _recieptsRepository.UpdateAsync(reciept, cancellationToken);
         }

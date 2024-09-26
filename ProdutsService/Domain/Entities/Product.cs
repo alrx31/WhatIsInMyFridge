@@ -14,4 +14,19 @@ namespace Domain.Entities
 
         public List<ProductInList>? Lists { get; set; }
     }
+
+    public class ProductInReciept: Product
+    {
+        public int Weight { get; set; }
+
+        public ProductInReciept(Product product, int weight)
+        {
+            Id = product.Id;
+            Name = product.Name;
+            PricePerKilo = product.PricePerKilo;
+            ExpirationTime = product.ExpirationTime;
+            Lists = product.Lists;
+            Weight = weight;
+        }
+    }
 }
