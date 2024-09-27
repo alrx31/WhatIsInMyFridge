@@ -1,6 +1,7 @@
 ﻿using Application.DTO;
 using Application.UseCases.Comands;
 using Application.UseCases.Queries;
+using Application.UseCases.QueriesHandlers;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +78,12 @@ namespace API.Controllers
         public async Task<IActionResult> GetProductsFromReciept(string RecieptId)
         {
             return Ok(await _mediator.Send(_mapper.Map<GetProductsFromRecieptQuery>(RecieptId)));
+        }
+
+        [HttpPost("reciept/suggest")]
+        public async Task<IActionResult> SuggestReciepts([FromBody] SuggestRecieptDTO model)
+        {
+            return Ok(await _mediator.Send(_mapper.Map<SuggestRecieptsQuery>(model)));
         }
 
     }

@@ -19,6 +19,18 @@ namespace Domain.Entities
     {
         public int Weight { get; set; }
 
+        public ProductInReciept(string id, string name, decimal pricePerKilo, TimeSpan expirationTime, List<ProductInList>? lists, int weight)
+        {
+            Id = id;
+            Name = name;
+            PricePerKilo = pricePerKilo;
+            ExpirationTime = expirationTime;
+            Lists = lists;
+            Weight = weight;
+        }
+
+        public ProductInReciept() { }
+
         public ProductInReciept(Product product, int weight)
         {
             Id = product.Id;

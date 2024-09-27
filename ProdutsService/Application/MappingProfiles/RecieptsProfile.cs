@@ -1,6 +1,7 @@
 ﻿using Application.DTO;
 using Application.UseCases.Comands;
 using Application.UseCases.Queries;
+using Application.UseCases.QueriesHandlers;
 using AutoMapper;
 using Domain.Entities;
 using System.Net.Http.Headers;
@@ -48,6 +49,9 @@ namespace Application.MappingProfiles
         
             CreateMap<(Product,int),ProductInReciept>()
                 .ConstructUsing(x => new ProductInReciept(x.Item1, x.Item2));
+            
+            CreateMap<SuggestRecieptDTO, SuggestRecieptsQuery>()
+                .ConstructUsing(x => new SuggestRecieptsQuery(x.products));
         }
     }
 }

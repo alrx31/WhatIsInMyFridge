@@ -64,7 +64,6 @@ namespace Infastructure.Services
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = securityKey,
-                ClockSkew = TimeSpan.Zero // set thats for testing
             };
 
             try
