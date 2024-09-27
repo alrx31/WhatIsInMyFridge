@@ -6,6 +6,8 @@ import AuthService from "../../services/AuthService";
 import FridgeService from "../../services/FridgeService";
 import { IFridge } from "../../models/Fridge";
 import { IUser } from "../../models/User";
+import { IProduct } from "../../models/Product";
+import RecieptsService from "../../services/RecieptService";
 
 interface IListProps {}
 
@@ -42,6 +44,39 @@ export const List: React.FC<IListProps> = () => {
         history('/add-fridge');
     }
 
+    let getRecieptSuggest = async () =>{
+        var products = [] as IProduct[];
+
+        for(let f in fridges){
+            const response = await FridgeService.getProductsByFridgeId(fridges[f].Id);
+            console.log(response);
+            if (response.status === 200) {
+                const data: IProduct[] = response.data.map((item: any) => ({
+                    Id: item.id,
+                    Name: item.name,
+                    PricePerKilo: item.pricePerKilo,
+                    ExpirationTime: item.expirationTime,
+                    Count: item.count,
+                    AddTime: item.addTime.split('T')[0]
+                }));
+                products = products.concat(data);
+            }
+        }
+
+        try{
+            const response = await RecieptsService.getRecieptSuggest(products);
+        
+            if (response.status === 200) {
+                history(`/reciept/${response.data.id}`);
+            }else{
+                alert("Reciept not found");
+            }
+        }catch(e:any){
+            console.error(e);
+            alert("Reciept not found");
+        }
+    }
+
     useEffect(() => {
         getFridges();
     }, []);
@@ -73,6 +108,7 @@ export const List: React.FC<IListProps> = () => {
             <footer>
             <button
                 className="get-reciept-button"
+                onClick={getRecieptSuggest}
             >Get Reciept Suggest</button>
             <button
                 className="get-list-button"
@@ -81,6 +117,16 @@ export const List: React.FC<IListProps> = () => {
                 className="add-fridge-button"
                 onClick={AddFridgeHandle}
             >AddFridge</button>
+            {!store.user.IsAdmin && (
+                <button
+                className="admin-panel-button"
+                onClick={() => {
+                    history("/add-product");
+                }}
+                >
+                    Add Product
+                </button>
+            )}
             </footer>
         </div>
     );

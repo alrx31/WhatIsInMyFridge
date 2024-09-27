@@ -1,7 +1,7 @@
 import { Axios, AxiosResponse } from "axios";
 import $api from "../http";
 import { IFridge } from "../models/Fridge";
-import { IAddProductModel } from "../models/Product";
+import { IProduct } from "../models/Product";
 
 export default class FridgeService{
     
@@ -51,9 +51,14 @@ export default class FridgeService{
 
     static async addProductsToFridge(
         fridgeId:number,
-        products:IAddProductModel[]
+        products:IProduct[]
     ):Promise<AxiosResponse>{
-        return $api.put(`/fridge/api/fridge/${fridgeId}/products`, products)
+        return $api.put(`/fridge/api/fridge/${fridgeId}/products`, products.map((product:IProduct)=>{
+            return {
+                "productId": product.Id,
+                "count": product.Count
+            }
+        }))
     }
 
 

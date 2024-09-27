@@ -21,6 +21,7 @@
     }
 
     .list-product_item{
+      position: relative;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -48,6 +49,16 @@
             margin-top: 8px;
             font-size: 1.2rem;
             font-weight: lighter;
+        }
+
+        .delete-product{
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          padding: 10px 10px;
+          font-size: 2rem;
+          font-weight: bold;
         }
     }
 }
@@ -208,3 +219,79 @@
         }
     }
 }
+.add-product-back-panel{
+  width: 100dvw;
+  height: 100dvh;
+  background-color: rgba(0,0,0,0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.add-products-page{
+  
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: 95dvw;
+  height: 95dvh;
+  background-color: var(--light-gray);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  padding: 20px;  
+  padding-bottom: 60px;
+  display: flex;  
+  flex-flow: row nowrap;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;  
+
+  .products-panel{
+    width: 45%;
+    height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: flex-start;
+    align-items: center;
+
+    .product-item{
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.5);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      &>*{
+        cursor: pointer;
+      }
+      
+      &:hover{
+        box-shadow: 0 0 1px rgba(0,0,0,0.5);
+      }
+      h3{
+        font-size: 2rem;
+        margin: 0;
+        font-weight: bold;
+      }
+      p{
+        font-size: 1.5rem;
+        margin: 0;
+        font-weight: lighter;
+      }
+    }
+
+  }
+
+  .add-products-page-controlls{
+    position: absolute;
+    bottom: 20px;
+
+  }
+}
+

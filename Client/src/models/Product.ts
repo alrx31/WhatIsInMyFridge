@@ -6,7 +6,3 @@
     Count:number;
     AddTime: string;
 }
-export interface IAddProductModel{
-    productIdcount:string;
-    count:number;
-}

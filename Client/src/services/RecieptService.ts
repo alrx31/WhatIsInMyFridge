@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
 import { IReciept } from "../models/Reciept";
 import $api from "../http";
+import { IProduct } from "../models/Product";
 
 export default class RecieptsService {
 
@@ -73,5 +74,19 @@ export default class RecieptsService {
         id: string 
     ): Promise<AxiosResponse<IReciept>> {
         return $api.get<IReciept>(`/products/api/Reciepts/${id}`);
+    }
+
+    static async getRecieptSuggest(
+        products:IProduct[]
+    ): Promise<AxiosResponse<IReciept>> {
+        return $api.post<IReciept>('products/api/Reciepts/reciept/suggest',{
+                products: products.map((item) => ({
+                    id: item.Id,
+                    name: item.Name,
+                    pricePerKilo: item.PricePerKilo,
+                    expirationTime: item.ExpirationTime,
+                    weight: item.Count,
+                }))
+        });
     }
 }
