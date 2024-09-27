@@ -2,23 +2,25 @@ import React, { useContext, useEffect } from "react";
 import "./List.scss";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../..";
-import AuthService from "../../services/AuthService";
 import FridgeService from "../../services/FridgeService";
 import { IFridge } from "../../models/Fridge";
-import { IUser } from "../../models/User";
 import { IProduct } from "../../models/Product";
 import RecieptsService from "../../services/RecieptService";
+import ProductsService from "../../services/ProductService";
 
 interface IListProps {}
 
 export const List: React.FC<IListProps> = () => {
+    
     let { store } = useContext(Context);
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
     const [fridges, setFridges] = React.useState<IFridge[]>([]);
     let history = useNavigate();
 
-    
+    const [product, setProduct] = React.useState({} as IProduct);
+    const [addProduct, setAddProduct] = React.useState(false);
 
+    
     const getFridges = async () => {
         try {
             const response = await FridgeService.getFridgesByUserId(store.user.Id);
@@ -81,6 +83,26 @@ export const List: React.FC<IListProps> = () => {
         getFridges();
     }, []);
 
+
+    let addProductHandle = async () => {
+        if(product.Name === undefined || product.PricePerKilo === undefined || product.ExpirationTime === undefined){
+            alert("Fill all fields");
+            return;
+        }
+        try {
+            const response = await ProductsService.addProduct(product);
+            if (response.status === 200) {
+                alert("Product added");
+            }
+        } catch (e: any) {
+            console.error(e);
+            alert("Product not added")
+        }finally{
+            setProduct({} as IProduct);
+            setAddProduct(false);
+        }
+    }
+
     return (
         <div className="list-page">
             
@@ -120,14 +142,40 @@ export const List: React.FC<IListProps> = () => {
             {!store.user.IsAdmin && (
                 <button
                 className="admin-panel-button"
-                onClick={() => {
-                    history("/add-product");
-                }}
+                onClick={() => setAddProduct(true)}
                 >
                     Add Product
                 </button>
             )}
             </footer>
+
+            {addProduct && (
+               <>
+               <div className="add-product-back-panel"></div>
+                <div className="add-product">
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        value={product.Name}
+                        onChange={(e) => setProduct({ ...product, Name: e.target.value })}
+                    />
+                    <input
+                        type="number"
+                        placeholder="PricePerKilo"
+                        value={product.PricePerKilo}
+                        onChange={(e) => setProduct({ ...product, PricePerKilo: +e.target.value })}
+                    />
+                    <input
+                        type="text"
+                        placeholder="ExpirationTime"
+                        value={product.ExpirationTime}
+                        onChange={(e) => setProduct({ ...product, ExpirationTime: e.target.value })}
+                    />
+                    <button onClick={addProductHandle}>Add</button>
+                    <button onClick={()=>setAddProduct(false)}>Cansel</button>
+                </div>
+                </>
+            )}
         </div>
     );
 };

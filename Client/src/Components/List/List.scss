@@ -103,5 +103,39 @@
     }
     
    
-  }
+}
+
+.add-product-back-panel{
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.add-product{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    min-width: 400px;
+    min-height: 400px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    input:no-button{
+        margin-bottom: 5px;
+        width: 80%;
+        cursor: pointer;
+    }
+    button{
+        margin: 0;
+    }
+}
   
