@@ -20,6 +20,12 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllLists(CancellationToken cancellationToken)
+        {
+            return Ok(await _mediator.Send(new GetAllListsQuery(), cancellationToken));
+        }
+
         [HttpPut]
         public async Task<IActionResult> AddList([FromBody] AddListDTO model,CancellationToken cancellationToken)
         {
@@ -79,5 +85,7 @@ namespace API.Controllers
 
             return Ok();
         }
+
+
     }
 }

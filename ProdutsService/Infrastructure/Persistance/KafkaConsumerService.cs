@@ -28,16 +28,16 @@ public class KafkaConsumerService : BackgroundService
     {
         await Task.Run(async () =>
         {
-        var config = new ConsumerConfig
-        {
-            BootstrapServers = _configuration["Kafka:BootstrapServers"],
-            GroupId = "getProductsInfo-group",
-            AutoOffsetReset = AutoOffsetReset.Earliest
-        };
+            var config = new ConsumerConfig
+            {
+                BootstrapServers = _configuration["Kafka:BootstrapServers"],
+                GroupId = "getProductsInfo-group",
+                AutoOffsetReset = AutoOffsetReset.Earliest
+            };
 
-        using (var consumer = new ConsumerBuilder<Ignore, string>(config).Build())
-        {
-            consumer.Subscribe(new[] { _configuration["Kafka:Topic1"], _configuration["Kafka:Topic2"] });
+            using (var consumer = new ConsumerBuilder<Ignore, string>(config).Build())
+            {
+                consumer.Subscribe(new[] { _configuration["Kafka:Topic1"], _configuration["Kafka:Topic2"] });
                 try
                 {
                     while (!stoppingToken.IsCancellationRequested)
@@ -53,19 +53,29 @@ public class KafkaConsumerService : BackgroundService
                             if (cr.Topic == _configuration["Kafka:Topic1"])
                             {
                                 var data = JsonSerializer.Deserialize<Product>(cr.Value);
-                                
+
                                 var list = await listRepository.GetListbyFridgeId(data.FridgeId, stoppingToken);
 
-                                for (int i = 0; i < data.ProductId.Count; i++)
+                                if (list is not null)
                                 {
-                                    var entity = new Domain.Entities.ProductInList
+                                    for (int i = 0; i < data.ProductId.Count; i++)
                                     {
-                                        ListId = list.Id,
-                                        Count = data.ProductId[i].Count,
-                                        ProductId = data.ProductId[i].ProductId
-                                    };
+                                        var product = await listManageRepository.GetProductInLlist(list.Id, data.ProductId[i].ProductId, stoppingToken);
 
-                                    await listManageRepository.AddAsync(entity, stoppingToken);
+                                        if (product is not null)
+                                        {
+                                            if (product.Count - data.ProductId[i].Count <= 0)
+                                            {
+                                                await listManageRepository.DeleteProductInList(list.Id, data.ProductId[i].ProductId, stoppingToken);
+                                            }
+                                            else
+                                            {
+                                                product.Count -= data.ProductId[i].Count;
+
+                                                await listManageRepository.UpdateAsync(product, stoppingToken);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             else if (cr.Topic == _configuration["Kafka:Topic2"])
@@ -74,32 +84,40 @@ public class KafkaConsumerService : BackgroundService
 
                                 var list = await listRepository.GetListbyFridgeId(data.FridgeId, stoppingToken);
 
-                                var product = await listManageRepository.GetProductInLlist(list.Id, data.ProductId, stoppingToken);
-
-                                if(product is null)
+                                if (list is null)
                                 {
-                                    throw new Exception("Product not found in the list.");
+                                    list = new Domain.Entities.ProductsList
+                                    {
+                                        FridgeId = data.FridgeId,
+                                        Name = $"list {data.FridgeId}",
+                                        BoxNumber = 0,
+                                        Price = 0,
+                                        Weight = 0,
+                                        HowPackeges = 0,
+                                        CreateData = DateTime.Now
+                                    };
+
+                                    await listRepository.AddAsync(list, stoppingToken);
                                 }
 
-                                if(data.Count == 0)
-                                {
-                                    await listManageRepository.DeleteProductInList(list.Id, data.ProductId, stoppingToken);
-                                }
+                                var productInList = await listManageRepository.GetProductInLlist(list.Id, data.ProductId, stoppingToken);
 
-                                if (product.Count - data.Count < 0)
+                                if (productInList is not null)
                                 {
-                                    throw new Exception("Product count cannot be negative.");
-                                }
-
-                                if (product.Count - data.Count == 0)
-                                {
-                                    await listManageRepository.DeleteProductInList(list.Id, data.ProductId, stoppingToken);
+                                    productInList.Count += data.Count;
+                                    
+                                    await listManageRepository.UpdateAsync(productInList, stoppingToken);
                                 }
                                 else
                                 {
-                                    product.Count -= data.Count;
+                                    var newProduct = new Domain.Entities.ProductInList
+                                    {
+                                        ListId = list.Id,
+                                        Count = data.Count,
+                                        ProductId = data.ProductId
+                                    };
 
-                                    await listManageRepository.UpdateAsync(product,stoppingToken);
+                                    await listManageRepository.AddAsync(newProduct, stoppingToken);
                                 }
                             }
                         }

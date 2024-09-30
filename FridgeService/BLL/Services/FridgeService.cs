@@ -190,18 +190,31 @@ namespace BLL.Services
                 throw new NotFoundException("Fridge not found");
             }
 
+            var productsInFridgeYet = await _fridgeRepository.GetProductsFromFridge(fridgeId);
+
             List<ProductFridgeModel> productFridgeModels = new List<ProductFridgeModel>();
 
             foreach (var product in products)
             {
-                productFridgeModels.Add(new ProductFridgeModel
+                if (productsInFridgeYet.Any(p => p.productId == product.ProductId))
                 {
-                    fridgeId = fridgeId,
-                    productId = product.ProductId,
-                    count = product.Count,
-                    addTime = DateTime.UtcNow
-                });
+                    var model = productsInFridgeYet.First(p => p.productId == product.ProductId);
+                    model.count += product.Count;
+                    await _unitOfWork.FridgeRepository.UpdateProductInFridge(model);
+                    continue;
+                }
+                else
+                {
+                    productFridgeModels.Add(new ProductFridgeModel
+                    {
+                        fridgeId = fridgeId,
+                        productId = product.ProductId,
+                        count = product.Count,
+                        addTime = DateTime.UtcNow
+                    });
+                }
             }
+
 
             await _unitOfWork.FridgeRepository.AddProductsToFridge(productFridgeModels);
             
