@@ -7,6 +7,8 @@ import { IFridge } from "../../models/Fridge";
 import { IProduct } from "../../models/Product";
 import RecieptsService from "../../services/RecieptService";
 import ProductsService from "../../services/ProductService";
+import { IList } from "../../models/List";
+import ListService from "../../services/ListService";
 
 interface IListProps {}
 
@@ -103,6 +105,8 @@ export const List: React.FC<IListProps> = () => {
         }
     }
 
+    
+
     return (
         <div className="list-page">
             
@@ -133,13 +137,10 @@ export const List: React.FC<IListProps> = () => {
                 onClick={getRecieptSuggest}
             >Get Reciept Suggest</button>
             <button
-                className="get-list-button"
-            >Lets Shop</button>
-            <button
                 className="add-fridge-button"
                 onClick={AddFridgeHandle}
             >AddFridge</button>
-            {!store.user.IsAdmin && (
+            {store.user.IsAdmin && (
                 <button
                 className="admin-panel-button"
                 onClick={() => setAddProduct(true)}
@@ -176,6 +177,7 @@ export const List: React.FC<IListProps> = () => {
                 </div>
                 </>
             )}
+
         </div>
     );
 };

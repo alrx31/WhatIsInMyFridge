@@ -7,6 +7,8 @@ import './FridgePage.scss';
 import { IProduct } from "../../models/Product";
 import ProductsService from "../../services/ProductService";
 import { set } from "mobx";
+import { IList } from "../../models/List";
+import ListService from "../../services/ListService";
 
 interface IFridgePageProps { }
 
@@ -37,6 +39,12 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
     const [chouseProductCount, setChouseProductCount] = useState(0);
 
     const [choosedProducts, setChoosedProducts] = useState([] as IProduct[]);
+
+    const [list,setList] = React.useState({} as IList);
+    const [isListPage,setIsListPage] = React.useState(false);
+    const [listProducts,setListProducts] = React.useState([] as IProduct[]);
+    
+
 
     let getFridge = async () => {
         try {
@@ -199,6 +207,47 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
         }
     }
 
+    let handleGetList = async () => {
+        try{
+            let response = await ListService.getListByFridgeId(Number(FridgeId));
+
+            if (response.status === 200) {
+                const data: IList = response.data;
+                setList(data);
+                setIsListPage(true);
+                getProducts(data.id);
+            }else{
+                alert("List not found");
+            }
+        }catch(e:any){
+            console.error(e);
+            alert("List not found");
+        }
+    } 
+
+    let getProducts = async (id:string) =>{
+        try{
+            const response = await ListService.getProductsByListId(id);
+
+            if (response.status === 200) {
+                const data: IProduct[] = response.data.map((item: any) => ({
+                    Id: item.id,
+                    Name: item.name,
+                    PricePerKilo: item.pricePerKilo,
+                    ExpirationTime: item.expirationTime,
+                    Count: item.count,
+                    AddTime: item.addTime
+                }));
+                setListProducts(data);
+            }else{
+                alert("Products not found");
+            }
+        }catch(e:any){
+            console.error(e);
+            alert("Products not found");
+        }
+    }
+
     return (
         <>
             <div
@@ -245,8 +294,9 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
                     }}
                 >Add Products</button>
                 <button
-
-                >Remove Products</button>
+                    className="get-list-button"
+                    onClick={handleGetList}
+                >Lets Shop</button>
                 <button
                     onClick={() => history('/')}
                 >Go Back</button>
@@ -282,6 +332,32 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {isListPage && (
+                <>
+                    <div className="productslist-page">
+                        <h2>List for fridge with Id {list.name.split(" ")[1]}</h2>
+                        <div className="products-list-controls">
+                            <button
+                                onClick={()=>setIsListPage(false)}
+                            >Close</button>
+                        </div>
+                        <ul className="productslist-page__list">
+                            {listProducts.map((product,indx) => (
+                                <div 
+                                    key={indx} 
+                                    className="product_item"
+                                >
+                                    <h2 className="product_name">Name: {product.Name}</h2>
+                                    <p className="product_pricePerKilo">PricePerKilo: {product.PricePerKilo}</p>
+                                    <p className="product_expirationTime">ExpirationTime: {product.ExpirationTime}</p>
+                                </div>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="produtslist-background"></div>
+                </>
             )}
 
             {addProduct && (
