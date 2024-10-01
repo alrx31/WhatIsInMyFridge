@@ -10,7 +10,7 @@ namespace Infastructure.Services
 {
     public interface IJWTService
     {
-        string GenerateJwtToken(string email);
+        string GenerateJwtToken(string email,int userId);
         string GenerateRefreshToken();
         ClaimsPrincipal? GetTokenPrincipal(string jwtToken);
     }
@@ -24,20 +24,24 @@ namespace Infastructure.Services
             _key = config["Jwt:Key"];
         }
 
-        public string GenerateJwtToken(string email)
+        public string GenerateJwtToken(string email, int userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_key);
-            
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, email) }),
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.Name, email),
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()) // Добавляем идентификатор пользователя
+        }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-            
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            
+
             return tokenHandler.WriteToken(token);
         }
 

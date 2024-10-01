@@ -8,6 +8,8 @@ using DAL.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using DAL.Persistanse.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BLL.Services
 {
@@ -53,6 +55,7 @@ namespace BLL.Services
         private readonly IProductsgRPCService _productsgRPCService;
         private readonly IKafkaProducer _kafkaProducer;
         private readonly ILogger<FridgeService> _logger;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
         public FridgeService(
             IFridgeRepository fridgeRepository,
@@ -61,7 +64,8 @@ namespace BLL.Services
             IgRPCService igRPCService,
             IProductsgRPCService productsgRPCService,
             IKafkaProducer kafkaProducer,
-            ILogger<FridgeService> logger
+            ILogger<FridgeService> logger,
+            IHubContext<NotificationHub> hubContext
             )
         {
             _fridgeRepository = fridgeRepository;
@@ -71,6 +75,7 @@ namespace BLL.Services
             _productsgRPCService = productsgRPCService;
             _kafkaProducer = kafkaProducer;
             _logger = logger;
+            _hubContext = hubContext;
         }
 
         public async Task AddFridge(FridgeAddDTO fridge)
@@ -263,27 +268,38 @@ namespace BLL.Services
 
         public async Task CheckProducts(int fridgeId)
         {
+            _logger.LogInformation("Checking products in fridge {0}", fridgeId);
             var fridge = await _unitOfWork.FridgeRepository.GetFridge(fridgeId);
 
-            if(fridge is null)
+            if (fridge is null)
             {
                 throw new NotFoundException("Fridge not found");
             }
 
             var productsModel = await _unitOfWork.FridgeRepository.GetProductsFromFridge(fridgeId);
-
             var ids = productsModel.Select(p => p.productId).ToList();
-
             var products = await _productsgRPCService.GetProducts(ids);
-            
-            for(var i = 0; i < products.Count; i++ )
+
+            var users = await GetFridgeUsers(fridgeId);
+
+            for (var i = 0; i < products.Count; i++)
             {
-                if (productsModel[i].addTime + products[i].ExpirationTime < DateTime.UtcNow)
-            {
-                    // Use SignalR to notify user
+                _logger.LogInformation("Product {0} has expiration time {1}", products[i].Name, products[i].ExpirationTime);
+
+                foreach (var user in users)
+                {
+                    _logger.LogInformation("Sending notification to user {0}", user.id);
+                    await _hubContext.Clients.User(user.id.ToString()).SendAsync("ReceiveNotification",
+                        $"Product {products[i].Name} is about to expire on {products[i].ExpirationTime}");
+               }
+
+                if (productsModel[i].addTime + products[i].ExpirationTime < DateTime.UtcNow.AddDays(3)) // Notify 3 days before expiration
+                {
+                    
                 }
             }
         }
+
 
         public async Task CheckProducts()
         {
