@@ -268,7 +268,6 @@ namespace BLL.Services
 
         public async Task CheckProducts(int fridgeId)
         {
-            _logger.LogInformation("Checking products in fridge {0}", fridgeId);
             var fridge = await _unitOfWork.FridgeRepository.GetFridge(fridgeId);
 
             if (fridge is null)
@@ -277,25 +276,22 @@ namespace BLL.Services
             }
 
             var productsModel = await _unitOfWork.FridgeRepository.GetProductsFromFridge(fridgeId);
+            
             var ids = productsModel.Select(p => p.productId).ToList();
+            
             var products = await _productsgRPCService.GetProducts(ids);
 
             var users = await GetFridgeUsers(fridgeId);
 
             for (var i = 0; i < products.Count; i++)
             {
-                _logger.LogInformation("Product {0} has expiration time {1}", products[i].Name, products[i].ExpirationTime);
-
-                foreach (var user in users)
+                if (productsModel[i].addTime + products[i].ExpirationTime < DateTime.UtcNow.AddDays(3))
                 {
-                    _logger.LogInformation("Sending notification to user {0}", user.id);
-                    await _hubContext.Clients.User(user.id.ToString()).SendAsync("ReceiveNotification",
-                        $"Product {products[i].Name} is about to expire on {products[i].ExpirationTime}");
-               }
-
-                if (productsModel[i].addTime + products[i].ExpirationTime < DateTime.UtcNow.AddDays(3)) // Notify 3 days before expiration
-                {
-                    
+                    foreach (var user in users)
+                    {
+                        await _hubContext.Clients.Group(fridgeId.ToString())
+                           .SendAsync("ReceiveNotification", $"{products[i].Name} in {fridgeId}");
+                    }
                 }
             }
         }
