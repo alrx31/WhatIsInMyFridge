@@ -16,7 +16,7 @@ import * as signalR from '@microsoft/signalr';
 function App() {
   const { store } = useContext(Context);
   const navigate = useNavigate();
-  const [expiringProducts, setExpiringProducts] = useState<string[]>([]);
+  const [expiringProducts, setExpiringProducts] = useState<{ message: string, id: number }[]>([]);
 
   useEffect(() => {
     store.checkAuth().finally(() => {
@@ -27,22 +27,28 @@ function App() {
     });
 
     const token = localStorage.getItem('token');
-    console.log("Retrieved token:", token); 
+    console.log("Retrieved token:", token);
 
     const connection = new signalR.HubConnectionBuilder()
       .withUrl('http://localhost/fridge/NotificationHub', {
         accessTokenFactory: () => token || ''
-      }) 
+      })
       .withAutomaticReconnect()
       .build();
 
-      connection.start()
+    connection.start()
       .then(() => {
         console.log('Connected to SignalR');
-        
+
         connection.on('ReceiveNotification', (message) => {
-          setExpiringProducts(prev => [...prev, message]);
+          const id = Date.now(); // Уникальный идентификатор для уведомления
+          setExpiringProducts(prev => [...prev, { message, id }]);
           console.log('Received notification:', message);
+
+          // Удаляем уведомление через 5 секунд
+          setTimeout(() => {
+            setExpiringProducts(prev => prev.filter(product => product.id !== id));
+          }, 5000);
         });
 
         console.log('Connection state:', connection.state);
@@ -90,10 +96,12 @@ function App() {
 
       {expiringProducts.length > 0 && (
         <div className="expiry-warning">
-          <h3>Продукты, которые скоро испортятся:</h3>
-          <ul>
+          <ul className="notification-wrapper">
             {expiringProducts.map((product, index) => (
-              <li key={index}>{product}</li>
+              <li
+               key={product.id}
+              className="notification-item"
+              >Will go bad: {product.message}</li>
             ))}
           </ul>
         </div>

@@ -24,6 +24,10 @@ export const List: React.FC<IListProps> = () => {
 
     
     const getFridges = async () => {
+        if(!store.user?.Id){
+            console.error("User not found");
+            return;
+        }
         try {
             const response = await FridgeService.getFridgesByUserId(store.user.Id);
             if (response.status === 200) {
