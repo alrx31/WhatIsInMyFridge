@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './App.scss';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Login from './Components/Register/Login';
 import Register from './Components/Register/Register';
 import { Context } from './index';
@@ -16,11 +16,12 @@ import * as signalR from '@microsoft/signalr';
 function App() {
   const { store } = useContext(Context);
   const navigate = useNavigate();
+  const location = useLocation();
   const [expiringProducts, setExpiringProducts] = useState<{ message: string, id: number }[]>([]);
 
   useEffect(() => {
     store.checkAuth().finally(() => {
-      if (!store.isAuth) {
+      if (!store.isAuth && location.pathname !== '/login' && location.pathname !== '/register') {
         console.log("User is not authenticated. Redirecting to login.");
         navigate('/login');
       }
@@ -41,11 +42,10 @@ function App() {
         console.log('Connected to SignalR');
 
         connection.on('ReceiveNotification', (message) => {
-          const id = Date.now(); // Уникальный идентификатор для уведомления
+          const id = Date.now();
           setExpiringProducts(prev => [...prev, { message, id }]);
           console.log('Received notification:', message);
 
-          // Удаляем уведомление через 5 секунд
           setTimeout(() => {
             setExpiringProducts(prev => prev.filter(product => product.id !== id));
           }, 5000);

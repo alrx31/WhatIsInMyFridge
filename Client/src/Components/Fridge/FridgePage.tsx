@@ -260,12 +260,22 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
                 <button
                     onClick={() => setShowDeletePopup(true)}
                 >Remove frige</button>
-
+                <br/>
+                <br/>
+                <br/>
+                <h1>Products:</h1>
 
                 <ul>
                     {products.map((product) => {
                         return (
-                            <li key={product.Id} className="list-product_item">
+                            <li 
+                                key={product.Id} 
+                                className="list-product_item"
+                                onClick={() => {
+                                    setDeleteProductValue(product);
+                                    setDeleteProduct(true);
+                                }}
+                            >
                                 <h3>{product.Name}</h3>
                                 <p>Count:  {product.Count}</p>
                                 <p>When Add:  {product.AddTime}</p>
@@ -277,7 +287,7 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
                                         setDeleteProductValue(product);
                                         setDeleteProduct(true);
                                     }}
-                                >GET</button>
+                                >CLICK FOR GET</button>
                             </li>
                         );
                     })}
