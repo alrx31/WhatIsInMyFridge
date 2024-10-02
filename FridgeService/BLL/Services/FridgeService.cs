@@ -198,6 +198,8 @@ namespace BLL.Services
             var productsInFridgeYet = await _fridgeRepository.GetProductsFromFridge(fridgeId);
 
             List<ProductFridgeModel> productFridgeModels = new List<ProductFridgeModel>();
+            List<ProductFridgeModel> productFridgeModelsToKafka = new List<ProductFridgeModel>();
+
 
             foreach (var product in products)
             {
@@ -206,6 +208,8 @@ namespace BLL.Services
                     var model = productsInFridgeYet.First(p => p.productId == product.ProductId);
                     model.count += product.Count;
                     await _unitOfWork.FridgeRepository.UpdateProductInFridge(model);
+                    model.count = product.Count;
+                    productFridgeModelsToKafka.Add(model);
                     continue;
                 }
                 else
@@ -220,14 +224,16 @@ namespace BLL.Services
                 }
             }
 
-
+            _logger.LogInformation("update products in fridge");
             await _unitOfWork.FridgeRepository.AddProductsToFridge(productFridgeModels);
             
             await _unitOfWork.CompleteAsync();
 
+            _logger.LogInformation("send message to kafka");
+
             var message = new DAL.Entities.MessageBrokerEntities.Product
             (
-                _mapper.Map<List<DAL.Entities.MessageBrokerEntities.ProductInfo>>(productFridgeModels),
+                _mapper.Map<List<DAL.Entities.MessageBrokerEntities.ProductInfo>>(productFridgeModelsToKafka),
                 fridgeId
             );
 

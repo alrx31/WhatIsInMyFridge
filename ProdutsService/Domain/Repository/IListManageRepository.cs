@@ -8,6 +8,8 @@ namespace Domain.Repository
         
         Task<List<string>> GetListProducts(string listId, CancellationToken cancellationToken);
 
+        Task<List<ProductInList>> GetProductsInLlist(string listId, CancellationToken cancellationToken);
+
         Task<ProductInList> GetProductInLlist(string listId, string productId, CancellationToken cancellationToken);
     }
 }
