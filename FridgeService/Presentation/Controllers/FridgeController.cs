@@ -30,10 +30,10 @@ namespace Presentation.Controllers
             return Ok();
         }
 
-        [HttpGet("serial/{serial}")]
-        public async Task<IActionResult> GetFridgeBySerial(string serial)
+        [HttpGet("serial/{serial}/{boxNumber}")]
+        public async Task<IActionResult> GetFridgeBySerialAndBoxNumber(string serial,int boxNumber)
         {
-            return Ok(await _fridgeService.GetFridgeBySerial(serial));
+            return Ok(await _fridgeService.GetFridgeBySerialAndBoxNumber(serial,boxNumber));
         }
 
         [HttpGet("{fridgeId}")]
@@ -56,10 +56,10 @@ namespace Presentation.Controllers
             return Ok();
         }
 
-        [HttpPut("{serial}/users/{userId}")]
-        public async Task<IActionResult> AddUserToFridge(string serial, int userId)
+        [HttpPut("{serial}/{boxNumber}/users/{userId}")]
+        public async Task<IActionResult> AddUserToFridge(string serial,int boxNumber, int userId)
         {
-            await _fridgeService.AddUserToFridge(serial, userId);
+            await _fridgeService.AddUserToFridge(serial, boxNumber, userId);
             
             return Ok();
         }

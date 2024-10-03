@@ -32,6 +32,6 @@ namespace DAL.Interfaces
 
         Task<List<Fridge>> GetFridgeByUserId(int userId);
 
-        Task<Fridge> GetFridgeBySerial(string serial);
+        Task<Fridge> GetFridgeBySerialAndBoxNumber(string serial, int boxNumber);
     }
 }

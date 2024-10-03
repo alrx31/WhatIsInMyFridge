@@ -21,7 +21,7 @@ namespace BLL.Services
         
         Task RemoveFridgeById(int fridgeId);
         
-        Task AddUserToFridge(string serial, int userId);
+        Task AddUserToFridge(string serial,int boxNumber, int userId);
         
         Task RemoveUserFromFridge(int fridgeId, int userId);
         
@@ -43,7 +43,7 @@ namespace BLL.Services
 
         Task<List<Fridge>> GetFridgesByUserId(int userId);
         
-        Task<Fridge> GetFridgeBySerial(string serial);
+        Task<Fridge> GetFridgeBySerialAndBoxNumber(string serial,int boxNumber);
     }
 
     public class FridgeService : IFridgeService
@@ -123,13 +123,13 @@ namespace BLL.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public async Task AddUserToFridge(string serial, int userId)
+        public async Task AddUserToFridge(string serial,int boxNumber, int userId)
         {
             if(! await _grpcService.CheckUserExist(userId))
             {
                 throw new NotFoundException("User not found");
             }
-            var fridge = await _unitOfWork.FridgeRepository.GetFridgeBySerial(serial);
+            var fridge = await _unitOfWork.FridgeRepository.GetFridgeBySerialAndBoxNumber(serial,boxNumber);
 
             if (fridge is null)
             {
@@ -375,9 +375,9 @@ namespace BLL.Services
             await _kafkaProducer.ProduceAsync<DAL.Entities.MessageBrokerEntities.ProductRemove>("RemoveProduct", message);
         }
 
-        public async Task<Fridge> GetFridgeBySerial(string serial)
+        public async Task<Fridge> GetFridgeBySerialAndBoxNumber(string serial,int boxNumber)
         {
-            var fridge = await _unitOfWork.FridgeRepository.GetFridgeBySerial(serial);
+            var fridge = await _unitOfWork.FridgeRepository.GetFridgeBySerialAndBoxNumber(serial,boxNumber);
             
             if(fridge is null)
             {
