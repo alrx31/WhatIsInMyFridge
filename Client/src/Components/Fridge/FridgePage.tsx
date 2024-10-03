@@ -96,6 +96,7 @@ export const FridgePage: React.FC<IFridgePageProps> = () => {
     let deleteFridgeHandle = async () => {
         try {
             let response = await FridgeService.deleteFridgeFromUser(store.user.Id, Number(FridgeId));
+            
             if (response.status === 200) {
                 history('/');
             } else {
