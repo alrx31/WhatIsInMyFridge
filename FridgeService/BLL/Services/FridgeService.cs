@@ -296,7 +296,7 @@ namespace BLL.Services
                     foreach (var user in users)
                     {
                         await _hubContext.Clients.Group(fridgeId.ToString())
-                           .SendAsync("ReceiveNotification", $"{products[i].Name} in {fridgeId}");
+                           .SendAsync("ReceiveNotification", $"{products[i].Name} in Fridge: {fridge.name}");
                     }
                 }
             }
