@@ -23,9 +23,10 @@ export default class FridgeService{
 
     static async addFridgeToUser(
         userId:number,
+        boxNumber:number,
         serial:string
     ):Promise<AxiosResponse>{
-        return $api.put(`/fridge/api/fridge/${serial}/users/${userId}`)
+        return $api.put(`/fridge/api/fridge/${serial}/${boxNumber}/users/${userId}`)
     }
 
     static async deleteFridgeFromUser(

@@ -7,6 +7,8 @@ import { IFridge } from '../../models/Fridge';
 
 export const AddFridgePage: React.FC = () => {
   const [serialNumber, setSerialNumber] = useState<string>('');
+  const [boxNumber, setBoxNumber] = useState<number>(0);
+
   const [createNew, setCreateNew] = useState<boolean>(false); 
   const [error, setError] = useState<string>('');
   const { store } = useContext(Context);
@@ -14,9 +16,13 @@ export const AddFridgePage: React.FC = () => {
     const [fridge,setFridge] = useState({} as IFridge); 
 
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChangeSerial = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSerialNumber(e.target.value);
   };
+
+  const handleInputChangeBoxNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBoxNumber(Number(e.target.value));
+  }
 
   const handleCreateNewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCreateNew(e.target.checked);
@@ -30,7 +36,7 @@ export const AddFridgePage: React.FC = () => {
       if (createNew) {
         response = await FridgeService.AddFridge(fridge);
       } else {
-        response = await FridgeService.addFridgeToUser(store.user.Id, serialNumber);
+        response = await FridgeService.addFridgeToUser(store.user.Id,boxNumber, serialNumber);
       }
 
       if (response.status === 200) {
@@ -125,9 +131,19 @@ export const AddFridgePage: React.FC = () => {
               id="serialNumber"
               className={`form-input ${error ? 'input-error' : ''}`}
               value={serialNumber}
-              onChange={handleInputChange}
+              onChange={handleInputChangeSerial}
               placeholder="Enter Serial Number"
             />
+            <label htmlFor="boxNumber" className="form-label">Box Number</label>
+            <input
+              type="number"
+              id="boxNumber"
+              className={`form-input ${error ? 'input-error' : ''}`}
+              value={boxNumber}
+              onChange={handleInputChangeBoxNumber}
+              placeholder="Enter Serial Number"
+            />
+
           </>
         )}
 
