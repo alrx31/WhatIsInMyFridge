@@ -6,7 +6,6 @@
     max-height: 90vh;
     padding-bottom: 100px;
     position: relative;
-    overflow-y: scroll;
     
 
     button{
@@ -38,7 +37,7 @@
 
     .list-page__list
     {
-        width: max(60%,300px);
+        width: max(60%,500px);
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
