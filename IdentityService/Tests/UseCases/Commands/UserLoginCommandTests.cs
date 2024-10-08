@@ -7,13 +7,11 @@ using Bogus;
 using Domain.Entities;
 using Domain.Repository;
 using FluentAssertions;
-using Identity.Infrastructure;
 using Infastructure.Persistanse;
 using Infastructure.Services;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 
-namespace Tests.UseCases
+namespace Tests.UseCases.Commands
 {
     public class UserLoginCommandTests
     {
@@ -93,7 +91,7 @@ namespace Tests.UseCases
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            result.Should().NotBeNull(); 
+            result.Should().NotBeNull();
             result.IsLoggedIn.Should().BeTrue();
             result.JwtToken.Should().NotBeNullOrEmpty();
             result.RefreshToken.Should().NotBeNullOrEmpty();
@@ -116,7 +114,7 @@ namespace Tests.UseCases
             );
 
             _unitOfWork.Setup(x => x.UserRepository.GetUserByLogin(command.Login))
-                .ReturnsAsync((User)null); 
+                .ReturnsAsync((User)null);
 
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
 

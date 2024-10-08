@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Application.UseCases.Handlers.Comands
 {
-    internal class UserRegisterComandHandler(
+    public class UserRegisterComandHandler(
 
         IJWTService jwtService,
         IUnitOfWork unitOfWork,
