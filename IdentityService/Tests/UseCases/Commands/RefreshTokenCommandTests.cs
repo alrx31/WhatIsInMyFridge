@@ -51,6 +51,64 @@ namespace Tests.UseCases.Commands
             );
         }
 
-        
+        [Fact]
+        public async Task Handle_ShouldThrowBadRequestException_WhenTokenIsInvalid()
+        {
+            // Arrange
+            var command = new RefreshTokenCommand ( "invalidToken" );
+
+            _jwtService.Setup(x => x.GetTokenPrincipal(It.IsAny<string>())).Returns<ClaimsPrincipal>(null);
+
+            // Act
+            Func<Task> act = async () => await _handler.Handle(command, default);
+
+            // Assert
+            await act.Should().ThrowAsync<BadRequestException>().WithMessage("Invalid token");
+        }
+
+        [Fact]
+        public async Task Handle_ShouldThrowBadRequestException_WhenRefreshTokenIsExpired()
+        {
+            // Arrange
+            var command = new RefreshTokenCommand("validToken" );
+            var identityUser = new RefreshTokenModel { email = "test@test.com", id = 1, refreshToken = "expiredRefreshToken", refreshTokenExpiryTime = DateTime.UtcNow.AddHours(-1) };
+
+            _jwtService.Setup(x => x.GetTokenPrincipal(It.IsAny<string>())).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "test@test.com")
+            })));
+
+            _userRepository.Setup(x => x.GetTokenModel(It.IsAny<string>())).ReturnsAsync(identityUser);
+
+            // Act
+            Func<Task> act = async () => await _handler.Handle(command, default);
+
+            // Assert
+            await act.Should().ThrowAsync<BadRequestException>().WithMessage("Invalid token");
+        }
+
+        [Fact]
+        public async Task Handle_ShouldThrowNotFoundException_WhenUserNotFound()
+        {
+            // Arrange
+            var command = new RefreshTokenCommand ("validToken");
+            var identityUser = new RefreshTokenModel { email = "test@test.com", id = 1, refreshToken = "validRefreshToken", refreshTokenExpiryTime = DateTime.UtcNow.AddHours(1) };
+
+            _jwtService.Setup(x => x.GetTokenPrincipal(It.IsAny<string>())).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "test@test.com")
+            })));
+
+            _userRepository.Setup(x => x.GetTokenModel(It.IsAny<string>())).ReturnsAsync(identityUser);
+            _cacheRepository.Setup(x => x.GetCacheData<User>(It.IsAny<string>())).ReturnsAsync((User)null);
+            _userRepository.Setup(x => x.GetUserById(It.IsAny<int>())).ReturnsAsync((User)null);
+
+            // Act
+            Func<Task> act = async () => await _handler.Handle(command, default);
+
+            // Assert
+            await act.Should().ThrowAsync<NotFoundException>().WithMessage("User not found");
+        }
+
     }
 }
