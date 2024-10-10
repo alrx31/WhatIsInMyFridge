@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using DAL.Persistanse.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using System.Runtime.InteropServices;
 
 namespace BLL.Services
 {
@@ -195,7 +196,7 @@ namespace BLL.Services
                 throw new NotFoundException("Fridge not found");
             }
 
-            var productsInFridgeYet = await _fridgeRepository.GetProductsFromFridge(fridgeId);
+
 
             List<ProductFridgeModel> productFridgeModels = new List<ProductFridgeModel>();
             List<ProductFridgeModel> productFridgeModelsToKafka = new List<ProductFridgeModel>();
@@ -203,17 +204,26 @@ namespace BLL.Services
 
             foreach (var product in products)
             {
-                if (productsInFridgeYet.Any(p => p.productId == product.ProductId))
+                var model = await _unitOfWork.FridgeRepository.GetProductFromFridge(fridgeId, product.ProductId);
+                
+                if (model is not null)
                 {
-                    var model = productsInFridgeYet.First(p => p.productId == product.ProductId);
+                    _logger.LogInformation("product in fridge exist");
+                    _logger.LogInformation($"count before: {model.count}");
                     model.count += product.Count;
+                    _logger.LogInformation($"count after: {model.count}");
+                    
                     await _unitOfWork.FridgeRepository.UpdateProductInFridge(model);
+                    
+                    await _unitOfWork.CompleteAsync();
+                    
                     model.count = product.Count;
                     productFridgeModelsToKafka.Add(model);
                     continue;
                 }
                 else
                 {
+                    _logger.LogInformation("product in fridge not exist");
                     productFridgeModels.Add(new ProductFridgeModel
                     {
                         fridgeId = fridgeId,
@@ -225,9 +235,13 @@ namespace BLL.Services
             }
 
             _logger.LogInformation("update products in fridge");
-            await _unitOfWork.FridgeRepository.AddProductsToFridge(productFridgeModels);
-            
-            await _unitOfWork.CompleteAsync();
+
+            if (productFridgeModels.Any())
+            {
+                _logger.LogInformation("Adding new products to fridge");
+                await _unitOfWork.FridgeRepository.AddProductsToFridge(productFridgeModels);
+                await _unitOfWork.CompleteAsync();
+            }
 
             _logger.LogInformation("send message to kafka");
 
