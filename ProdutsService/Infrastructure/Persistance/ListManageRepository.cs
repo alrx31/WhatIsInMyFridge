@@ -20,6 +20,13 @@ namespace Infrastructure.Persistance
             return await _context.Find(filter).FirstOrDefaultAsync(cancellationToken);
         }
 
+        public async Task<List<ProductInList>> GetProductsInLlist(string listId, CancellationToken cancellationToken)
+        {
+            var filter = Builders<ProductInList>.Filter.Eq("ListId", listId);
+
+            return await _context.Find(filter).ToListAsync(cancellationToken);
+        }
+
         public Task DeleteProductInList(string listId, string productId, CancellationToken cancellationToken)
         {
             var filter = Builders<ProductInList>.Filter.Eq("ListId", listId) & Builders<ProductInList>.Filter.Eq("ProductId", productId);

@@ -39,7 +39,7 @@ namespace Application.UseCases.Handlers.Comands
 
             response.IsLoggedIn = true;
             response.User = _mapper.Map<UserDTO>(identifyUser);
-            response.JwtToken = _jwtService.GenerateJwtToken(identifyUser.email);
+            response.JwtToken = _jwtService.GenerateJwtToken(identifyUser.email,identifyUser.id);
             var RefreshToken = _jwtService.GenerateRefreshToken();
 
             var identityUserTokenModel = await _unitOfWork.UserRepository.GetTokenModel(identifyUser.email);

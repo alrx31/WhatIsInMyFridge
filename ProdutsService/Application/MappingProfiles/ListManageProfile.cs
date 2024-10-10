@@ -27,7 +27,9 @@ namespace Application.MappingProfiles
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Model.ProductId))
                 .ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Model.Cost))
                 .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.Model.Weight));
-                
+            
+            CreateMap<string, GetListProductsInListQuery>()
+                .ConstructUsing(src => new GetListProductsInListQuery(src));
         }
     }
 }

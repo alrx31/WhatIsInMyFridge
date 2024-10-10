@@ -31,6 +31,7 @@ namespace DAL.Interfaces
         Task UpdateProductInFridge(ProductFridgeModel model);
 
         Task<List<Fridge>> GetFridgeByUserId(int userId);
-        Task<Fridge> GetFridgeBySerial(string serial);
+
+        Task<Fridge> GetFridgeBySerialAndBoxNumber(string serial, int boxNumber);
     }
 }

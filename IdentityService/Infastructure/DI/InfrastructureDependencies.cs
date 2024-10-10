@@ -48,7 +48,6 @@ namespace Infastructure.DI
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = builder.Configuration["Jwt:issuer"],
                     ValidAudience = builder.Configuration["Jwt:audience"],
-                    ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:key"]))
                 };
             });
