@@ -5,7 +5,7 @@ using Grpc.Core;
 using Infastructure.Persistanse.Protos;
 using Moq;
 
-namespace Tests.Services
+namespace Tests.UnitTests.Repositories
 {
     public class GreeterServiceTests
     {
@@ -22,7 +22,7 @@ namespace Tests.Services
 
         private ServerCallContext CreateMockServerCallContext()
         {
-            return new Mock<ServerCallContext>().Object; 
+            return new Mock<ServerCallContext>().Object;
 
         }
 
@@ -40,8 +40,8 @@ namespace Tests.Services
             _unitOfWorkMock.Setup(x => x.UserRepository.GetUserById(It.IsAny<int>()))
                 .ReturnsAsync((int id) => userList.Find(u => u.id == id));
 
-            _mapperMock.Setup(m => m.Map<Infastructure.Persistanse.Protos.User>(It.IsAny<Domain.Entities.User>()))
-                .Returns((Domain.Entities.User u) => new Infastructure.Persistanse.Protos.User { Id = u.id, Name = u.name });
+            _mapperMock.Setup(m => m.Map<User>(It.IsAny<Domain.Entities.User>()))
+                .Returns((Domain.Entities.User u) => new User { Id = u.id, Name = u.name });
 
             var response = await _greeterService.GetUsers(userIds, CreateMockServerCallContext());
 

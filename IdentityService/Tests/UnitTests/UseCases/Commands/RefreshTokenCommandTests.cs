@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Security.Claims;
 
-namespace Tests.UseCases.Commands
+namespace Tests.UnitTests.UseCases.Commands
 {
     public class RefreshTokenCommandTests
     {
@@ -25,7 +25,7 @@ namespace Tests.UseCases.Commands
         private readonly Mock<IMapper> _mapper;
 
         private readonly RefreshTokenCommandHandler _handler;
-    
+
         public RefreshTokenCommandTests()
         {
             _jwtService = new Mock<IJWTService>();
@@ -39,7 +39,7 @@ namespace Tests.UseCases.Commands
             _unitOfWork.SetupGet(x => x.CacheRepository).Returns(_cacheRepository.Object);
 
             var context = new DefaultHttpContext();
-           
+
             _httpContextAccessor = new Mock<IHttpContextAccessor>();
             _httpContextAccessor.Setup(x => x.HttpContext).Returns(context);
 
@@ -55,7 +55,7 @@ namespace Tests.UseCases.Commands
         public async Task Handle_ShouldThrowBadRequestException_WhenTokenIsInvalid()
         {
             // Arrange
-            var command = new RefreshTokenCommand ( "invalidToken" );
+            var command = new RefreshTokenCommand("invalidToken");
 
             _jwtService.Setup(x => x.GetTokenPrincipal(It.IsAny<string>())).Returns<ClaimsPrincipal>(null);
 
@@ -70,7 +70,7 @@ namespace Tests.UseCases.Commands
         public async Task Handle_ShouldThrowBadRequestException_WhenRefreshTokenIsExpired()
         {
             // Arrange
-            var command = new RefreshTokenCommand("validToken" );
+            var command = new RefreshTokenCommand("validToken");
             var identityUser = new RefreshTokenModel { email = "test@test.com", id = 1, refreshToken = "expiredRefreshToken", refreshTokenExpiryTime = DateTime.UtcNow.AddHours(-1) };
 
             _jwtService.Setup(x => x.GetTokenPrincipal(It.IsAny<string>())).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
@@ -91,7 +91,7 @@ namespace Tests.UseCases.Commands
         public async Task Handle_ShouldThrowNotFoundException_WhenUserNotFound()
         {
             // Arrange
-            var command = new RefreshTokenCommand ("validToken");
+            var command = new RefreshTokenCommand("validToken");
             var identityUser = new RefreshTokenModel { email = "test@test.com", id = 1, refreshToken = "validRefreshToken", refreshTokenExpiryTime = DateTime.UtcNow.AddHours(1) };
 
             _jwtService.Setup(x => x.GetTokenPrincipal(It.IsAny<string>())).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[]

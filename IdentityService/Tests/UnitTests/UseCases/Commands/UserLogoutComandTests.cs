@@ -5,7 +5,7 @@ using Bogus;
 using Domain.Repository;
 using Moq;
 
-namespace Tests.UseCases.Commands
+namespace Tests.UnitTests.UseCases.Commands
 {
     public class UserLogoutComandTests
     {

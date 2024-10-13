@@ -6,7 +6,7 @@ using Moq;
 using StackExchange.Redis;
 using System.Text.Json;
 
-namespace Tests.Repositories
+namespace Tests.UnitTests.Repositories
 {
     public class CacheRepositoryTests
     {
@@ -86,7 +86,7 @@ namespace Tests.Repositories
                 isAdmin = faker.Random.Bool()
             };
 
-            TimeSpan? expiry = TimeSpan.FromMinutes(5); 
+            TimeSpan? expiry = TimeSpan.FromMinutes(5);
             var serializedData = JsonSerializer.Serialize(user);
             var redisValue = new RedisValue(serializedData);
 

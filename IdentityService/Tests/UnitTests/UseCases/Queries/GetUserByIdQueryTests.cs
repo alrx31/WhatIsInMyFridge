@@ -7,7 +7,7 @@ using Domain.Repository;
 using FluentAssertions;
 using Moq;
 
-namespace Tests.UseCases.Queries
+namespace Tests.UnitTests.UseCases.Queries
 {
     public class GetUserByIdQueryTests
     {
