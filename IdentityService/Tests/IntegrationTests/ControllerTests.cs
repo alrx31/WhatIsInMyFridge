@@ -40,6 +40,8 @@ namespace Tests.IntegrationTests
                 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 dbContext.Database.Migrate();
+
+                InitializeDatabase(dbContext);
             }
             
 

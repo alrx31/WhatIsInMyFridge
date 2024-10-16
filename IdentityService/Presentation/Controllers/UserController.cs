@@ -2,11 +2,8 @@
 using Application.UseCases.Comands;
 using Application.UseCases.Queries;
 using AutoMapper;
-using Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 namespace Presentation.Controllers
 {
     [ApiController]

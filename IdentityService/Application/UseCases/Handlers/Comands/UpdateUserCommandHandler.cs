@@ -25,6 +25,7 @@ namespace Application.UseCases.Handlers.Comands
         public async Task<User> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
             var model = request.user;
+
             var user = await _unitOfWork.CacheRepository.GetCacheData<User>($"user-{request.id}");
 
             if (user is null)

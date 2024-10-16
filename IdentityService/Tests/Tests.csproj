@@ -43,7 +43,6 @@
 
   <ItemGroup>
     <Folder Include="IntegrationTests\AuthControllerTests\" />
-    <Folder Include="IntegrationTests\UserControllerTests\" />
   </ItemGroup>
 
 </Project>
