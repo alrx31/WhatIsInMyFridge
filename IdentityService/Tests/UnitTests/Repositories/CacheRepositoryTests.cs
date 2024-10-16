@@ -2,26 +2,21 @@
 using Domain.Entities;
 using FluentAssertions;
 using Infastructure.Persistanse;
+using Microsoft.Extensions.Caching.Distributed;
 using Moq;
-using StackExchange.Redis;
+using System.Text;
 using System.Text.Json;
 
 namespace Tests.UnitTests.Repositories
 {
     public class CacheRepositoryTests
     {
-        private readonly Mock<IConnectionMultiplexer> _redis;
-        private readonly Mock<IDatabase> _database;
-
+        private readonly Mock<IDistributedCache> _redis;
         private readonly CacheRepository _repository;
 
         public CacheRepositoryTests()
         {
-            _redis = new Mock<IConnectionMultiplexer>();
-            _database = new Mock<IDatabase>();
-
-            _redis.Setup(x => x.GetDatabase(It.IsAny<int>(), It.IsAny<object?>())).Returns(_database.Object);
-
+            _redis = new Mock<IDistributedCache>();
             _repository = new CacheRepository(_redis.Object);
         }
 
@@ -29,18 +24,21 @@ namespace Tests.UnitTests.Repositories
         public async Task GetCacheData_Success_ReturnsValue()
         {
             var faker = new Faker();
-            var key = new Faker().Random.String();
+            var key = faker.Random.String();
             var user = new User
             {
                 id = faker.Random.Int(),
                 email = faker.Internet.Email(),
                 login = faker.Internet.UserName(),
                 name = faker.Name.FullName(),
-                password = new Faker().Internet.Password()
+                password = faker.Internet.Password()
             };
 
-            _database.Setup(x => x.StringGetAsync(key, It.IsAny<CommandFlags>()))
-                .ReturnsAsync(JsonSerializer.Serialize(user));
+            var serializedUser = JsonSerializer.Serialize(user);
+            var bytesData = Encoding.UTF8.GetBytes(serializedUser);
+
+            _redis.Setup(x => x.GetAsync(key, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(bytesData);
 
             var result = await _repository.GetCacheData<User>(key);
 
@@ -52,8 +50,8 @@ namespace Tests.UnitTests.Repositories
         {
             var key = new Faker().Random.String();
 
-            _database.Setup(x => x.StringGetAsync(key, It.IsAny<CommandFlags>()))
-                .ReturnsAsync(RedisValue.Null);
+            _redis.Setup(x => x.GetAsync(key, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((byte[])null);
 
             var result = await _repository.GetCacheData<User>(key);
 
@@ -67,7 +65,7 @@ namespace Tests.UnitTests.Repositories
 
             await _repository.RemoveCacheData(key);
 
-            _database.Verify(x => x.KeyDeleteAsync(key, It.IsAny<CommandFlags>()), Times.Once);
+            _redis.Verify(x => x.RemoveAsync(key, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -88,22 +86,22 @@ namespace Tests.UnitTests.Repositories
 
             TimeSpan? expiry = TimeSpan.FromMinutes(5);
             var serializedData = JsonSerializer.Serialize(user);
-            var redisValue = new RedisValue(serializedData);
+            var bytesData = Encoding.UTF8.GetBytes(serializedData); 
 
-            _database.Setup(x => x.StringSetAsync(
+            _redis.Setup(x => x.SetAsync(
                 key,
-                redisValue,
-                expiry,
-                It.IsAny<When>(),
-                It.IsAny<CommandFlags>()))
-            .ReturnsAsync(true);
+                bytesData,
+                It.IsAny<DistributedCacheEntryOptions>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
 
             await _repository.SetCatcheData(key, user, expiry);
 
-            _database.Setup(x => x.StringGetAsync(key, It.IsAny<CommandFlags>()))
-                .ReturnsAsync(redisValue);
+            _redis.Setup(x => x.GetAsync(key, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(bytesData);
 
             var result = await _repository.GetCacheData<User>(key);
+
             result.Should().BeEquivalentTo(user);
         }
     }

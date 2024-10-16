@@ -26,9 +26,9 @@ namespace Infastructure.DI
                 op.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Identity")));
 
             // Redis
-            services.AddSingleton<IConnectionMultiplexer>(s =>
+            builder.Services.AddStackExchangeRedisCache(redisCacheOptions =>
             {
-                return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"));
+                redisCacheOptions.Configuration = builder.Configuration.GetConnectionString("Redis");
             });
 
             services.AddGrpc();

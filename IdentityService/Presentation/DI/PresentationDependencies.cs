@@ -15,9 +15,6 @@ namespace Presentation.DI
             // HttpContextAccessor
             services.AddHttpContextAccessor();
 
-            // Middleware
-            services.AddScoped<ExceptionHandlingMiddleware>();
-
             return services;
         }
     }
