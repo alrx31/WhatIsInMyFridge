@@ -41,8 +41,4 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="IntegrationTests\AuthControllerTests\" />
-  </ItemGroup>
-
 </Project>

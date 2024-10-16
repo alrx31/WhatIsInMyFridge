@@ -48,12 +48,6 @@ namespace Tests.IntegrationTests
             _httpClient = factory.CreateClient();
         }
 
-        protected void InitializeDatabase(ApplicationDbContext dataContext) {
-            
-            _fakeUsersGenerator.InitializeData();
-            dataContext.AddRange(_fakeUsersGenerator.Users);
-
-            dataContext.SaveChanges();
-        }
+        protected abstract void InitializeDatabase(ApplicationDbContext dataContext);
     }
 }

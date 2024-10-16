@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Domain.Entities;
+using Infastructure.Persistanse;
 
 namespace Tests.IntegrationTests
 {
@@ -8,7 +9,7 @@ namespace Tests.IntegrationTests
     {
         public readonly List<User> Users = new();
 
-        private readonly int _amountOfUsers = 10;
+        private readonly int _amountOfUsers = 2;
         private int _counter = 0;
 
         public void InitializeData()
@@ -25,7 +26,7 @@ namespace Tests.IntegrationTests
                 .RuleFor(user => user.email, faker => faker.Internet.Email())
                 .RuleFor(user => user.login, faker => faker.Internet.UserName())
                 .RuleFor(user => user.name, faker => faker.Name.FirstName())
-                .RuleFor(user => user.password, faker => faker.Internet.Password()
+                .RuleFor(user => user.password, faker => Scripts.GetHash(faker.Internet.Password())
                 );
         }
     }

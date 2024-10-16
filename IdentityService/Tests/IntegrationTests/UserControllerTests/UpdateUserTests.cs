@@ -2,6 +2,7 @@
 using Bogus;
 using Domain.Entities;
 using FluentAssertions;
+using Infastructure.Persistanse;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -10,6 +11,13 @@ namespace Tests.IntegrationTests.UserControllerTests
 {
     public class UpdateUserTests : ControllerTests
     {
+        protected override void InitializeDatabase(ApplicationDbContext dataContext)
+        {
+            _fakeUsersGenerator.InitializeData();
+            dataContext.AddRange(_fakeUsersGenerator.Users);
+            dataContext.SaveChanges();
+        }
+
         [Fact]
         public async Task UpdateUser_Success_ShouldUpdateUser()
         {

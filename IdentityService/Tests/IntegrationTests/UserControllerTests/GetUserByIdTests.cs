@@ -1,10 +1,18 @@
 ﻿using FluentAssertions;
+using Infastructure.Persistanse;
 using System.Net;
 
 namespace Tests.IntegrationTests.UserControllerTests
 {
     public class GetUserByIdTests : ControllerTests
     {
+        protected override void InitializeDatabase(ApplicationDbContext dataContext)
+        {
+            _fakeUsersGenerator.InitializeData();
+            dataContext.AddRange(_fakeUsersGenerator.Users);
+            dataContext.SaveChanges();
+        }
+
         [Fact]
         public async Task GetUserById_Success_shouldReturnUser()
         {
