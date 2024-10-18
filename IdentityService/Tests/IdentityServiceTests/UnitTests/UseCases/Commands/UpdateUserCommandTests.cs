@@ -10,7 +10,7 @@ using Infastructure.Services;
 using Moq;
 using Xunit.Sdk;
 
-namespace Tests.UnitTests.UseCases.Commands
+namespace Tests.IdentityServiceTests.UnitTests.UseCases.Commands
 {
     public class UpdateUserCommandTests
     {

@@ -5,7 +5,7 @@ using Grpc.Core;
 using Infastructure.Persistanse.Protos;
 using Moq;
 
-namespace Tests.UnitTests.Repositories
+namespace Tests.IdentityServiceTests.UnitTests.Repositories
 {
     public class GreeterServiceTests
     {

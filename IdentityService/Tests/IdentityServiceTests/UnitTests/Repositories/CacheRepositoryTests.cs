@@ -7,7 +7,7 @@ using Moq;
 using System.Text;
 using System.Text.Json;
 
-namespace Tests.UnitTests.Repositories
+namespace Tests.IdentityServiceTests.UnitTests.Repositories
 {
     public class CacheRepositoryTests
     {
@@ -86,7 +86,7 @@ namespace Tests.UnitTests.Repositories
 
             TimeSpan? expiry = TimeSpan.FromMinutes(5);
             var serializedData = JsonSerializer.Serialize(user);
-            var bytesData = Encoding.UTF8.GetBytes(serializedData); 
+            var bytesData = Encoding.UTF8.GetBytes(serializedData);
 
             _redis.Setup(x => x.SetAsync(
                 key,

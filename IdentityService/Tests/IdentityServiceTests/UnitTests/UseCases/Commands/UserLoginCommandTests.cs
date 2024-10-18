@@ -11,7 +11,7 @@ using Infastructure.Persistanse;
 using Infastructure.Services;
 using Moq;
 
-namespace Tests.UnitTests.UseCases.Commands
+namespace Tests.IdentityServiceTests.UnitTests.UseCases.Commands
 {
     public class UserLoginCommandTests
     {

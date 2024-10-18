@@ -6,8 +6,9 @@ using System.Text.Json;
 using System.Text;
 using FluentAssertions;
 using System.Net;
+using Tests.IdentityServiceTests.IntegrationTests;
 
-namespace Tests.IntegrationTests.AuthControllerTests
+namespace Tests.IdentityServiceTests.IntegrationTests.AuthControllerTests
 {
     public class RefreshTokenTests : ControllerTests
     {

@@ -8,8 +8,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Tests.IdentityServiceTests.IntegrationTests;
 
-namespace Tests.IntegrationTests.AuthControllerTests
+namespace Tests.IdentityServiceTests.IntegrationTests.AuthControllerTests
 {
     public class RegisterUserTests : ControllerTests
     {
@@ -80,7 +81,7 @@ namespace Tests.IntegrationTests.AuthControllerTests
         {
             var faker = new Faker();
 
-            
+
             var requestBody = new UserRegisterCommand
             (
                 faker.Person.UserName,

@@ -1,9 +1,9 @@
 ﻿using Infastructure.Persistanse;
 
-namespace Tests.IntegrationTests
+namespace Tests.IdentityServiceTests.IntegrationTests
 {
     public abstract class UsersControllerTests : ControllerTests
     {
-        
+
     }
 }

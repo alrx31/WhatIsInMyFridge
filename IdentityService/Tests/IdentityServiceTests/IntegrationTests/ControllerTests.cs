@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 
-namespace Tests.IntegrationTests
+namespace Tests.IdentityServiceTests.IntegrationTests
 {
     public abstract class ControllerTests
     {
@@ -43,7 +43,7 @@ namespace Tests.IntegrationTests
 
                 InitializeDatabase(dbContext);
             }
-            
+
 
             _httpClient = factory.CreateClient();
         }

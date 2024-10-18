@@ -5,8 +5,9 @@ using Infastructure.Persistanse;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Tests.IdentityServiceTests.IntegrationTests;
 
-namespace Tests.IntegrationTests.AuthControllerTests
+namespace Tests.IdentityServiceTests.IntegrationTests.AuthControllerTests
 {
     public class LoginUserTests : ControllerTests
     {

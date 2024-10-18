@@ -2,7 +2,7 @@
 using Domain.Entities;
 using Infastructure.Persistanse;
 
-namespace Tests.IntegrationTests
+namespace Tests.IdentityServiceTests.IntegrationTests
 {
 
     public class FakeUsersGenerator

@@ -10,7 +10,7 @@ using Infastructure.Services;
 using MediatR;
 using Moq;
 
-namespace Tests.UnitTests.UseCases.Commands
+namespace Tests.IdentityServiceTests.UnitTests.UseCases.Commands
 {
     public class DeleteUserCommandTests
     {

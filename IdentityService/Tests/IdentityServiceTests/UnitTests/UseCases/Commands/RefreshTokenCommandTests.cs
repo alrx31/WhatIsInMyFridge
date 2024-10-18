@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Security.Claims;
 
-namespace Tests.UnitTests.UseCases.Commands
+namespace Tests.IdentityServiceTests.UnitTests.UseCases.Commands
 {
     public class RefreshTokenCommandTests
     {

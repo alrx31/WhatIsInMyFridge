@@ -3,8 +3,9 @@ using Infastructure.Persistanse;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Tests.IdentityServiceTests.IntegrationTests;
 
-namespace Tests.IntegrationTests.UserControllerTests
+namespace Tests.IdentityServiceTests.IntegrationTests.UserControllerTests
 {
     public class DeleteUserTests : ControllerTests
     {
@@ -20,7 +21,8 @@ namespace Tests.IntegrationTests.UserControllerTests
         {
             var requestBody = 1;
 
-            var request = new HttpRequestMessage(new HttpMethod("DELETE"), $"/api/user/{1}"){
+            var request = new HttpRequestMessage(new HttpMethod("DELETE"), $"/api/user/{1}")
+            {
                 Content = new StringContent(
                     JsonSerializer.Serialize(requestBody),
                     Encoding.UTF8,
@@ -39,7 +41,8 @@ namespace Tests.IntegrationTests.UserControllerTests
         {
             var requestBody = 1;
 
-            var request = new HttpRequestMessage(new HttpMethod("DELETE"), $"/api/user/{999}") {
+            var request = new HttpRequestMessage(new HttpMethod("DELETE"), $"/api/user/{999}")
+            {
                 Content = new StringContent(
                     JsonSerializer.Serialize(requestBody),
                     Encoding.UTF8,

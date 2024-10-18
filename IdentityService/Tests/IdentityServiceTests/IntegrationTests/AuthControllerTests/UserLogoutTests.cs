@@ -6,10 +6,11 @@ using Infastructure.Persistanse;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Tests.IdentityServiceTests.IntegrationTests;
 
-namespace Tests.IntegrationTests.AuthControllerTests
+namespace Tests.IdentityServiceTests.IntegrationTests.AuthControllerTests
 {
-    public class UserLogoutTests:ControllerTests
+    public class UserLogoutTests : ControllerTests
     {
         protected override void InitializeDatabase(ApplicationDbContext dataContext)
         {
@@ -21,7 +22,8 @@ namespace Tests.IntegrationTests.AuthControllerTests
         public async Task LogoutUser_Success_ShouldLogoutUser()
         {
             var faker = new Faker();
-            var registerUserRequestBody = new RegisterDTO { 
+            var registerUserRequestBody = new RegisterDTO
+            {
                 email = faker.Person.Email,
                 login = faker.Person.UserName,
                 password = faker.Internet.Password(),
@@ -56,7 +58,7 @@ namespace Tests.IntegrationTests.AuthControllerTests
 
             var json = await loginResponse.Content.ReadAsStringAsync();
 
-            var loginUser = JsonSerializer.Deserialize<LoginResponse>(json,new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            var loginUser = JsonSerializer.Deserialize<LoginResponse>(json, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
             var logoutRequest = new HttpRequestMessage(new HttpMethod("DELETE"), $"/api/auth/{loginUser.User.id}");
 
