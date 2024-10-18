@@ -6,9 +6,9 @@ using Infastructure.Persistanse;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Tests.IdentityServiceTests.IntegrationTests;
+using Tests.IntegrationTests;
 
-namespace Tests.IdentityServiceTests.IntegrationTests.UserControllerTests
+namespace Tests.IntegrationTests.UserControllerTests
 {
     public class UpdateUserTests : ControllerTests
     {

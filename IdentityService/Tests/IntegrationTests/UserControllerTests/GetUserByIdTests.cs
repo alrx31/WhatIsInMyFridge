@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 using Infastructure.Persistanse;
 using System.Net;
-using Tests.IdentityServiceTests.IntegrationTests;
+using Tests.IntegrationTests;
 
-namespace Tests.IdentityServiceTests.IntegrationTests.UserControllerTests
+namespace Tests.IntegrationTests.UserControllerTests
 {
     public class GetUserByIdTests : ControllerTests
     {

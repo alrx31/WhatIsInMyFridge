@@ -1,11 +1,10 @@
 ﻿using Application.UseCases.Comands;
 using Application.UseCases.Handlers.Comands;
-using AutoMapper;
 using Bogus;
 using Domain.Repository;
 using Moq;
 
-namespace Tests.IdentityServiceTests.UnitTests.UseCases.Commands
+namespace Tests.UnitTests.UseCases.Commands
 {
     public class UserLogoutComandTests
     {

@@ -7,7 +7,7 @@ using Moq;
 using System.Text;
 using System.Text.Json;
 
-namespace Tests.IdentityServiceTests.UnitTests.Repositories
+namespace Tests.UnitTests.Repositories
 {
     public class CacheRepositoryTests
     {

@@ -1,16 +1,14 @@
 ﻿using Application.Exceptions;
 using Application.UseCases.Comands;
 using Application.UseCases.Handlers.Comands;
-using AutoMapper;
 using Bogus;
 using Domain.Entities;
 using Domain.Repository;
 using FluentAssertions;
-using Infastructure.Services;
 using MediatR;
 using Moq;
 
-namespace Tests.IdentityServiceTests.UnitTests.UseCases.Commands
+namespace Tests.UnitTests.UseCases.Commands
 {
     public class DeleteUserCommandTests
     {

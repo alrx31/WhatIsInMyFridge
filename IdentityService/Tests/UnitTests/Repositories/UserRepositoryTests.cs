@@ -5,7 +5,7 @@ using FluentAssertions;
 using Infastructure.Persistanse;
 using Microsoft.EntityFrameworkCore;
 
-namespace Tests.IdentityServiceTests.UnitTests.Repositories
+namespace Tests.UnitTests.Repositories
 {
     public class UserRepositoryTests
     {

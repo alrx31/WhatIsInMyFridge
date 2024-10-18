@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 
-namespace Tests.IdentityServiceTests.IntegrationTests
+namespace Tests.IntegrationTests
 {
     public abstract class ControllerTests
     {

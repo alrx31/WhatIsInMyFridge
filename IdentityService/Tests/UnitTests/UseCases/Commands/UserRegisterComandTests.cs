@@ -11,7 +11,7 @@ using Infastructure.Services;
 using MediatR;
 using Moq;
 
-namespace Tests.IdentityServiceTests.UnitTests.UseCases.Commands
+namespace Tests.UnitTests.UseCases.Commands
 {
     public class UserRegisterComandTests
     {

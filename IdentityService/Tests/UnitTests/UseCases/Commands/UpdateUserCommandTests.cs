@@ -8,9 +8,8 @@ using Domain.Repository;
 using FluentAssertions;
 using Infastructure.Services;
 using Moq;
-using Xunit.Sdk;
 
-namespace Tests.IdentityServiceTests.UnitTests.UseCases.Commands
+namespace Tests.UnitTests.UseCases.Commands
 {
     public class UpdateUserCommandTests
     {

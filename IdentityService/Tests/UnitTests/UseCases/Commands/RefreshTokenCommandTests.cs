@@ -1,19 +1,16 @@
-﻿using Application.DTO;
-using Application.Exceptions;
+﻿using Application.Exceptions;
 using Application.UseCases.Comands;
 using Application.UseCases.Handlers.Comands;
 using AutoMapper;
-using Bogus;
 using Domain.Entities;
 using Domain.Repository;
 using FluentAssertions;
-using Infastructure.Persistanse;
 using Infastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Security.Claims;
 
-namespace Tests.IdentityServiceTests.UnitTests.UseCases.Commands
+namespace Tests.UnitTests.UseCases.Commands
 {
     public class RefreshTokenCommandTests
     {

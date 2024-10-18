@@ -8,9 +8,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Tests.IdentityServiceTests.IntegrationTests;
+using Tests.IntegrationTests;
 
-namespace Tests.IdentityServiceTests.IntegrationTests.AuthControllerTests
+namespace Tests.IntegrationTests.AuthControllerTests
 {
     public class RegisterUserTests : ControllerTests
     {
