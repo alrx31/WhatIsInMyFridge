@@ -68,3 +68,5 @@
 /ProdutsService/Infrastructure/bin/Debug/net8.0
 /ProdutsService/Infrastructure/obj
 /IdentityService/Tests/bin/Release/net8.0
+/FridgeService/Tests/bin
+/FridgeService/Tests/obj
