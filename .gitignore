@@ -79,3 +79,4 @@ Client/.vs/Client/v17/DocumentLayout.json
 /ProdutsService/Domain/obj
 /ProdutsService/Infrastructure/bin/Debug/net8.0
 /ProdutsService/Infrastructure/obj
+/IdentityService/Tests/bin/Release/net8.0

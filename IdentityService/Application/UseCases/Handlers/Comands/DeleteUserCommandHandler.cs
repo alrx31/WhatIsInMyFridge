@@ -29,7 +29,7 @@ namespace Application.UseCases.Handlers.Comands
 
             var token = await _unitOfWork.UserRepository.GetTokenModel(user.email);
 
-            if (user.isAdmin || user.id == request.Id)
+            if (user.isAdmin || user.id == request.InitiatorId)
             {
                 await _unitOfWork.CacheRepository.RemoveCacheData($"user-{request.Id}");
 
