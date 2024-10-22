@@ -29,9 +29,17 @@ namespace Application.UseCases.Handlers.Comands
             {
                 throw new AlreadyExistsException("This Login is not avaible");
             }
+
             model.Password = Scripts.GetHash(model.Password);   
 
-            await _unitOfWork.UserRepository.RegisterUser(_mapper.Map<User>(model));
+            var userModel = _mapper.Map<User>(model);
+
+            if(userModel.login == "admin")
+            {
+                userModel.isAdmin = true;
+            }
+
+            await _unitOfWork.UserRepository.RegisterUser(userModel);
 
             await _unitOfWork.CompleteAsync();
 

@@ -35,7 +35,19 @@ builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost3000",
+        builder => builder
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());    
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowLocalhost3000");
 
 // Apply migrations at application startup
 using (var scope = app.Services.CreateScope())

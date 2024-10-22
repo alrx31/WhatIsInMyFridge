@@ -37,9 +37,12 @@ namespace Application.UseCases.Handlers.Comands
                 throw new NotFoundException("User not Found");
             }
 
-            model.Password = Scripts.GetHash(model.Password);
+            user.email = model.Email;
+            user.login = model.Login;
+            user.name= model.Name;
+            user.password = Scripts.GetHash(model.Password);
 
-            User user1 = await _unitOfWork.UserRepository.UpdateUser(_mapper.Map<User>(model));
+            User user1 = await _unitOfWork.UserRepository.UpdateUser(user);
 
             await _unitOfWork.CacheRepository.SetCatcheData($"user-{request.id}", user1);
 

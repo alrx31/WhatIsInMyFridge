@@ -68,7 +68,7 @@ namespace Application.UseCases.Handlers.Comands
             }
 
             response.IsLoggedIn = true;
-            response.JwtToken = _jwtService.GenerateJwtToken(identityUser.email);
+            response.JwtToken = _jwtService.GenerateJwtToken(identityUser.email,identityUser.id);
             refreshToken = _jwtService.GenerateRefreshToken();
 
             var identityUserTokenModel = await _unitOfWork.UserRepository.GetTokenModel(identityUser.email);
