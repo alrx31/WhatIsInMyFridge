@@ -14,7 +14,7 @@ using Moq;
 
 namespace Tests.UnitTests.Servises.Frdige
 {
-    public class GetFridgeUsers
+    public class GetFridgeBySerialAndBoxNumberTests
     {
         private readonly Mock<IFridgeRepository> _fridgeRepository;
         private readonly Mock<IMapper> _mapper;
@@ -28,7 +28,7 @@ namespace Tests.UnitTests.Servises.Frdige
 
         private readonly IFridgeService _handler;
 
-        public GetFridgeUsers()
+        public GetFridgeBySerialAndBoxNumberTests()
         {
             _mapper = new Mock<IMapper>();
             _fridgeRepository = new Mock<IFridgeRepository>();
@@ -60,7 +60,7 @@ namespace Tests.UnitTests.Servises.Frdige
         }
 
         [Fact]
-        public async Task GetFridgeUsers_Success_ShouldReturnsUsers()
+        public async Task GetFridgeBySerialAndBoxNumber_Success_ShouldReturnFridge()
         {
             var faker = new Faker();
             var fridge = new Fridge
@@ -70,48 +70,31 @@ namespace Tests.UnitTests.Servises.Frdige
                 model = faker.Random.Number(0, 1000000000).ToString(),
                 serial = faker.Random.Number(0, 100000000).ToString(),
                 boughtDate = DateTime.UtcNow,
-                boxNumber = faker.Random.Number(0, 10)
+                boxNumber = faker.Random.Number(0, 5)
             };
-            var users = new List<User>
-            {
-                new User
-                {
-                    id = faker.Random.Number(1, 100),
-                    name = faker.Person.FirstName,
-                    email = faker.Person.Email,
-                    login = faker.Person.UserName,
-                    password = faker.Random.Number(0, 100000000).ToString(),
-                    isAdmin = false
-                }
-            };
-            var ids = users.Select(x => x.id).ToList();
-
-            _fridgeRepository.Setup(x => x.GetFridge(fridge.id)).ReturnsAsync(fridge);
-            _fridgeRepository.Setup(x => x.GetUsersFromFridge(fridge.id)).ReturnsAsync(ids);
-            _grpcService.Setup(x => x.GetUsers(ids)).ReturnsAsync(users);
+            _fridgeRepository.Setup(x => x.GetFridgeBySerialAndBoxNumber(fridge.serial,fridge.boxNumber)).ReturnsAsync(fridge);
 
             // Act
 
-            var result = await _handler.GetFridgeUsers(fridge.id);
+            var result = await _handler.GetFridgeBySerialAndBoxNumber(fridge.serial, fridge.boxNumber);
 
             // Assert
 
-            result.Should().BeEquivalentTo(users);
+            result.Should().BeEquivalentTo(fridge);
         }
 
         [Fact]
-        public async Task GetFridgeUsers_Fail_WhenFridgeNotFound()
+        public async Task GetFridgeBySerialAndBoxNumber_Fail_WhenFridgeNotFound()
         {
             var faker = new Faker();
-            var fridgeId = faker.Random.Int();
 
             // Act
 
-            Func<Task> act = async () => await _handler.GetFridgeUsers(fridgeId);
+            Func<Task<Fridge>> act = async () => await _handler.GetFridgeBySerialAndBoxNumber(faker.Random.Number(0, 100000000).ToString(), faker.Random.Number(0, 5));
 
             // Assert
 
-            await act.Should().ThrowAsync<NotFoundException>();
+            await act.Should().ThrowAsync<NotFoundException>().WithMessage("Fridge not found");
         }
     }
 }

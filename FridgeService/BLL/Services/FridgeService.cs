@@ -326,6 +326,7 @@ namespace BLL.Services
                 PR[i].Count = productsModel[i].count;
                 PR[i].AddTime = productsModel[i].addTime;
             }
+
             return PR;
         }
 
@@ -356,7 +357,7 @@ namespace BLL.Services
             
             if (model.count < 0)
             {
-                throw new Exception("invalid count of product");
+                throw new BadRequestException("Invalid count of product");
             }
 
             if (model.count == 0)

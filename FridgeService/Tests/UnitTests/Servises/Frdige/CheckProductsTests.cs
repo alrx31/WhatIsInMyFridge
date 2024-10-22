@@ -15,7 +15,7 @@ using Moq;
 
 namespace Tests.UnitTests.Servises.Frdige
 {
-    public class CheckProducts
+    public class CheckProductsTests
     {
         private readonly Mock<IFridgeRepository> _fridgeRepository;
         private readonly Mock<IMapper> _mapper;
@@ -29,7 +29,7 @@ namespace Tests.UnitTests.Servises.Frdige
 
         private readonly IFridgeService _handler;
 
-        public CheckProducts()
+        public CheckProductsTests()
         {
             _mapper = new Mock<IMapper>();
             _fridgeRepository = new Mock<IFridgeRepository>();
