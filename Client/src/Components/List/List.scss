@@ -1,0 +1,139 @@
+.list-page {
+    font-family: Arial, sans-serif;
+    color: var(--darkgray);
+    background-color: var(--lightgray);
+    padding-top: 50px;
+    max-height: 90vh;
+    padding-bottom: 100px;
+    position: relative;
+    
+
+    button{
+        margin: 8px;
+        padding: 10px 20px;
+
+        background-color: var(--lightblue);
+        color: var(--white);
+        border-radius: 8px;
+        border: 1px solid transparent;
+        transition: all 0.3s;
+
+        font-size: 16px;
+
+        &:hover{
+            background-color: var(--darkblue);
+            color: var(--lightblue);
+            border: 1px solid var(--lightblue);
+            cursor: pointer;
+       }
+
+    }
+
+    .list-page__buttons{
+        position: fixed;
+        top: 0;
+        right: 0;   
+    }
+
+    .list-page__list
+    {
+        width: max(60%,500px);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        padding: 20px;
+        margin: 0 auto;
+
+        .fridge_item{
+            width: 100%;
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+
+            &:hover{
+                box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            }
+
+            h2{
+                cursor: pointer;
+                width: 100%;
+                text-align: left;
+                margin: 0;
+                margin-bottom: 8px;
+            }
+
+            p{
+                cursor: pointer;
+                margin-bottom: 8px;
+            }
+        }
+    }
+
+    footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        color: var(--white);
+        padding: 10px 0;
+        text-align: center;
+    }
+    .add-fridge-button{
+        margin: 20px;
+        padding: 10px 20px;
+
+        background-color: var(--lightblue);
+        color: var(--white);
+        border-radius: 8px;
+        border: 1px solid transparent;
+        transition: all 0.3s;
+
+        font-size: 16px;
+
+        &:hover{
+            background-color: var(--darkblue);
+            color: var(--lightblue);
+            border: 1px solid var(--lightblue);
+            cursor: pointer;
+        }
+    }
+    
+   
+}
+
+.add-product-back-panel{
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.add-product{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    min-width: 400px;
+    min-height: 400px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    input:no-button{
+        margin-bottom: 5px;
+        width: 80%;
+        cursor: pointer;
+    }
+    button{
+        margin: 0;
+    }
+}
