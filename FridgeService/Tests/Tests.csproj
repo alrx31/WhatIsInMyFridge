@@ -13,6 +13,9 @@
     <PackageReference Include="Bogus" Version="35.6.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.10" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Testcontainers" Version="3.10.0" />
@@ -25,11 +28,6 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Integrationtests\Fridge\" />
-    <Folder Include="UnitTests\Repositories\" />
   </ItemGroup>
 
   <ItemGroup>

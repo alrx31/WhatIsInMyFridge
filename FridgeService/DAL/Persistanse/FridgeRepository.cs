@@ -1,18 +1,15 @@
 ﻿using DAL.Entities;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace DAL.Persistanse
 {
     public class FridgeRepository
         (
-            ApplicationDbContext context,
-            ILogger<FridgeRepository> logger
+            ApplicationDbContext context
         ) : IFridgeRepository
     {
         private readonly ApplicationDbContext _context = context;
-        private readonly ILogger<FridgeRepository> _logger = logger;
 
         public async Task AddFridge(Fridge fridge)
         {

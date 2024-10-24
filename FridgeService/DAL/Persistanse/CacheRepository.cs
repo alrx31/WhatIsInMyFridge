@@ -1,5 +1,6 @@
 ﻿using DAL.Interfaces;
 using DAL.IRepositories;
+using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -7,18 +8,18 @@ namespace DAL.Persistanse
 {
     public class CacheRepository: ICacheRepository
     {
-        private readonly IDatabase _redis;
+        private readonly IDistributedCache _redis;
 
-        public CacheRepository(IConnectionMultiplexer redis)
+        public CacheRepository(IDistributedCache redis)
         {
-            _redis = redis.GetDatabase();
+            _redis = redis;
         }
 
         public async Task<T?> GetCacheData<T>(string key)
         {
-            var data = await _redis.StringGetAsync(key);
+            var data = await _redis.GetStringAsync(key);
 
-            if (data.IsNull)
+            if (data is null)
             {
                 return default;
             }
@@ -28,12 +29,15 @@ namespace DAL.Persistanse
 
         public async Task RemoveCacheData(string key)
         {
-            await _redis.KeyDeleteAsync(key);
+            await _redis.RemoveAsync(key);
         }
 
         public async Task SetCatcheData<T>(string key, T data, TimeSpan? expiry = null)
         {
-            await _redis.StringSetAsync(key, JsonSerializer.Serialize(data), expiry);
+            await _redis.SetStringAsync(key, JsonSerializer.Serialize(data), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(3)
+            });
         }
     }
 }
