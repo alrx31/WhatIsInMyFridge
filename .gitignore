@@ -70,3 +70,5 @@
 /IdentityService/Tests/bin/Release/net8.0
 /FridgeService/Tests/bin
 /FridgeService/Tests/obj
+/ProdutsService/Tests/bin
+/ProdutsService/Tests/obj
