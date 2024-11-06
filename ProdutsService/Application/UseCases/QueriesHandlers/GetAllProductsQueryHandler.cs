@@ -15,8 +15,7 @@ namespace Application.UseCases.QueriesHandlers
 
         public async Task<List<Product>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
-            var prs =  await _productRepository.GetAllPaginationAsync(request.Page,request.Count,cancellationToken);
-            return prs;
+            return await _productRepository.GetAllPaginationAsync(request.Page,request.Count,cancellationToken);
         }
     }
 }

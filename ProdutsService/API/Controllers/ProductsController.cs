@@ -53,8 +53,7 @@ namespace API.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetAllProducts([FromQuery] int page, [FromQuery] int count, CancellationToken cancellationToken)
         {
-            var prs = await _mediator.Send(_mapper.Map<GetAllProductsQuery>((page, count)), cancellationToken);
-            return Ok(prs);
+            return Ok(await _mediator.Send(_mapper.Map<GetAllProductsQuery>((page, count)), cancellationToken));
         }
     }
 }

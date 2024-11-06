@@ -34,9 +34,7 @@ namespace Infrastructure.Persistance
 
         public async Task<List<Product>> GetAllPaginationAsync(int page, int count,CancellationToken cancellationToken)
         {
-            var prs = await _products.Find(Builders<Product>.Filter.Empty).Skip((page - 1) * count).Limit(count).ToListAsync(cancellationToken);
-            prs.Add(new Product());
-            return prs;
+            return await _products.Find(Builders<Product>.Filter.Empty).Skip((page - 1) * count).Limit(count).ToListAsync(cancellationToken);
         }
     }
 }

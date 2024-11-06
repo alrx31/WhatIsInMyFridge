@@ -1,22 +1,21 @@
-﻿using Application.DTO;
+using System.Net;
+using System.Text;
+using System.Text.Json;
+using Application.DTO;
 using Bogus;
 using Domain.Entities;
-using System.Net;
-using System.Text.Json;
-using System.Text;
 using FluentAssertions;
-using AutoMapper.Configuration.Annotations;
 
-namespace Tests.IntegrationTests.Controllers.ListController
+namespace Tests.IntegrationTests.Controllers.ListController;
+
+public class GetListProductsTests : ControllerTests
 {
-    public class AddProductToListTests : ControllerTests
+    [Fact]
+    public async Task GetListProducts_Success_ShouldReturnProducts()
     {
-        [Fact]
-        public async Task AddProductToList_Success_ShouldAddProductToList()
-        {
-            var faker = new Faker();
-
-            var addRequestBody = new AddListDTO
+        var faker = new Faker();
+        
+        var addRequestBody = new AddListDTO
             {
                 Name = faker.Commerce.Product(),
                 Weight = faker.Random.Number(1, 10),
@@ -61,7 +60,7 @@ namespace Tests.IntegrationTests.Controllers.ListController
 
             addPrResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var getPrResponse = await _httpClient.GetAsync($"/api/Products/all");
+            var getPrResponse = await _httpClient.GetAsync($"/api/products/all");
 
             var jsonPr = await getPrResponse.Content.ReadAsStringAsync();
 
@@ -77,9 +76,7 @@ namespace Tests.IntegrationTests.Controllers.ListController
                 Cost = faker.Random.Number(1, 10)
             };
 
-            // Act
-
-            var response = await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("PUT"), $"/api/list/{list.Id}/product")
+            var response3 = await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("PUT"), $"/api/list/{list.Id}/product")
             {
                 Content = new StringContent(
                         JsonSerializer.Serialize(request),
@@ -88,20 +85,22 @@ namespace Tests.IntegrationTests.Controllers.ListController
                         )
             });
 
-            // Assert
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
-        [Fact]
-        public async Task AddProductToList_Fail_InvalidDTO()
-        {
-            var faker = new Faker();
-            var request = new AddProductToListDTO();
-
+            response3.StatusCode.Should().Be(HttpStatusCode.OK);
+            
             // Act
-
-            var response = await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod("PUT"), $"api/{faker.Internet.DomainName}/product"));
-        }
+            
+            var response = await _httpClient.GetAsync($"/api/list/{list.Id}/products");
+            
+            // Assert
+            
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            
+            var jsonProducts = await response.Content.ReadAsStringAsync();
+            var productsRes = JsonSerializer.Deserialize<List<Product>>(jsonProducts, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            })[0];
+            
+            productsRes.Should().BeEquivalentTo(pr);
     }
 }
