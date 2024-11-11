@@ -21,7 +21,7 @@ namespace Application.UseCases.ComandsHandlers
             var list = await _listRepository.GetListByName(request.Model.Name,cancellationToken);
 
             if (list is not null) 
-            {
+            {   
                 throw new AlreadyExistsException("List already exists");
             }
 

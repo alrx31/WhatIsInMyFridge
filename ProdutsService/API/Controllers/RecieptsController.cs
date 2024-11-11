@@ -5,6 +5,7 @@ using Application.UseCases.QueriesHandlers;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Contracts;
 
 namespace API.Controllers
 {

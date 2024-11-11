@@ -73,3 +73,5 @@ app.MapGrpcService<ProductgRPCService>();
 app.UseMiddleware <ExceptionHandlingMiddleware>();
 
 app.Run();
+
+public partial class Program { }

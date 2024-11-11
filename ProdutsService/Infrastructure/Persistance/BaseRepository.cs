@@ -1,4 +1,5 @@
 ﻿using Domain.Repository;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Infrastructure.Persistance
@@ -14,7 +15,7 @@ namespace Infrastructure.Persistance
 
         public async Task<TEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
         {
-            var filter = Builders<TEntity>.Filter.Eq("Id", id);
+            var filter = Builders<TEntity>.Filter.Eq("_id", ObjectId.Parse(id));
 
             return await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
         }
@@ -31,14 +32,14 @@ namespace Infrastructure.Persistance
 
         public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
         {
-            var filter = Builders<TEntity>.Filter.Eq("Id", (entity as dynamic).Id);
+            var filter = Builders<TEntity>.Filter.Eq("_id", ObjectId.Parse((entity as dynamic).Id));
 
             await _collection.ReplaceOneAsync(filter, entity, new ReplaceOptions(), cancellationToken);
         }
 
         public async Task DeleteAsync(string id, CancellationToken cancellationToken)
         {
-            var filter = Builders<TEntity>.Filter.Eq("Id", id);
+            var filter = Builders<TEntity>.Filter.Eq("_id", ObjectId.Parse(id));
 
             await _collection.DeleteOneAsync(filter, cancellationToken);
         }
