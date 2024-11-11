@@ -1,9 +1,11 @@
 ﻿using Application.DTO;
 using Application.UseCases.Comands;
 using Application.UseCases.Queries;
+using Application.UseCases.QueriesHandlers;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Contracts;
 
 namespace API.Controllers
 {
@@ -55,6 +57,34 @@ namespace API.Controllers
         public async Task<IActionResult> GetAllReciepts([FromQuery] int page, [FromQuery] int count, CancellationToken cancellationToken)
         {
             return Ok(await _mediator.Send(_mapper.Map<GetAllRecieptsQuery>((page, count)), cancellationToken));
+        }
+
+        [HttpPut("reciept/products")]
+        public async Task<IActionResult> AddProductToReciept([FromBody] AddProductToRecieptDTO model, CancellationToken cancellationToken)
+        {
+            await _mediator.Send(_mapper.Map<AddProductToRecieptComand>(model), cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpDelete("reciept/products")]
+        public async Task<IActionResult> DeleteProductFromReciept([FromBody] DeleteProductFromRecieptDTO model, CancellationToken cancellationToken)
+        {
+            await _mediator.Send(_mapper.Map<DeleteProductFromRecieptComand>(model), cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpGet("reciept/{RecieptId}/products")]
+        public async Task<IActionResult> GetProductsFromReciept(string RecieptId)
+        {
+            return Ok(await _mediator.Send(_mapper.Map<GetProductsFromRecieptQuery>(RecieptId)));
+        }
+
+        [HttpPost("reciept/suggest")]
+        public async Task<IActionResult> SuggestReciepts([FromBody] SuggestRecieptDTO model)
+        {
+            return Ok(await _mediator.Send(_mapper.Map<SuggestRecieptsQuery>(model)));
         }
 
     }

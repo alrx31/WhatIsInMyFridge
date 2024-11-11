@@ -6,6 +6,7 @@ using Infastructure.DI;
 using Presentation.DI;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Serilog;
+using Identity.Extention;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+builder.Services.AddDatabaseConnection(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder);
 builder.Services.AddPresentationServices();
@@ -58,16 +60,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.ApplyMigrations();
+
 app.UseCors("AllowLocalhost3000");
 
-// Apply migrations at application startup
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.Migrate();
-}
-
-// Configure the HTTP request pipeline.
 // TODO: delete true for production
 if (app.Environment.IsDevelopment() || true)
 {
@@ -93,3 +89,6 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
+
+//for run integration tests correctly
+public partial class Program { }

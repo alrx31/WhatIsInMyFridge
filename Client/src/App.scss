@@ -1,0 +1,119 @@
+.App{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+  h1{
+    text-align: center;
+    margin-top: 16px;
+  }
+  h2{
+    margin-top: 16px;
+    text-align: center;
+  }
+  .header__title{
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover{
+      color: var(--lightblue);
+    }
+  }
+
+  header{
+    background-color: var(--darkgray);
+    color: var(--white);
+    padding: 20px 0px;
+    width: 100dvw;
+    z-index: 2;
+    h2{
+        color: var(--white);
+        margin: 0;
+        text-align: left;
+    }
+  }
+
+  button{
+    margin: 8px;
+    padding: 10px 20px;
+
+    background-color: var(--lightblue);
+    color: var(--white);
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+
+    font-size: 16px;
+
+    &:hover{
+        background-color: var(--darkblue);
+        color: var(--lightblue);
+        border: 1px solid var(--lightblue);
+        cursor: pointer;
+   }
+   &:focus{
+    border-color: var(--darkgray);
+   }
+  }
+
+  .list-page__buttons{
+      position: fixed;
+      top: 0;
+      right: 0;   
+      button{
+        &:focus{
+          border-color: var(--white);
+        }
+      }
+  }
+}
+
+.expiry-warning {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .expiry-warning {
+    top: auto;
+    left: auto;
+    bottom: 20px;
+    right: 20px;
+    width: 20%;
+  }
+  
+}
+
+.notification-wrapper {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.notification-item {
+  background-color: #ffcccb;
+  color: #000;
+  padding: 20px 20px;
+  margin: 5px auto;
+  border-radius: 5px;
+  opacity: 0;
+  animation: fadeInOut 5s forwards ease-in-out;
+  width: 90%;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

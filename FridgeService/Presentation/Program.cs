@@ -1,6 +1,7 @@
 using BLL.DI;
 using DAL.DI;
 using DAL.Persistanse;
+using DAL.Persistanse.Hubs;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.EntityFrameworkCore;
@@ -114,6 +115,14 @@ app.Use((context, next) =>
 
 app.UseHangfireDashboard();
 
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapHub<NotificationHub>("/NotificationHub");
+
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

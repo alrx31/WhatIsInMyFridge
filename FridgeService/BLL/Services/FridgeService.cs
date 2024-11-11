@@ -8,6 +8,9 @@ using DAL.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using DAL.Persistanse.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using System.Runtime.InteropServices;
 
 namespace BLL.Services
 {
@@ -19,7 +22,7 @@ namespace BLL.Services
         
         Task RemoveFridgeById(int fridgeId);
         
-        Task AddUserToFridge(string serial, int userId);
+        Task AddUserToFridge(string serial,int boxNumber, int userId);
         
         Task RemoveUserFromFridge(int fridgeId, int userId);
         
@@ -41,7 +44,7 @@ namespace BLL.Services
 
         Task<List<Fridge>> GetFridgesByUserId(int userId);
         
-        Task<Fridge> GetFridgeBySerial(string serial);
+        Task<Fridge> GetFridgeBySerialAndBoxNumber(string serial,int boxNumber);
     }
 
     public class FridgeService : IFridgeService
@@ -53,6 +56,7 @@ namespace BLL.Services
         private readonly IProductsgRPCService _productsgRPCService;
         private readonly IKafkaProducer _kafkaProducer;
         private readonly ILogger<FridgeService> _logger;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
         public FridgeService(
             IFridgeRepository fridgeRepository,
@@ -61,7 +65,8 @@ namespace BLL.Services
             IgRPCService igRPCService,
             IProductsgRPCService productsgRPCService,
             IKafkaProducer kafkaProducer,
-            ILogger<FridgeService> logger
+            ILogger<FridgeService> logger,
+            IHubContext<NotificationHub> hubContext
             )
         {
             _fridgeRepository = fridgeRepository;
@@ -71,6 +76,7 @@ namespace BLL.Services
             _productsgRPCService = productsgRPCService;
             _kafkaProducer = kafkaProducer;
             _logger = logger;
+            _hubContext = hubContext;
         }
 
         public async Task AddFridge(FridgeAddDTO fridge)
@@ -118,13 +124,13 @@ namespace BLL.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public async Task AddUserToFridge(string serial, int userId)
+        public async Task AddUserToFridge(string serial,int boxNumber, int userId)
         {
             if(! await _grpcService.CheckUserExist(userId))
             {
                 throw new NotFoundException("User not found");
             }
-            var fridge = await _unitOfWork.FridgeRepository.GetFridgeBySerial(serial);
+            var fridge = await _unitOfWork.FridgeRepository.GetFridgeBySerialAndBoxNumber(serial,boxNumber);
 
             if (fridge is null)
             {
@@ -190,26 +196,58 @@ namespace BLL.Services
                 throw new NotFoundException("Fridge not found");
             }
 
+
+
             List<ProductFridgeModel> productFridgeModels = new List<ProductFridgeModel>();
+            List<ProductFridgeModel> productFridgeModelsToKafka = new List<ProductFridgeModel>();
+
 
             foreach (var product in products)
             {
-                productFridgeModels.Add(new ProductFridgeModel
+                var model = await _unitOfWork.FridgeRepository.GetProductFromFridge(fridgeId, product.ProductId);
+                
+                if (model is not null)
                 {
-                    fridgeId = fridgeId,
-                    productId = product.ProductId,
-                    count = product.Count,
-                    addTime = DateTime.UtcNow
-                });
+                    _logger.LogInformation("product in fridge exist");
+                    _logger.LogInformation($"count before: {model.count}");
+                    model.count += product.Count;
+                    _logger.LogInformation($"count after: {model.count}");
+                    
+                    await _unitOfWork.FridgeRepository.UpdateProductInFridge(model);
+                    
+                    await _unitOfWork.CompleteAsync();
+                    
+                    model.count = product.Count;
+                    productFridgeModelsToKafka.Add(model);
+                    continue;
+                }
+                else
+                {
+                    _logger.LogInformation("product in fridge not exist");
+                    productFridgeModels.Add(new ProductFridgeModel
+                    {
+                        fridgeId = fridgeId,
+                        productId = product.ProductId,
+                        count = product.Count,
+                        addTime = DateTime.UtcNow
+                    });
+                }
             }
 
-            await _unitOfWork.FridgeRepository.AddProductsToFridge(productFridgeModels);
-            
-            await _unitOfWork.CompleteAsync();
+            _logger.LogInformation("update products in fridge");
+
+            if (productFridgeModels.Any())
+            {
+                _logger.LogInformation("Adding new products to fridge");
+                await _unitOfWork.FridgeRepository.AddProductsToFridge(productFridgeModels);
+                await _unitOfWork.CompleteAsync();
+            }
+
+            _logger.LogInformation("send message to kafka");
 
             var message = new DAL.Entities.MessageBrokerEntities.Product
             (
-                _mapper.Map<List<DAL.Entities.MessageBrokerEntities.ProductInfo>>(productFridgeModels),
+                _mapper.Map<List<DAL.Entities.MessageBrokerEntities.ProductInfo>>(productFridgeModelsToKafka),
                 fridgeId
             );
 
@@ -252,25 +290,32 @@ namespace BLL.Services
         {
             var fridge = await _unitOfWork.FridgeRepository.GetFridge(fridgeId);
 
-            if(fridge is null)
+            if (fridge is null)
             {
                 throw new NotFoundException("Fridge not found");
             }
 
             var productsModel = await _unitOfWork.FridgeRepository.GetProductsFromFridge(fridgeId);
-
-            var ids = productsModel.Select(p => p.productId).ToList();
-
-            var products = await _productsgRPCService.GetProducts(ids);
             
-            for(var i = 0; i < products.Count; i++ )
+            var ids = productsModel.Select(p => p.productId).ToList();
+            
+            var products = await _productsgRPCService.GetProducts(ids);
+
+            var users = await GetFridgeUsers(fridgeId);
+
+            for (var i = 0; i < products.Count; i++)
             {
-                if (productsModel[i].addTime + products[i].ExpirationTime < DateTime.UtcNow)
-            {
-                    // Use SignalR to notify user
+                if (productsModel[i].addTime + products[i].ExpirationTime < DateTime.UtcNow.AddDays(3))
+                {
+                    foreach (var user in users)
+                    {
+                        await _hubContext.Clients.Group(fridgeId.ToString())
+                           .SendAsync("ReceiveNotification", $"{products[i].Name} in Fridge: {fridge.name}");
+                    }
                 }
             }
         }
+
 
         public async Task CheckProducts()
         {
@@ -295,6 +340,7 @@ namespace BLL.Services
                 PR[i].Count = productsModel[i].count;
                 PR[i].AddTime = productsModel[i].addTime;
             }
+
             return PR;
         }
 
@@ -325,7 +371,7 @@ namespace BLL.Services
             
             if (model.count < 0)
             {
-                throw new Exception("invalid count of product");
+                throw new BadRequestException("Invalid count of product");
             }
 
             if (model.count == 0)
@@ -344,9 +390,9 @@ namespace BLL.Services
             await _kafkaProducer.ProduceAsync<DAL.Entities.MessageBrokerEntities.ProductRemove>("RemoveProduct", message);
         }
 
-        public async Task<Fridge> GetFridgeBySerial(string serial)
+        public async Task<Fridge> GetFridgeBySerialAndBoxNumber(string serial,int boxNumber)
         {
-            var fridge = await _unitOfWork.FridgeRepository.GetFridgeBySerial(serial);
+            var fridge = await _unitOfWork.FridgeRepository.GetFridgeBySerialAndBoxNumber(serial,boxNumber);
             
             if(fridge is null)
             {

@@ -7,7 +7,7 @@ namespace Infastructure.Persistanse
 {
     public class UserRepository : IUserRepository
     {
-
+            
         private readonly ApplicationDbContext _context;
 
         public UserRepository(ApplicationDbContext context)

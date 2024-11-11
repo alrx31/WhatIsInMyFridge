@@ -1,18 +1,15 @@
 ﻿using DAL.Entities;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace DAL.Persistanse
 {
     public class FridgeRepository
         (
-            ApplicationDbContext context,
-            ILogger<FridgeRepository> logger
+            ApplicationDbContext context
         ) : IFridgeRepository
     {
         private readonly ApplicationDbContext _context = context;
-        private readonly ILogger<FridgeRepository> _logger = logger;
 
         public async Task AddFridge(Fridge fridge)
         {
@@ -105,9 +102,9 @@ namespace DAL.Persistanse
             _context.productFridgeModels.Update(model);
         }
 
-        public async Task<Fridge> GetFridgeBySerial(string serial)
+        public async Task<Fridge> GetFridgeBySerialAndBoxNumber(string serial, int boxNumber)
         {
-            return await _context.fridges.FirstOrDefaultAsync(f => f.serial == serial);
+            return await _context.fridges.FirstOrDefaultAsync(f => f.serial == serial && f.boxNumber == boxNumber);
         }
     }
 }

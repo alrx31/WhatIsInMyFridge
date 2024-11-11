@@ -1,4 +1,5 @@
-﻿using Application.UseCases.Comands;
+﻿using Application.Exceptions;
+using Application.UseCases.Comands;
 using AutoMapper;
 using Domain.Repository;
 using MediatR;
@@ -25,14 +26,14 @@ namespace Application.UseCases.ComandsHandlers
 
             if (list is null)
             {
-                throw new Exception("List not found");
+                throw new NotFoundException("List not found");
             }
 
             var product = await _productRepository.GetByIdAsync(request.ProductId,cancellationToken);
 
             if (product is null)
             {
-                throw new Exception("Product not found");
+                throw new NotFoundException("Product not found");
             }
 
             await _listManageRepository.DeleteProductInList(request.ListId,request.ProductId,cancellationToken);

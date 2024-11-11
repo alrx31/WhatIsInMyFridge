@@ -13,9 +13,9 @@ namespace Infrastructure.Persistance
             _database = client.GetDatabase(settings.Value.DatabaseName);
         }
 
-        public IMongoCollection<TEntity> GetCollection<TEntity>(string name)
-    {
-        return _database.GetCollection<TEntity>(name);
-    }
+        public virtual IMongoCollection<TEntity> GetCollection<TEntity>(string name)
+        {
+            return _database.GetCollection<TEntity>(name);
+        }
     }
 }

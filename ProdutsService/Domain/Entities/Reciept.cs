@@ -12,5 +12,7 @@ namespace Domain.Entities
         public TimeSpan CookDuration { get; set; }
         public int Portions { get; set; }
         public int Kkal { get; set; }
+
+        public List<ProductInReciept> Products { get; set; }
     }
 }

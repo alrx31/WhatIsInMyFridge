@@ -26,9 +26,9 @@ namespace Infastructure.DI
                 op.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Identity")));
 
             // Redis
-            services.AddSingleton<IConnectionMultiplexer>(s =>
+            builder.Services.AddStackExchangeRedisCache(redisCacheOptions =>
             {
-                return ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"));
+                redisCacheOptions.Configuration = builder.Configuration.GetConnectionString("Redis");
             });
 
             services.AddGrpc();
@@ -48,7 +48,6 @@ namespace Infastructure.DI
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = builder.Configuration["Jwt:issuer"],
                     ValidAudience = builder.Configuration["Jwt:audience"],
-                    ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:key"]))
                 };
             });

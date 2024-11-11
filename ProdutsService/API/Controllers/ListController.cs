@@ -20,6 +20,12 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllLists(CancellationToken cancellationToken)
+        {
+            return Ok(await _mediator.Send(new GetAllListsQuery(), cancellationToken));
+        }
+
         [HttpPut]
         public async Task<IActionResult> AddList([FromBody] AddListDTO model,CancellationToken cancellationToken)
         {
@@ -72,6 +78,13 @@ namespace API.Controllers
             return Ok(await _mediator.Send(_mapper.Map<GetListProductsQuery>(listId),cancellationToken));
         }
 
+        [HttpGet("{listId}/productsInList")]
+        public async Task<IActionResult> GetListProductsInList(string listId, CancellationToken cancellationToken)
+        {
+            return Ok(await _mediator.Send(_mapper.Map<GetListProductsInListQuery>(listId), cancellationToken));
+        }
+
+
         [HttpDelete("{listId}/{productId}")]
         public async Task<IActionResult> DeleteProductFromList(string listId, string productId, CancellationToken cancellationToken)
         {
@@ -79,5 +92,7 @@ namespace API.Controllers
 
             return Ok();
         }
+
+
     }
 }
