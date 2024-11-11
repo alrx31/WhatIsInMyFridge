@@ -5,6 +5,7 @@ using Application.DI;
 using Infastructure.DI;
 using Presentation.DI;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Serilog;
 using Identity.Extention;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,17 @@ builder.WebHost.ConfigureKestrel(options =>
         listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
     });
 });
+
+
+// logs
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()  
+    .WriteTo.File("/var/log/identityservice/logs.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddDatabaseConnection(builder.Configuration);
 builder.Services.AddApplicationServices();
