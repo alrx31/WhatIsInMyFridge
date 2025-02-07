@@ -9,8 +9,8 @@ Server:
 <br>
 Tecnologies Used in Server:
 
-1. ASP.NET Core 3
-2. Entity Framework Core 3
+1. ASP.NET Core
+2. Entity Framework Core
 3. MediatR
 4. FluentValidation
 5. AutoMapper
